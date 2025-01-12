@@ -8,7 +8,7 @@
     <title>Login: Go Trip</title>
 </head>
 <body>
-    <div class="container" id="signup">
+    <div class="container" id="signup" style="display: none;">
         <h1 class="form-title">Register</h1>
         <form method="post" action="">
             <div class="input group">
@@ -64,7 +64,7 @@
             <p class="rocover">
                 <a href="#">Recover Password</a>
             </p>
-            <input type="submit" class="btn" value="Sign In" name="signIn">
+            <input type="submit" class="btn" value="Sign In" name="signIn" onclick="login()">
         </form>
         <p class="or">
             ----------or--------
@@ -78,5 +78,6 @@
             <button id="signUpButton">Sign Up</button>
         </div>
     </div>
+    <script src="./js/log_in.js"></script>
 </body>
 </html>
