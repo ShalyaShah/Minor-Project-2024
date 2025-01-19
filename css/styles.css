@@ -1,30 +1,34 @@
 .body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #f0f8ff;
+    font-family: "poppins",sans-serif;
+    background-color: #000;
 }
 
 /* Navbar */
 .navbar {
-    background-color: #47bde8;
+    background-color: none;
     padding: 15px 30px;
     display: flex;
     justify-content:space-between;
     align-items: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    border-style: none;
+    border-bottom: solid 1px #47bde8;
 }
 
 .navbar .logo {
     display: flex;
     align-items: center;
+    font-family: "poppins","sans-serif";
 }
 
 .navbar .logo img {
-    height: 40px;
+    height: 50px;
     margin-right: 15px;
+    border-radius: 20px;
 }
 
 .navbar .menu {
+    
     display: flex;
     gap: 20px;
     align-items: center;
@@ -32,10 +36,10 @@
 }
 
 .navbar .menu a {
+    font-family: "poppins","sans-serif"; 
     text-decoration: none;
-    color: #ffffff;
+    color: #000000;
     font-size: 16px;
-    font-weight: bold;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -93,27 +97,14 @@
     cursor: pointer;
 }
 
-/* Header */
-.header {
-    background-color: #ffa64d;
-    color: white;
-    padding: 40px 20px 60px;
-    text-align: center;
-}
-
-.header h1 {
-    margin: 0;
-    font-size: 24px;
-    font-weight: bold;
-}
-
 /* Search Form */
 .search-form {
-    background: #ffffff;
+    font-family: "poppins","sans-serif";
+    background: #2f7285;
     border-radius: 15px;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-    padding: 80px;
-    margin: -100px auto 40px;
+    padding: 20px;
+    margin-top: 10px;
     max-width: 1300px;
 }
 
@@ -122,9 +113,11 @@
     gap: 40px;
     margin-bottom: 40px;
     justify-content: center;
+    font-family: "poppins","sans-serif";
 }
 
 .search-form .trip-types label {
+    font-family: "poppins","sans-serif";
     display: flex;
     align-items: center;
     gap: 10px;
@@ -149,31 +142,11 @@
     border: 1px solid #ccc;
     border-radius: 10px;
     font-size: 16px;
+    font-family: "poppins","sans-serif";
 }
 
 .search-form .fields input[type="date"] {
     color: #555;
-}
-
-.special-fares {
-    background: #ffe5cc;
-    border-radius: 10px;
-    padding: 25px;
-    display: flex;
-    gap: 30px;
-    justify-content: center;
-}
-
-.special-fares div {
-    flex: 1;
-    text-align: center;
-    font-size: 14px;
-    font-weight: bold;
-    border: 1px solid #ccc;
-    padding: 15px;
-    border-radius: 10px;
-    cursor: pointer;
-    max-width: 160px;
 }
 
 .search-button {
@@ -181,7 +154,7 @@
 }
 
 .search-button button {
-    background-color: #ffa64d;
+    background-color: #f8912a;
     color: white;
     border: none;
     padding: 20px 50px;
@@ -193,7 +166,7 @@
 }
 
 .search-button button:hover {
-    background-color: #e5943c;
+    background-color: #ff8400;
 }
 
 /* Adjust header overlap */
