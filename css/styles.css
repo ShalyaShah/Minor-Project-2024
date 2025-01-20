@@ -1,18 +1,21 @@
-.body {
+
+body {
     font-family: "poppins",sans-serif;
-    background-color: #000;
+    background-color: #C4D8E2;
 }
 
 /* Navbar */
 .navbar {
-    background-color: none;
+    background-color: rgba(255, 255, 255, 0.357);
     padding: 15px 30px;
     display: flex;
     justify-content:space-between;
     align-items: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     border-style: none;
-    border-bottom: solid 1px #47bde8;
+    margin-top: -10px;
+    margin-left: -10px;  
+    margin-right: -10px;
 }
 
 .navbar .logo {
@@ -100,7 +103,7 @@
 /* Search Form */
 .search-form {
     font-family: "poppins","sans-serif";
-    background: #2f7285;
+    background: #007AA5;
     border-radius: 15px;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
     padding: 20px;
@@ -124,7 +127,6 @@
     font-size: 18px;
     font-weight: bold;
     cursor: pointer;
-    color: #ffa64d;
 }
 
 .search-form .fields {
@@ -166,15 +168,10 @@
 }
 
 .search-button button:hover {
-    background-color: #ff8400;
+    background-color: #FFC65D;
 }
 
 /* Adjust header overlap */
-.header {
-    padding-bottom: 100px;
-    position: relative;
-    z-index: 1;
-}
 
 .search-form {
     position: relative;
@@ -186,6 +183,7 @@
     background-color: #f8f9fa;
     padding: 60px 20px;
     text-align: center;
+    margin-top: 10px;
 }
 
 #popular-routes h2 {
