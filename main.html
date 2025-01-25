@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoTrip</title>
+    <link rel="stylesheet" href="css\styles.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo">
+            <img src="images/Logo GoTrip.jpeg" alt="GoTrip Logo">
+            <span>GoTrip</span>
+        </div>
+        <div class="menu">
+            <a href="flight.html" class="flights"><span></span>Flights</a>
+            <a href="#" class="hotels"><span></span>Hotels</a>
+            <a href="#" class="trains"><span></span>Trains</a>
+            <a href="#" class="cabs"><span></span>Cabs</a>
+            <a href="#" class="bus"><span></span>Bus</a>
+            <a href="#" class="holidays"><span></span>Holidays</a>
+        </div>
+    </header>
+
+
+    <div class="search-form">
+        <div class="trip-types">
+            <label><input type="radio" name="trip" value="one-way"> One-way</label>
+            <label><input type="radio" name="trip" value="round-trip"> Round-trip</label>
+            <label><input type="radio" name="trip" value="multi-city"> Multi-city</label>
+        </div>
+        <div class="fields">
+            <input type="text" placeholder="Enter city or airport">
+            <input type="text" placeholder="Enter city or airport">
+            <input type="date" placeholder="Departure Date">
+            <input type="date" placeholder="Return Date">
+            <input type="number" min="1" value="1" max="30" placeholder="Enter Adults">
+        </div>
+        <div class="search-button">
+            <button>Search Flights</button>
+        </div>
+    </div>
+
+    <!-- Popular Flight Routes -->
+    <section id="popular-routes">
+        <h2>Popular Flight Routes</h2>
+        <div class="routes-grid">
+            <div class="route-card">
+                <img src="images/mumbai-delhi.jpg" alt="Mumbai to Delhi">
+                <h3>Mumbai to Delhi</h3>
+                <p>Starting from ₹2,999. Duration: 2 hrs</p>
+                <a href="#" class="btn">Book Now</a>
+            </div>
+            <div class="route-card">
+                <img src="images/ny-la.jpg" alt="New York to Los Angeles">
+                <h3>New York to Los Angeles</h3>
+                <p>Starting from ₹17,000. Duration: 6 hrs</p>
+                <a href="#" class="btn">Book Now</a>
+            </div>
+            <div class="route-card">
+                <img src="images/london-paris.jpg" alt="London to Paris">
+                <h3>London to Paris</h3>
+                <p>Starting from £49. Duration: 1.5 hrs</p>
+                <a href="#" class="btn">Book Now</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Flight Offers and Promotions -->
+    <section id="offers">
+        <h2>Exclusive Flight Offers</h2>
+        <div class="offers-grid">
+            <div class="offer-card">
+                <img src="images/discount1.jpg" alt="Discount Offer 1">
+                <h3>Early Bird Discount</h3>
+                <p>Book your tickets 3 months in advance and save up to 30%.</p>
+                <a href="#" class="btn">View Offers</a>
+            </div>
+            <div class="offer-card">
+                <img src="images/discount2.jpg" alt="Discount Offer 2">
+                <h3>Weekend Getaway</h3>
+                <p>Flat ₹1,500 off on domestic round-trip flights every weekend.</p>
+                <a href="#" class="btn">View Offers</a>
+            </div>
+            <div class="offer-card">
+                <img src="images/discount3.jpg" alt="Discount Offer 3">
+                <h3>International Sale</h3>
+                <p>Save up to ₹10,000 on international flights to top destinations.</p>
+                <a href="#" class="btn">View Offers</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Flip Cards for Offers -->
+    <section class="offers-section">
+        <h2>Exclusive Offers</h2>
+        <div class="offers-container">
+            <div class="flip-card">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <img src="images/offer1.jpg" alt="Offer 1">
+                        <h3>50% Off to Bali</h3>
+                    </div>
+                    <div class="flip-card-back">
+                        <p>Save 50% on flights to Bali. Limited time offer!</p>
+                    </div>
+                </div>
+            </div>
+            <div class="flip-card">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <img src="images/offer2.jpg" alt="Offer 2">
+                        <h3>Save on Hotels</h3>
+                    </div>
+                    <div class="flip-card-back">
+                        <p>Get 30% off on hotel bookings worldwide.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="flip-card">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <img src="images/offer3.jpg" alt="Offer 3">
+                        <h3>Student Discounts</h3>
+                    </div>
+                    <div class="flip-card-back">
+                        <p>Special discounts for students on domestic flights.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Travel Inspiration -->
+    <section id="travel-inspiration">
+        <h2>Travel Inspiration</h2>
+        <div class="inspiration-grid">
+            <div class="inspiration-card">
+                <img src="images/beach.jpg" alt="Beach Destinations">
+                <h3>Top Beach Destinations</h3>
+                <p>Escape to the sunniest shores across the globe.</p>
+            </div>
+            <div class="inspiration-card">
+                <img src="images/mountains.jpg" alt="Mountain Getaways">
+                <h3>Mountain Getaways</h3>
+                <p>Find peace and adventure in the world's most stunning peaks.</p>
+            </div>
+            <div class="inspiration-card">
+                <img src="images/cities.jpg" alt="City Breaks">
+                <h3>City Breaks</h3>
+                <p>Discover vibrant cities and their hidden treasures.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Floating Action Button -->
+    <button class="floating-button">
+        <img src="images/help.png" alt="Help">
+    </button>
+
+    <!-- Customer Reviews -->
+    <section id="customer-reviews">
+        <h2>What Our Customers Say</h2>
+        <div class="reviews-grid">
+            <div class="review-card">
+                <p>"Booking with GoTrip was a breeze! Got amazing discounts on my tickets."</p>
+                <h4>- Akshat D.</h4>
+            </div>
+            <div class="review-card">
+                <p>"The best platform for last-minute travel plans. Highly recommended!"</p>
+                <h4>- Meet S.</h4>
+            </div>
+            <div class="review-card">
+                <p>"Excellent customer service and unbeatable offers. Will use it again."</p>
+                <h4>- Shalya S.</h4>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Signup -->
+    <section id="newsletter">
+        <h2>Stay Updated with the Latest Deals</h2>
+        <form>
+            <input type="email" placeholder="Enter your email address" required>
+            <button type="submit" class="btn">Subscribe</button>
+        </form>
+    </section>
+    <div class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="footer-col-1">
+                <h3>Download Our App</h3>
+                <p> Download App for Android and ios mobile phone.</p>
+                <div class="app-logo">
+                    <img src="images/play-store.png" alt="play-store">
+                    <img src="images/app-store.png" alt="app-store">
+
+                </div>
+                </div>
+                <div class="footer-col-2">
+                    <img src="images\Logo GoTrip.jpeg" alt="GoTrip Logo">
+                    <p>Our Purpose to Sustainably  </p>
+                </div>
+                    <div class="footer-col-3">
+                        <h3>Useful Links</h3>
+                        <ul>
+                            <li>Coupons</li>
+                            <li>Blog Post</li>
+                            <li>Return Policy</li>
+                            <li>Join Affiliate</li>
+                        </ul>
+                     </div>
+                        <div class="footer-col-4">
+                            <h3>  Follow us</h3>
+                            <ul>
+                                <li>Facebook</li>
+                                <li>Twitter</li>
+                                <li>Instagram</li>
+                                <li>YouTube</li>
+                            </ul>
+                        </div>
+                  </div> 
+                  <hr>
+                  <p class="copyright">Copyright 2025 - Akshat Dhoka, Shalya Shah, Meet Shah</p> 
+            </div>
+      </div>
+</body>
+</html>
