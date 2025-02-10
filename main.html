@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GoTrip</title>
     <link rel="stylesheet" href="css\styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <header class="navbar">
@@ -13,27 +14,27 @@
             <span>GoTrip</span>
         </div>
         <div class="menu">
-            <a href="flight.html" class="flights"><span></span>Flights</a>
-            <a href="#" class="hotels"><span></span>Hotels</a>
-            <a href="#" class="trains"><span></span>Trains</a>
-            <a href="#" class="cabs"><span></span>Cabs</a>
-            <a href="#" class="bus"><span></span>Bus</a>
-            <a href="#" class="holidays"><span></span>Holidays</a>
+            <a href="flight.html" class="flight"><span></span><i class="fa-solid fa-plane"></i>Flight</a>
+            <a href="#" class="hotels"><span></span><i class="fa-solid fa-hotel"></i>Hotels</a>
+            <a href="#" class="trains"><span></span><i class="fa-solid fa-train-subway"></i>Trains</a>
+            <a href="#" class="cabs"><span></span><i class="fa-solid fa-taxi"></i>Cabs</a>
+            <a href="#" class="bus"><span></span><i class="fa-solid fa-bus"></i>Bus</a>
+            <a href="#" class="holidays"><span></span><i class="fa-solid fa-globe"></i>Holidays</a>
         </div>
     </header>
 
 
     <div class="search-form">
         <div class="trip-types">
-            <label><input type="radio" name="trip" value="one-way"> One-way</label>
-            <label><input type="radio" name="trip" value="round-trip"> Round-trip</label>
+            <label><input type="radio" name="trip" value="one-way" checked id="one_way_trip"> One-way</label>
+            <label><input type="radio" name="trip" value="round-trip" id="round_trip"> Round-trip</label>
             <label><input type="radio" name="trip" value="multi-city"> Multi-city</label>
         </div>
         <div class="fields">
             <input type="text" placeholder="Enter city or airport">
             <input type="text" placeholder="Enter city or airport">
             <input type="date" placeholder="Departure Date">
-            <input type="date" placeholder="Return Date">
+            <input type="date" placeholder="Return Date" id="return_date">
             <input type="number" min="1" value="1" max="30" placeholder="Enter Adults">
         </div>
         <div class="search-button">
@@ -188,7 +189,7 @@
     <footer>
         <div class="row">
             <div class="col">
-                <img src="images/Logo.png.jpeg" class="logo">
+                <img src="images/Logo.png.jpeg" class="logo" alt="logo">
                 <p>HII</p>
             </div>
             <div class="col">
