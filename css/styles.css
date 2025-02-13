@@ -1,7 +1,7 @@
-/* Import Google Fonts */
+
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
-/* Global Styles */
+
 body {
     font-family: 'Poppins', sans-serif;
     background: linear-gradient(to bottom, #EBECF0, #C4D8E2);
@@ -58,7 +58,7 @@ body {
     color: white;
 }
 
-/* Hero Section */
+
 .hero {
     text-align: center;
     padding: 150px 20px 100px;
@@ -92,7 +92,7 @@ body {
     background: #FFC65D;
 }
 
-/* Search Form */
+
 .search-form {
     background: white;
     border-radius: 15px;
@@ -163,7 +163,7 @@ body {
     color: white;
 }
 
-/* Section Heading */
+
 .flight-routes h2 {
     font-size: 2.8rem;
     color: #fff;
@@ -171,7 +171,7 @@ body {
     margin-bottom: 40px;
 }
 
-/* Routes Container */
+
 .routes-container {
     display: flex;
     justify-content: center;
@@ -179,7 +179,7 @@ body {
     flex-wrap: wrap;
 }
 
-/* Card Flip Effect */
+
 .route-card {
     width: 320px;
     height: 380px;
@@ -194,7 +194,7 @@ body {
     transform: rotateY(360deg);
 }
 
-/* Card Front & Back */
+
 .route-front, .route-back {
     width: 100%;
     height: 100%;
@@ -234,7 +234,7 @@ body {
     color: #555;
 }
 
-/* Card Back */
+
 .route-back {
     background: linear-gradient(135deg, #ff6600, #ff3300);
     color: white;
@@ -252,7 +252,7 @@ body {
     margin-bottom: 15px;
 }
 
-/* Book Now Button */
+
 .book-btn {
     background-color: #fff;
     color: #ff6600;
@@ -269,7 +269,7 @@ body {
     background-color: #ffd9b3;
 }
 
-/* Discount Badge */
+
 .discount-badge {
     position: absolute;
     top: 10px;
@@ -283,12 +283,12 @@ body {
     box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-/* Glow Effect on Hover */
+
 .route-card:hover {
     box-shadow: 0px 15px 40px rgba(255, 102, 0, 0.6);
 }
 
-/* Responsive Design */
+
 @media (max-width: 1024px) {
     .routes-container {
         flex-direction: column;
@@ -299,14 +299,14 @@ body {
 
 
 /* Exclusive Flight Offers */
-/* Elegant background for premium feel */
+
 .exclusive-offers {
     text-align: center;
     background: linear-gradient(to right, #f8f9fa, #eef2f3);
     padding: 60px 20px;
 }
 
-/* Title Styling */
+
 .exclusive-offers h2 {
     font-size: 2rem;
     color: #333;
@@ -314,7 +314,7 @@ body {
     font-weight: 600;
 }
 
-/* Offers Container */
+
 .offers-container {
     display: flex;
     justify-content: center;
@@ -322,7 +322,7 @@ body {
     flex-wrap: wrap;
 }
 
-/* Individual Offer Card */
+
 .offer-card {
     background: white;
     border-radius: 12px;
@@ -333,26 +333,26 @@ body {
     transition: transform 0.3s ease, box-shadow 0.3s;
 }
 
-/* Offer Card Hover Effect */
+
 .offer-card:hover {
     transform: translateY(-8px);
     box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.15);
 }
 
-/* Offer Images */
+
 .offer-card img {
     width: 100%;
     height: auto;
 }
 
-/* Offer Title */
+
 .offer-card h3 {
     font-size: 1.5rem;
     color: #ff7f50;
     margin: 15px 0;
 }
 
-/* Offer Description */
+
 .offer-card p {
     font-size: 1rem;
     color: #555;
@@ -360,7 +360,7 @@ body {
     margin-bottom: 15px;
 }
 
-/* View Offers Button */
+
 .view-offers-btn {
     background: #007bff;
     color: white;
@@ -379,7 +379,7 @@ body {
     transform: scale(1.05);
 }
 
-/* Responsive Design */
+
 @media (max-width: 768px) {
     .offers-container {
         flex-direction: column;
@@ -387,14 +387,14 @@ body {
     }
 }
 
-/* Modern background */
+
 .exclusive-offers {
     text-align: center;
     background: linear-gradient(to right, #e3f2fd, #bbdefb);
     padding: 60px 20px;
 }
 
-/* Section Title */
+
 .exclusive-offers h2 {
     font-size: 2.2rem;
     color: #1a237e;
@@ -402,7 +402,7 @@ body {
     font-weight: 700;
 }
 
-/* Offers Grid */
+
 .offers-container {
     display: flex;
     justify-content: center;
@@ -410,7 +410,7 @@ body {
     flex-wrap: wrap;
 }
 
-/* Offer Card */
+
 .offer-card {
     background: white;
     border-radius: 12px;
@@ -423,34 +423,34 @@ body {
     overflow: hidden;
 }
 
-/* Card Hover Effect */
+
 .offer-card:hover {
     transform: translateY(-8px);
     box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.15);
 }
 
-/* Icon Styling */
+
 .icon {
     font-size: 2.5rem;
     color: #ff6f00;
     margin-bottom: 15px;
 }
 
-/* Offer Title */
+
 .offer-card h3 {
     font-size: 1.5rem;
     color: #004ba0;
     margin-bottom: 10px;
 }
 
-/* Offer Description */
+
 .offer-card p {
     font-size: 1rem;
     color: #555;
     margin-bottom: 15px;
 }
 
-/* Offer Button */
+
 .offer-btn {
     background: #ff6f00;
     color: white;
@@ -468,7 +468,7 @@ body {
     transform: scale(1.05);
 }
 
-/* Responsive */
+
 @media (max-width: 768px) {
     .offers-container {
         flex-direction: column;
@@ -476,7 +476,7 @@ body {
     }
 }
 
-/* Travel Inspiration Section */
+
 .travel-inspiration {
     background: linear-gradient(to right, #e0f7fa, #ffffff);
     padding: 60px 20px;
