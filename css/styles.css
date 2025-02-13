@@ -152,7 +152,37 @@ body {
     background: #FFC65D;
 }
 
+.autocomplete-items {
+    border: 1px solid #d4d4d4;
+    border-top: none;
+    z-index: 99;
+    position: absolute;
+    width: 300px;
+}
 
+.autocomplete-items div {
+    padding: 10px;
+    cursor: pointer;
+    background-color: #fff;
+}
+
+.autocomplete-items div:hover {
+    background-color: #e9e9e9;
+}
+
+#departure_airport {
+    width: 300px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+#departure_airport:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+}
 
 
 .flight-routes {

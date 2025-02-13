@@ -37,7 +37,8 @@
             <label><input type="radio" name="trip" value="multi-city"> Multi-city</label>
         </div>
         <div class="fields">
-            <input type="text" placeholder="From: City or Airport">
+            <input type="text" id="departure_airport" placeholder="Enter airport or city">
+            <div id="autocomplete-list" class="autocomplete-items"></div>
             <input type="text" placeholder="To: City or Airport">
             <input type="date" placeholder="Departure Date">
             <input type="date" placeholder="Return Date">
@@ -297,6 +298,6 @@
             <p>© 2025 GoTrip. All Rights Reserved.</p>
         </div>
     </footer>
-    
+    <script src="js/airport_search.js"></script>
     </body>
 </html>
