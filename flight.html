@@ -1,26 +1,49 @@
+<!-- flights.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GoTrip: Book Flights</title>
-    <link rel="stylesheet" href="css\flight.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Flight Results</title>
+    <style>
+        .flight-container {
+            padding: 20px;
+        }
+        .flight-card {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .flight-details {
+            margin: 10px 0;
+        }
+        .price {
+            font-weight: bold;
+            color: #007bff;
+            font-size: 1.2em;
+        }
+        .segment {
+            background: #f8f9fa;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+        }
+        .return-flight {
+            margin-top: 20px;
+            border-top: 2px solid #007bff;
+            padding-top: 20px;
+        }
+    </style>
 </head>
 <body>
-    <header class="navbar">
-        <div class="logo">
-            <img src="images/Logo GoTrip.jpeg" alt="GoTrip Logo">
-            <span href="main.html">GoTrip</span>
-        </div>
-        <div class="menu">
-            <a href="main.html" class="Home"><span></span><i class="fa-solid fa-house"></i>Home</a>
-            <a href="#" class="hotels"><span></span><i class="fa-solid fa-hotel"></i>Hotels</a>
-            <a href="#" class="trains"><span></span><i class="fa-solid fa-train-subway"></i>Trains</a>
-            <a href="#" class="cabs"><span></span><i class="fa-solid fa-taxi"></i>Cabs</a>
-            <a href="#" class="bus"><span></span><i class="fa-solid fa-bus"></i>Bus</a>
-            <a href="#" class="holidays"><span></span><i class="fa-solid fa-globe"></i>Holidays</a>
-        </div>
-    </header>
+    <div class="flight-container">
+        <h2>Flight Search Results</h2>
+        <div id="searchParams"></div>
+        <div id="outboundFlights"></div>
+        <div id="returnFlights"></div>
+        <button onclick="window.location.href='/'">New Search</button>
+    </div>
+
+    <script src="flights.js"></script>
 </body>
 </html>

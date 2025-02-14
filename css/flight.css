@@ -98,3 +98,16 @@ body {
     font-weight: bold;
     cursor: pointer;
 }
+.flight-card {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 5px;
+}
+.flight-details {
+    margin: 10px 0;
+}
+.price {
+    font-weight: bold;
+    color: #007bff;
+}

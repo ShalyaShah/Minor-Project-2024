@@ -36,18 +36,20 @@
             <label><input type="radio" name="trip" value="round-trip"> Round-trip</label>
             <label><input type="radio" name="trip" value="multi-city"> Multi-city</label>
         </div>
+        <form id="flightSearchForm">
         <div class="fields">
-            <input type="text" id="departure_airport" placeholder="Enter airport or city">
-            <div id="autocomplete-list" class="autocomplete-items"></div>
-            <input type="text" placeholder="To: City or Airport">
-            <input type="date" placeholder="Departure Date">
-            <input type="date" placeholder="Return Date">
-            <input type="number" min="1" value="1" max="30" placeholder="Passengers">
+            <input type="text" id="departure_airport" placeholder="Enter airport or city" required>
+            <input type="text" id="arrival_airport" placeholder="To: City or Airport" required>
+            <input type="date" name="date" id="departure_date" placeholder="Depature Date" required>
+            <input type="date" name="date" id="return_date" placeholder="Return Date">
+            <input type="number" min="1" value="1" max="30" placeholder="Passengers" required>
         </div>
         <div class="search-button">
             <button>Search Flights</button>
         </div>
+        </form>
     </div>
+
 </body>
 </html>
 
@@ -299,5 +301,6 @@
         </div>
     </footer>
     <script src="js/airport_search.js"></script>
+    <script src="js/main.js"></script>
     </body>
 </html>

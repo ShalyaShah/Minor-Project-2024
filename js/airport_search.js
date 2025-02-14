@@ -38,27 +38,39 @@ async function searchAirports(keyword) {
     }
 }
 
-// Setup autocomplete
-const inputField = document.getElementById('departure_airport');
-const autocompleteList = document.getElementById('autocomplete-list');
-let debounceTimer;
-
-inputField.addEventListener('input', function(e) {
-    clearTimeout(debounceTimer);
-    const keyword = e.target.value;
+// Setup autocomplete for both departure and arrival fields
+function setupAutocomplete(inputId) {
+    const inputField = document.getElementById(inputId);
+    const autocompleteList = document.createElement('div');
+    autocompleteList.className = 'autocomplete-list';
+    inputField.parentNode.insertBefore(autocompleteList, inputField.nextSibling);
     
-    if (keyword.length < 2) {
-        autocompleteList.innerHTML = '';
-        return;
-    }
+    let debounceTimer;
 
-    debounceTimer = setTimeout(async () => {
-        const locations = await searchAirports(keyword);
-        displayResults(locations);
-    }, 300);
-});
+    inputField.addEventListener('input', function(e) {
+        clearTimeout(debounceTimer);
+        const keyword = e.target.value;
+        
+        if (keyword.length < 2) {
+            autocompleteList.innerHTML = '';
+            return;
+        }
 
-function displayResults(locations) {
+        debounceTimer = setTimeout(async () => {
+            const locations = await searchAirports(keyword);
+            displayResults(locations, inputField, autocompleteList);
+        }, 300);
+    });
+
+    // Close autocomplete list when clicking outside
+    document.addEventListener('click', function(e) {
+        if (e.target !== inputField) {
+            autocompleteList.innerHTML = '';
+        }
+    });
+}
+
+function displayResults(locations, inputField, autocompleteList) {
     autocompleteList.innerHTML = '';
     
     locations.forEach(location => {
@@ -74,9 +86,8 @@ function displayResults(locations) {
     });
 }
 
-// Close autocomplete list when clicking outside
-document.addEventListener('click', function(e) {
-    if (e.target !== inputField) {
-        autocompleteList.innerHTML = '';
-    }
+// Initialize autocomplete for both fields
+document.addEventListener('DOMContentLoaded', function() {
+    setupAutocomplete('departure_airport');
+    setupAutocomplete('arrival_airport');
 });
