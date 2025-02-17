@@ -1,48 +1,64 @@
+// main.js or flight_offers.js (on your main page)
+document.getElementById('flight_search_button').addEventListener('click', async function(event) {
+  event.preventDefault();
+  
+  try {
+      // Get DOM elements
+      const departureInput = document.getElementById('departure_airport');
+      const arrivalInput = document.getElementById('arrival_airport');
+      const dateInput = document.getElementById('departure_date');
+      const adultsInput = document.getElementById('adults');
 
-const Amadeus = require('amadeus');
-const fs = require('fs');
+      // Validate inputs exist
+      if (!departureInput || !arrivalInput || !dateInput || !adultsInput) {
+          throw new Error('Required input fields not found');
+      }
 
-const amadeus = new Amadeus({
-  clientId: '4YW2bmhwYKjothBbv8eU7tsUR5XytpXj',
-  clientSecret: 'lyLGo5Qt0LGkGo6Y'
+      // Get values
+      const origin = departureInput.value;
+      const destination = arrivalInput.value;
+      const departureDate = dateInput.value;
+      const adults = adultsInput.value;
+
+      // Validate input values
+      if (!origin || !destination) {
+          throw new Error('Please enter both departure and arrival airports');
+      }
+
+      // Extract airport codes
+      const originCode = origin.match(/\(([^)]+)\)/)?.[1];
+      const destinationCode = destination.match(/\(([^)]+)\)/)?.[1];
+
+      if (!originCode || !destinationCode) {
+          throw new Error('Invalid airport code format. Please include airport code in parentheses (e.g., "New York (JFK)")');
+      }
+
+      // Validate date and adults
+      if (!departureDate) {
+          throw new Error('Please select a departure date');
+      }
+
+      if (!adults || adults < 1) {
+          throw new Error('Please enter a valid number of adults');
+      }
+
+      // Store search parameters in sessionStorage
+      const searchParams = {
+          originCode,
+          destinationCode,
+          departureDate,
+          adults,
+          origin,
+          destination
+      };
+      
+      sessionStorage.setItem('flightSearchParams', JSON.stringify(searchParams));
+
+      // Redirect to flight.html
+      window.location.href = 'flight.html';
+
+  } catch (error) {
+      console.error('Error:', error);
+      alert(error.message);
+  }
 });
-
-let origin,origin_code,destination,destination_code,departureDate,adults;
-
-document.getElementById('flight_search_button').addEventListener('click', function(){
-  origin=document.getElementById('departure_airport').value;
-  origin_code=origin.substring(-1,-4);
-  destination=document.getElementById('arrival_airport').value;
-  destination_code=destination.substring(-1,-4);
-  var date = departureDate = document.getElementById('departure_date').value;
-  var reversedDate = date.split('-').reverse().join('-');
-  adults=document.getElementById('adults').value;
-  amadeus.shopping.flightOffersSearch.get({
-      originLocationCode: origin_code,
-      destinationLocationCode: destination_code,
-      departureDate: date,
-      adults: adults
-  }).then(function(response){
-    fs.writeFile('responseData.json', JSON.stringify(response.data, null, 2), (err) => {
-      if (err) throw err;
-      console.log('Response data saved to responseData.json');
-    });
-  }).catch(function(responseError){
-    console.log(responseError);
-  });
-});
-
-/*amadeus.shopping.flightOffersSearch.get({
-    originLocationCode: 'BOM',
-    destinationLocationCode: 'BKK',
-    departureDate: '2025-06-01',
-    adults: '2'
-}).then(function(response){
-  fs.writeFile('responseData.json', JSON.stringify(response.data, null, 2), (err) => {
-    if (err) throw err;
-    console.log('Response data saved to responseData.json');
-  });
-}).catch(function(responseError){
-  console.log(responseError);
-});
-*/

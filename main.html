@@ -42,10 +42,10 @@
             <input type="text" id="arrival_airport" placeholder="To: City or Airport" required>
             <input type="date" name="date" id="departure_date" placeholder="Depature Date" required>
             <input type="date" name="date" id="return_date" placeholder="Return Date">
-            <input type="number" min="1" value="1" max="30" placeholder="Passengers" required>
+            <input type="number" id="adults" min="1" value="1" max="30" placeholder="Passengers" required>
         </div>
-        <div id="flight_search_button" class="search-button">
-            <button>Search Flights</button>
+        <div class="search-button">
+            <button id="flight_search_button">Search Flights</button>
         </div>
         </form>
     </div>
@@ -300,7 +300,9 @@
             <p>© 2025 GoTrip. All Rights Reserved.</p>
         </div>
     </footer>
-    <script src="js/airport_search.js"></script>
-    <script src="js/flight_offers.js"></script>
+    <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/airport_search.js"></script>
+    
+    <script type="module" src="js/flight_offers.js"></script>
     </body>
 </html>

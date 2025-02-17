@@ -1,21 +1,4 @@
-const API_KEY = '4YW2bmhwYKjothBbv8eU7tsUR5XytpXj';
-const API_SECRET = 'lyLGo5Qt0LGkGo6Y';
-let accessToken = '';
-
-// Function to get access token
-async function getAccessToken() {
-    const response = await fetch('https://test.api.amadeus.com/v1/security/oauth2/token', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: `grant_type=client_credentials&client_id=${API_KEY}&client_secret=${API_SECRET}`
-    });
-    
-    const data = await response.json();
-    return data.access_token;
-}
-
+import { accessToken, getAccessToken } from './auth.js';
 // Function to search airports
 async function searchAirports(keyword) {
     if (!accessToken) {
