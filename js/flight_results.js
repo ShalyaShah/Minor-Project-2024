@@ -113,7 +113,7 @@ function generateSegments(segments) {
         <div class="segment">
             <div class="segment-details">
                 <div class="departure">
-                    <strong>${segment.departure.iataCode}</strong>
+                    <strong>Departure Airport: ${segment.departure.iataCode}</strong>
                     <p>${formatDateTime(segment.departure.at)}</p>
                 </div>
                 <div class="flight-info">
@@ -121,7 +121,7 @@ function generateSegments(segments) {
                     <p>Flight ${segment.carrierCode}${segment.number}</p>
                 </div>
                 <div class="arrival">
-                    <strong>${segment.arrival.iataCode}</strong>
+                    <strong>Arrival Airport: ${segment.arrival.iataCode}</strong>
                     <p>${formatDateTime(segment.arrival.at)}</p>
                 </div>
             </div>
