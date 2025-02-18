@@ -1,0 +1,100 @@
+body {
+    font-family: "poppins",sans-serif;
+    background-color: #C4D8E2;
+}
+
+/* Navbar */
+.navbar {
+    background-color: rgba(255, 255, 255, 0.357);
+    padding: 15px 30px;
+    display: flex;
+    justify-content:space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    border-style: none;
+    margin-top: -10px;
+    margin-left: -10px;  
+    margin-right: -10px;
+}
+
+.navbar .logo {
+    display: flex;
+    align-items: center;
+    font-family: "poppins","sans-serif";
+}
+
+.navbar .logo img {
+    height: 50px;
+    margin-right: 15px;
+    border-radius: 20px;
+}
+
+.navbar .menu {
+    
+    display: flex;
+    gap: 20px;
+    align-items: center;
+
+}
+
+.navbar .menu a {
+    font-family: "poppins","sans-serif"; 
+    text-decoration: none;
+    color: #000000;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.navbar .menu a span {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.navbar .menu a.flights span {
+    background-image: url('images/flight-icon.png');
+}
+
+.navbar .menu a.hotels span {
+    background-image: url('images/hotel.png');
+}
+
+.navbar .menu a.trains span {
+    background-image: url('images/train.png');
+}
+
+.navbar .menu a.cabs span {
+    background-image: url('images/cab.png');
+}
+
+.navbar .menu a.bus span {
+    background-image: url('images/bus.png');
+}
+
+.navbar .menu a.holidays span {
+    background-image: url('images/holiday.png');
+}
+.navbar .menu a.flights:hover {
+    font-size: 18px; /* Enlarge the text on hover */
+    color: red; /* Change text color to red on hover */
+    transition: all 0.3s ease; /* Smooth transition effect */
+}
+
+.navbar .menu a.flights:hover span {
+    transition: all 0.3s ease; /* Ensure the span transitions smoothly if needed */
+}
+
+.navbar .menu .button {
+    background-color: #ffa64d;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+}
