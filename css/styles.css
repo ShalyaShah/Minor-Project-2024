@@ -39,8 +39,8 @@ body {
 
 .navbar .menu {
     display: flex;
-    gap: 20px;
     align-items: center;
+    gap: 20px; 
 }
 
 .navbar .menu a {
@@ -51,6 +51,13 @@ body {
     padding: 8px 15px;
     border-radius: 5px;
     transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+}
+
+.navbar .menu a i {
+    margin-right: 5px; 
 }
 
 .navbar .menu a:hover {
@@ -192,7 +199,7 @@ body {
 .routes-container {
     display: flex;
     justify-content: center;
-    gap: 30px;
+    gap: 50px;
     flex-wrap: wrap;
 }
 
