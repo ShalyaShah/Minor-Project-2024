@@ -41,6 +41,7 @@ body {
     display: flex;
     align-items: center;
     gap: 20px; 
+    margin: auto;
 }
 
 .navbar .menu a {
@@ -53,7 +54,7 @@ body {
     transition: all 0.3s;
     display: flex;
     align-items: center;
-    justify-content: center; 
+    justify-content: center;
 }
 
 .navbar .menu a i {
@@ -100,18 +101,21 @@ body {
 }
 
 .autocomplete-list {
-    border: 1px solid #ddd;
+   /*border: 1px solid #ddd;*/
     max-height: 200px;
     overflow-y: auto;
     position: absolute;
     background: white;
     z-index: 1000;
     width: 100%;
+    margin-top: 50px;
+    
 }
 
 .autocomplete-list div {
     padding: 10px;
     cursor: pointer;
+    
 }
 
 .autocomplete-list div:hover {
@@ -129,17 +133,6 @@ body {
     z-index: 10;
 }
 
-.search-form .trip-types {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    margin-bottom: 20px;
-}
-
-.search-form .trip-types label {
-    font-size: 16px;
-    font-weight: 600;
-}
 
 .search-form .fields {
     display: flex;
@@ -155,6 +148,11 @@ body {
     font-size: 16px;
     width: 100%;
     max-width: 250px;
+}
+.search-form .fields .label{
+    font-size: 16px;
+    font-weight: 600;
+    margin: auto;
 }
 
 .search-button {

@@ -17,11 +17,10 @@
         <div class="menu">
             <a href="flight.html" class="menu-item"><i class="fa-solid fa-plane"></i> Flights</a>
             <a href="#" class="menu-item"><i class="fa-solid fa-hotel"></i> Hotels</a>
+            <a href="index.html" class="menu-item">Login / Signup</a>
+            
         </div>
     
-        <div class="auth-button">
-            <a href="login.html" class="btn">Login / Signup</a>
-        </div>
     </header>
     
 
@@ -33,17 +32,15 @@
     </section>
 
     <div class="search-form">
-        <div class="trip-types">
-            <label><input type="radio" name="trip" value="one-way" checked> One-way</label>
-            <label><input type="radio" name="trip" value="round-trip"> Round-trip</label>
-            <label><input type="radio" name="trip" value="multi-city"> Multi-city</label>
-        </div>
         <form id="flightSearchForm">
         <div class="fields">
+            <label class="label">Depature Airport</label>
             <input type="text" id="departure_airport" placeholder="Enter airport or city" required>
-            <input type="text" id="arrival_airport" placeholder="To: City or Airport" required>
+            <label class="label">Arrival Airport</label>
+            <input type="text" id="arrival_airport" placeholder="Enter airport or city" required>
+            <label class="label">Depature Date</label>
             <input type="date" name="date" id="departure_date" placeholder="Depature Date" required>
-            <input type="date" name="date" id="return_date" placeholder="Return Date">
+            <label class="label">No. of Adults</label>
             <input type="number" id="adults" min="1" value="1" max="30" placeholder="Passengers" required>
         </div>
         <div class="search-button">
