@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Booking - Travel Website</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="navbar">
+        <div class="logo">
+            <img src="Logo GoTrip.jpeg" alt="GoTrip Logo">
+            <span>GoTrip</span>
+        </div>
+        <div class="menu">
+            <a href="flight.html" class="flights"><span></span>Flights</a>
+            <a href="#" class="hotels"><span></span>Hotels</a>
+            <a href="#" class="trains"><span></span>Trains</a>
+            <a href="#" class="cabs"><span></span>Cabs</a>
+            <a href="#" class="bus"><span></span>Bus</a>
+            <a href="#" class="holidays"><span></span>Holidays</a>
+        </div>
+    </header>
+
+    <!-- Search Filters -->
+    <section class="filters">
+        <div class="container search-bar">
+            <form id="filter-form">
+                <div class="form-group">
+                    <label for="location">Where to</label>
+                    <input type="text" id="location" placeholder="Mumbai">
+                </div>
+                <div class="form-group">
+                    <label for="check-in">Check-in</label>
+                    <input type="date" id="check-in" value="2025-01-29">
+                </div>
+                <div class="form-group">
+                    <label for="check-out">Check-out</label>
+                    <input type="date" id="check-out" value="2025-01-30">
+                </div>
+                <div class="form-group">
+                    <label for="guests">Guests & Rooms</label>
+                    <select id="guests">
+                        <option>2 Adults | 1 Room</option>
+                        <option>1 Adult | 1 Room</option>
+                        <option>3 Adults | 2 Rooms</option>
+                    </select>
+                </div>
+                <button type="submit" class="search-btn">SEARCH</button>
+            </form>
+        </div>
+    </section>
+    <!-- Offers Section -->
+    <section class="offers">
+        <h2>Offers for you</h2>
+        <div class="offers-container">
+            <div class="offer-card">
+                <img src="offer1.jpg" alt="Travel Booking Offer">
+                <div class="offer-text">
+                    <h3>Up to 15% OFF* on Travel Bookings!</h3>
+                    <p>Valid till: 31st Jan ‘25</p>
+                </div>
+            </div>
+            <div class="offer-card">
+                <img src="offer2.jpg" alt="International Hotels Offer">
+                <div class="offer-text">
+                    <h3>Price Drop! Up to 30% OFF* on International Hotels!</h3>
+                    <p>Valid till: Limited Period Offers</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="categories">
+        <ul class="category-tabs">
+            <li class="active">Beach Vacations</li>
+            <li>Weekend Getaways</li>
+            <li>Mountains Calling</li>
+            <li>Stay Like Royals</li>
+            <li>Indian Pilgrimages</li>
+            <li>Party Destinations</li>
+        </ul>
+        <div class="destination-cards">
+            <div class="destination">
+                <img src="maldives.jpg" alt="Maldives">
+                <p><strong>Maldives</strong></p>
+            </div>
+            <div class="destination">
+                <img src="krabi.jpg" alt="Krabi">
+                <p><strong>Krabi</strong></p>
+            </div>
+            <div class="destination">
+                <img src="phuket.jpg" alt="Phuket">
+                <p><strong>Phuket</strong></p>
+            </div>
+            <div class="destination">
+                <img src="langkawi.jpg" alt="Langkawi">
+                <p><strong>Langkawi</strong></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular Destinations Section -->
+    <section class="popular-destinations">
+        <h2>Popular Destinations</h2>
+        <p>We have selected some best locations around the world for you.</p>
+    </section>
+    <!-- Testimonials -->
+     <section class="testimonials">
+        <div class="container">
+            <h2>What Our Customers Say</h2>
+            <div class="testimonial">
+                <p>"GoTrip made my vacation planning effortless! Great hotel options and seamless booking."</p>
+                <span>- Rohan Mehta</span>
+            </div>
+            <div class="testimonial">
+                <p>"Best prices and a fantastic user experience. Highly recommended!"</p>
+                <span>- Ananya Sharma</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 GoTrip. All rights reserved.</p>
+            <ul>
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Terms of Service</a></li>
+                <li><a href="#">Contact Us</a></li>
+            </ul>
+        </div>
+    </footer>
+</body>
+</html>
