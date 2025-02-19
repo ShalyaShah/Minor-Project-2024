@@ -99,34 +99,73 @@ function displayFlightResults(flights) {
 
 function generateFlightDetails(flight) {
     const itinerary = flight.itineraries[0];
+    let totalDuration = calculateTotalDuration(itinerary.segments);
     return `
         <div class="flight-details">
             <p><strong>Airline:</strong> ${flight.validatingAirlineCodes.join(', ')}</p>
-            <p><strong>Duration:</strong> ${itinerary.duration}</p>
+            <p><strong>Total Duration:</strong> ${totalDuration}</p>
             ${generateSegments(itinerary.segments)}
         </div>
     `;
 }
 
+function calculateTotalDuration(segments) {
+    let totalMinutes = 0;
+    
+    segments.forEach(segment => {
+        const departure = new Date(segment.departure.at);
+        const arrival = new Date(segment.arrival.at);
+        const durationInMinutes = (arrival - departure) / (1000 * 60);
+        totalMinutes += durationInMinutes;
+    });
+
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = Math.round(totalMinutes % 60);
+
+    let durationStr = '';
+    if (hours > 0) durationStr += `${hours}h `;
+    if (minutes > 0) durationStr += `${minutes}m`;
+
+    return durationStr.trim() || '0m';
+}
+
 function generateSegments(segments) {
-    return segments.map(segment => `
-        <div class="segment">
-            <div class="segment-details">
-                <div class="departure">
-                    <strong>Departure Airport: ${segment.departure.iataCode}</strong>
-                    <p>${formatDateTime(segment.departure.at)}</p>
-                </div>
-                <div class="flight-info">
-                    <i class="fas fa-plane"></i>
-                    <p>Flight ${segment.carrierCode}${segment.number}</p>
-                </div>
-                <div class="arrival">
-                    <strong>Arrival Airport: ${segment.arrival.iataCode}</strong>
-                    <p>${formatDateTime(segment.arrival.at)}</p>
+    return segments.map(segment => {
+        const duration = calculateSegmentDuration(segment);
+        return `
+            <div class="segment">
+                <div class="segment-details">
+                    <div class="departure">
+                        <strong>Departure Airport: ${segment.departure.iataCode}</strong>
+                        <p>${formatDateTime(segment.departure.at)}</p>
+                    </div>
+                    <div class="flight-info">
+                        <i class="fas fa-plane"></i>
+                        <p>Flight ${segment.carrierCode}${segment.number}</p>
+                        <p>Duration: ${duration}</p>
+                    </div>
+                    <div class="arrival">
+                        <strong>Arrival Airport: ${segment.arrival.iataCode}</strong>
+                        <p>${formatDateTime(segment.arrival.at)}</p>
+                    </div>
                 </div>
             </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
+}
+function calculateSegmentDuration(segment) {
+    const departure = new Date(segment.departure.at);
+    const arrival = new Date(segment.arrival.at);
+    const durationInMinutes = (arrival - departure) / (1000 * 60);
+
+    const hours = Math.floor(durationInMinutes / 60);
+    const minutes = Math.round(durationInMinutes % 60);
+
+    let durationStr = '';
+    if (hours > 0) durationStr += `${hours}h `;
+    if (minutes > 0) durationStr += `${minutes}m`;
+
+    return durationStr.trim() || '0m';
 }
 
 function formatDateTime(dateTimeString) {
