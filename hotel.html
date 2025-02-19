@@ -1,137 +1,286 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hotel Booking - Travel Website</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <!-- Header Section -->
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="hotel_styles.css" />
+    <title>GoTrip - Hotel Booking</title>
+  </head>
+  <body>
     <header class="navbar">
         <div class="logo">
-            <img src="Logo GoTrip.jpeg" alt="GoTrip Logo">
+            <img src="images/Logo GoTrip.jpeg" alt="GoTrip Logo">
             <span>GoTrip</span>
         </div>
         <div class="menu">
-            <a href="flight.html" class="flights"><span></span>Flights</a>
-            <a href="#" class="hotels"><span></span>Hotels</a>
-            <a href="#" class="trains"><span></span>Trains</a>
-            <a href="#" class="cabs"><span></span>Cabs</a>
-            <a href="#" class="bus"><span></span>Bus</a>
-            <a href="#" class="holidays"><span></span>Holidays</a>
+            <a href="main.html" class="menu-item"><i class="fa-solid fa-house"></i> Home</a>
+            <a href="flight.html" class="menu-item"><i class="fa-solid fa-hotel"></i> Flight</a>
         </div>
     </header>
+    <section class="hero">
+        <h1>Enjoy Your Dream Vacation</h1>
+        <p>Book Hotels and stay packages at lowest price.</p>
+        <button class="explore-btn">Explore Now</button>
+    </section>
 
-    <!-- Search Filters -->
-    <section class="filters">
-        <div class="container search-bar">
-            <form id="filter-form">
-                <div class="form-group">
-                    <label for="location">Where to</label>
-                    <input type="text" id="location" placeholder="Mumbai">
+    <div class="search-form">
+        <form id="hotelSearchForm">
+        <div class="fields">
+            <label class="label">Location</label>
+            <input type="text" id="hotel_location" placeholder="Enter city or landmarks" required>
+            <label class="label">Check-In</label>
+            <input type="date" name="date" id="check-in" placeholder="Check-in" required>
+            <label class="label">Check-Out</label>
+            <input type="date" name="date" id="check-out" placeholder="Check-out" required>
+        </div>
+        <div class="search-button">
+            <button id="hotel_search_button">Search Hotels</button>
+        </div>
+        </form>
+    </div>
+    <!-- Popular Hotels -->
+    <section class="popular-hotels">
+        <h2>Popular hotels</h2>
+        <div class="hotel-container">
+            <div class="hotel-card">
+                <div class="hotel-front">
+                    <span class="discount-badge">20% OFF</span>
+                    <img src="images/mumbai-delhi.jpg" alt="Hotel">
+                    <div class="hotel-info">
+                        <h3>The Plaza Hotel</h3>
+                        <p>Starting from ₹2,999</p>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="check-in">Check-in</label>
-                    <input type="date" id="check-in" value="2025-01-29">
+                <div class="hotel-back">
+                    <p>🔹 Multiple rooms available <br> 
+                       🔹 Free breakfast <br>
+                       🔹 Flexible cancellation</p>
+                    <button class="book-btn">Book Now</button>
                 </div>
-                <div class="form-group">
-                    <label for="check-out">Check-out</label>
-                    <input type="date" id="check-out" value="2025-01-30">
+            </div>
+    
+            <div class="hotel-card">
+                <div class="hotel-front">
+                    <span class="discount-badge">15% OFF</span>
+                    <img src="images/nyc-la.png" alt="Hotel">
+                    <div class="hotel-info">
+                        <h3>Hotel 2</h3>
+                        <p>Starting from ₹17,000</p>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="guests">Guests & Rooms</label>
-                    <select id="guests">
-                        <option>2 Adults | 1 Room</option>
-                        <option>1 Adult | 1 Room</option>
-                        <option>3 Adults | 2 Rooms</option>
-                    </select>
+                <div class="hotel-back">
+                    <p>Premium Rooms <br>
+                       Swimming Pool<br>
+                        Complimentary meal</p>
+                    <button class="book-btn">Book Now</button>
                 </div>
-                <button type="submit" class="search-btn">SEARCH</button>
-            </form>
+            </div>
+    
+            <div class="hotel-card">
+                <div class="hotel-front">
+                    <span class="discount-badge">30% OFF</span>
+                    <img src="images/london-paris.jpg" alt="London to Paris">
+                    <div class="hotel-info">
+                        <h3>Hotel 3</h3>
+                        <p>Starting from ₹5,300</p>
+                    </div>
+                </div>
+                <div class="hotel-back">
+                    <p>Swimming Pool <br>
+                       Activities <br>
+                       Great discounts</p>
+                    <button class="book-btn">Book Now</button>
+                </div>
+            </div>
+    
         </div>
     </section>
-    <!-- Offers Section -->
-    <section class="offers">
-        <h2>Offers for you</h2>
+    
+    
+    <!-- Flight Offers and Promotions -->
+    <section class="exclusive-offers">
+        <h2>🏨 Exclusive Hotel Offers</h2>
         <div class="offers-container">
             <div class="offer-card">
-                <img src="offer1.jpg" alt="Travel Booking Offer">
-                <div class="offer-text">
-                    <h3>Up to 15% OFF* on Travel Bookings!</h3>
-                    <p>Valid till: 31st Jan ‘25</p>
-                </div>
+                <img src="images/discount1.jpg" alt="Early Bird Discount">
+                <h3>Early Bird Discount</h3>
+                <p>Book your tickets 3 months in advance and save up to 30%.</p>
+                <button class="view-offers-btn">View Offers</button>
             </div>
+            
             <div class="offer-card">
-                <img src="offer2.jpg" alt="International Hotels Offer">
-                <div class="offer-text">
-                    <h3>Price Drop! Up to 30% OFF* on International Hotels!</h3>
-                    <p>Valid till: Limited Period Offers</p>
+                <img src="images/discount2.png" alt="Weekend Getaway">
+                <h3>Weekend Getaway</h3>
+                <p>Flat ₹1,500 off on domestic round-trip flights every weekend.</p>
+                <button class="view-offers-btn">View Offers</button>
+            </div>
+
+            <div class="offer-card">
+                <img src="images/discount3.png" alt="International Sale">
+                <h3>International Sale</h3>
+                <p>Save up to ₹10,000 on international flights to top destinations.</p>
+                <button class="view-offers-btn">View Offers</button>
+            </div>
+        </div>
+    </section>
+  
+    <section class="exclusive-offers">
+        <h2>🔥 Exclusive Offers</h2>
+        <div class="offers-container">
+            
+            <div class="offer-card">
+                <div class="icon">
+                    <i class="fas fa-plane-departure"></i>
+                </div>
+                <h3>50% Off to Bali</h3>
+                <p>Save 50% on flights to Bali. Limited time offer!</p>
+                <button class="offer-btn">Grab Deal</button>
+            </div>
+            
+            <div class="offer-card">
+                <div class="icon">
+                    <i class="fas fa-hotel"></i>
+                </div>
+                <h3>Save on Hotels</h3>
+                <p>Get 30% off on hotel bookings worldwide.</p>
+                <button class="offer-btn">Book Now</button>
+            </div>
+
+            <div class="offer-card">
+                <div class="icon">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+                <h3>Student Discounts</h3>
+                <p>Special discounts for students on domestic flights.</p>
+                <button class="offer-btn">Check Offers</button>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Travel Inspiration -->
+    <section class="travel-inspiration">
+        <h2>🌍 Travel Inspiration</h2>
+        <div class="inspiration-container">
+            
+            <div class="inspiration-card">
+                <img src="images/beach.jpg" alt="Beach Destinations">
+                <h3>Top Beach Destinations</h3>
+                <p>Escape to the sunniest shores across the globe.</p>
+                <button class="explore-btn">Explore Now</button>
+            </div>
+            
+            <div class="inspiration-card">
+                <img src="images/mountains.jpg" alt="Mountain Getaways">
+                <h3>Mountain Getaways</h3>
+                <p>Find peace and adventure in the world's most stunning peaks.</p>
+                <button class="explore-btn">Discover More</button>
+            </div>
+
+            <div class="inspiration-card">
+                <img src="images/cities.jpg" alt="City Breaks">
+                <h3>City Breaks</h3>
+                <p>Discover vibrant cities and their hidden treasures.</p>
+                <button class="explore-btn">See Destinations</button>
+            </div>
+
+        </div>
+    </section>
+
+    
+<!-- Customer Reviews -->
+<section class="testimonials">
+    <h2>What Our Customers Say</h2>
+    <div class="testimonial-container">
+        <div class="testimonial-card">
+            <span class="quote-icon">❝</span>
+            <p>"Booking with GoTrip was a breeze! Got amazing discounts on my tickets."</p>
+            <p class="customer-name">- Akshat D.</p>
+        </div>
+        <div class="testimonial-card">
+            <span class="quote-icon">❝</span>
+            <p>"The best platform for last-minute travel plans. Highly recommended!"</p>
+            <p class="customer-name">- Meet S.</p>
+        </div>
+        <div class="testimonial-card">
+            <span class="quote-icon">❝</span>
+            <p>"Excellent customer service and unbeatable offers. Will use it again."</p>
+            <p class="customer-name">- Shalya S.</p>
+        </div>
+    </div>
+</section>
+
+    <!-- Newsletter Signup -->
+<section class="newsletter">
+    <h2>Stay Updated with the Latest Deals</h2>
+    <p>Subscribe to receive exclusive offers and travel discounts directly to your inbox.</p>
+    <form class="newsletter-form">
+        <input type="email" placeholder="Enter your email address" required>
+        <button type="submit" class="btn">Subscribe</button>
+    </form>
+</section>
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section about">
+                <h3><a href="about.html">About GoTrip</a></h3>
+                <p>Your one-stop destination for flights, hotels, and travel experiences. Explore the world with ease!</p>
+            </div>
+    
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Destinations</a></li>
+                    <li><a href="#">Hotels</a></li>
+                    <li><a href="#">Flights</a></li>
+                    <li><a href="#">Holiday Packages</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">FAQs</a></li>
+                </ul>
+            </div>
+    
+            <div class="footer-section">
+                <h3>Customer Support</h3>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Cancellation & Refund Policy</a></li>
+                    <li><a href="#">Terms & Conditions</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                </ul>
+            </div>
+    
+            <div class="footer-section">
+                <h3>Payment Methods</h3>
+                <div class="payment-icons">
+                    <img src="images/visa.png" alt="Visa">
+                    <img src="images/mastercard.png" alt="Mastercard">
+                    <img src="images/paypal.png" alt="PayPal">
+                    <img src="images/upi.png" alt="UPI">
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- Categories Section -->
-    <section class="categories">
-        <ul class="category-tabs">
-            <li class="active">Beach Vacations</li>
-            <li>Weekend Getaways</li>
-            <li>Mountains Calling</li>
-            <li>Stay Like Royals</li>
-            <li>Indian Pilgrimages</li>
-            <li>Party Destinations</li>
-        </ul>
-        <div class="destination-cards">
-            <div class="destination">
-                <img src="maldives.jpg" alt="Maldives">
-                <p><strong>Maldives</strong></p>
+    
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <div class="social-icons">
+                    <a href="#"><img src="images/facebook.png" alt="Facebook"></a>
+                    <a href="#"><img src="images/instagram.png" alt="Instagram"></a>
+                    <a href="#"><img src="images/twitterr.png" alt="Twitter"></a>
+                    <a href="#"><img src="images/linkedin.png" alt="LinkedIn"></a>
+                </div>
             </div>
-            <div class="destination">
-                <img src="krabi.jpg" alt="Krabi">
-                <p><strong>Krabi</strong></p>
-            </div>
-            <div class="destination">
-                <img src="phuket.jpg" alt="Phuket">
-                <p><strong>Phuket</strong></p>
-            </div>
-            <div class="destination">
-                <img src="langkawi.jpg" alt="Langkawi">
-                <p><strong>Langkawi</strong></p>
+    
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p>📧 Email: <a href="mailto:support@gotrip.com">support@gotrip.com</a></p>
+                <p>📞 Phone: +91-9145785230</p>
+                <p>📍 Address: Noida, New Delhi</p>
             </div>
         </div>
-    </section>
-
-    <!-- Popular Destinations Section -->
-    <section class="popular-destinations">
-        <h2>Popular Destinations</h2>
-        <p>We have selected some best locations around the world for you.</p>
-    </section>
-    <!-- Testimonials -->
-     <section class="testimonials">
-        <div class="container">
-            <h2>What Our Customers Say</h2>
-            <div class="testimonial">
-                <p>"GoTrip made my vacation planning effortless! Great hotel options and seamless booking."</p>
-                <span>- Rohan Mehta</span>
-            </div>
-            <div class="testimonial">
-                <p>"Best prices and a fantastic user experience. Highly recommended!"</p>
-                <span>- Ananya Sharma</span>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <p>&copy; 2025 GoTrip. All rights reserved.</p>
-            <ul>
-                <li><a href="#">Privacy Policy</a></li>
-                <li><a href="#">Terms of Service</a></li>
-                <li><a href="#">Contact Us</a></li>
-            </ul>
+    
+        <div class="footer-bottom">
+            <p>© 2025 GoTrip. All Rights Reserved.</p>
         </div>
     </footer>
-</body>
+  </body>
 </html>
