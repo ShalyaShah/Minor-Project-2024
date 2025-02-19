@@ -38,10 +38,6 @@ document.getElementById('flight_search_button').addEventListener('click', async 
           throw new Error('Please select a departure date');
       }
 
-      if (!adults || adults < 1) {
-          throw new Error('Please enter a valid number of adults');
-      }
-
       // Store search parameters in sessionStorage
       const searchParams = {
           originCode,
