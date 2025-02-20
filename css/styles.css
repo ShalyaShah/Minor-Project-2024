@@ -753,12 +753,12 @@ footer {
     font-size: 14px;
 }
 .footer-section a {
-    color: white; /* Change text color */
-    text-decoration: none; /* Remove underline */
-    font-weight: bold; /* Make it bold if needed */
+    color: white; 
+    text-decoration: none; 
+    font-weight: bold; 
 }
 
 .footer-section a:hover {
-    text-decoration: underline; /* Add underline only on hover */
-    color: orange; /* Change color on hover */
+    text-decoration: underline; 
+    color: orange; 
 }
