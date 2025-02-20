@@ -1,5 +1,7 @@
 // flight_results.js
 import { accessToken, getAccessToken } from './auth.js';
+const USD_TO_INR_RATE = 83.0;
+
 document.addEventListener('DOMContentLoaded', async function() {
     try {
         // Get search parameters from sessionStorage
@@ -23,14 +25,33 @@ document.addEventListener('DOMContentLoaded', async function() {
         // Search flights
         const flightData = await searchFlights(accessToken, originCode, destinationCode, departureDate, adults);
 
+        // Get exchange rate
+        const exchangeRate = await getExchangeRate();
+
         // Display results
-        displayFlightResults(flightData.data);
+        displayFlightResults(flightData.data, exchangeRate);
 
     } catch (error) {
         console.error('Error:', error);
         displayError(error);
     }
 });
+
+async function getExchangeRate() {
+    const url = "https://data.fixer.io/api/latest?access_key=f9534b49bc07e7c6edc5840c7ed38484&base=EUR&symbols=INR";
+    const options = {
+        method: "GET",
+    };
+
+    try {
+        const response = await fetch(url, options);
+        const result = await response.json();
+        return result.rates.INR;
+    } catch (error) {
+        console.error('Error fetching exchange rate:', error);
+        throw error;
+    }
+}
 
 function displaySearchParams(params) {
     const searchParamsDiv = document.getElementById('searchParams');
@@ -74,7 +95,44 @@ async function searchFlights(accessToken, originCode, destinationCode, departure
     return await response.json();
 }
 
-function displayFlightResults(flights) {
+async function airline_code_lookup(accessToken, airlineCodes) {
+    const response = await fetch(`https://test.api.amadeus.com/v1/reference-data/airlines?airlineCodes=${airlineCodes.join(',')}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        }
+    });
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const airlineMap = {};
+    data.data.forEach(airline => {
+        airlineMap[airline.iataCode] = airline.businessName;
+    });
+    return airlineMap;
+}
+
+function convertToINR(amount, exchangeRate) {
+    const priceInINR = parseFloat(amount) * exchangeRate;
+    return Math.round(priceInINR).toLocaleString('en-IN');
+}
+
+function generateFlightDetails(flight, airlineMap) {
+    const itinerary = flight.itineraries[0];
+    let totalDuration = calculateTotalDuration(itinerary.segments);
+    const airlineNames = flight.validatingAirlineCodes.map(code => airlineMap[code]).join(', ');
+    return `
+        <div class="flight-details">
+            <p><strong>Airline:</strong> ${airlineNames}</p>
+            <p><strong>Total Duration:</strong> ${totalDuration}</p>
+            ${generateSegments(itinerary.segments)}
+        </div>
+    `;
+}
+
+async function displayFlightResults(flights, exchangeRate) {
     const outboundFlightsDiv = document.getElementById('outboundFlights');
     if (!outboundFlightsDiv) return;
 
@@ -83,30 +141,22 @@ function displayFlightResults(flights) {
         return;
     }
 
+    const accessToken = await getAccessToken();
+    const airlineCodes = flights.map(flight => flight.validatingAirlineCodes).flat();
+    const airlineMap = await airline_code_lookup(accessToken, airlineCodes);
+
     outboundFlightsDiv.innerHTML = flights.map((flight, index) => `
         <div class="flight-card">
             <div class="flight-header">
                 <h3>Flight Option ${index + 1}</h3>
-                <span class="price">${flight.price.total} ${flight.price.currency}</span>
+                <span class="price">₹${convertToINR(flight.price.total, exchangeRate)}</span>
             </div>
-            ${generateFlightDetails(flight)}
+            ${generateFlightDetails(flight, airlineMap)}
             <button onclick="selectFlight('${flight.id}')" class="select-button">
                 Select Flight
             </button>
         </div>
     `).join('');
-}
-
-function generateFlightDetails(flight) {
-    const itinerary = flight.itineraries[0];
-    let totalDuration = calculateTotalDuration(itinerary.segments);
-    return `
-        <div class="flight-details">
-            <p><strong>Airline:</strong> ${flight.validatingAirlineCodes.join(', ')}</p>
-            <p><strong>Total Duration:</strong> ${totalDuration}</p>
-            ${generateSegments(itinerary.segments)}
-        </div>
-    `;
 }
 
 function calculateTotalDuration(segments) {
