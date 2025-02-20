@@ -25,29 +25,49 @@
     
 
     <section class="hero">
-        <h1>Discover Your Next Adventure</h1>
-        <p>Book flights, hotels, and more with the best deals!</p>
-        <button class="explore-btn">Explore Now</button>
+        <div class="header__image__container">
+            <div class="header__content">
+              <h1>Enjoy Your Dream Vacation</h1>
+              <p>Book Hotels, Flights and stay packages at lowest price.</p>
+            </div>
+            <div class="booking__container">
+              <form>
+                <div class="form__group">
+                  <div class="input__group">
+                    <input type="text" />
+                    <label>Location</label>
+                  </div>
+                  <p>Where are you going?</p>
+                </div>
+                <div class="form__group">
+                  <div class="input__group">
+                    <input type="text" />
+                    <label>Check In</label>
+                  </div>
+                  <p>Add date</p>
+                </div>
+                <div class="form__group">
+                  <div class="input__group">
+                    <input type="text" />
+                    <label>Check Out</label>
+                  </div>
+                  <p>Add date</p>
+                </div>
+                <div class="form__group">
+                  <div class="input__group">
+                    <input type="text" />
+                    <label>Guests</label>
+                  </div>
+                  <p>Add guests</p>
+                </div>
+              </form>
+              <button class="btn"><i class="ri-search-line"></i></button>
+            </div>
+          </div>
         
     </section>
 
-    <div class="search-form">
-        <form id="flightSearchForm">
-        <div class="fields">
-            <label class="label">Depature Airport</label>
-            <input type="text" id="departure_airport" placeholder="Enter airport or city" required>
-            <label class="label">Arrival Airport</label>
-            <input type="text" id="arrival_airport" placeholder="Enter airport or city" required>
-            <label class="label">Depature Date</label>
-            <input type="date" name="date" id="departure_date" placeholder="Depature Date" required>
-            <label class="label">No. of Adults</label>
-            <input type="number" id="adults" min="1" value="1" max="30" placeholder="Passengers" required>
-        </div>
-        <div class="search-button">
-            <button id="flight_search_button">Search Flights</button>
-        </div>
-        </form>
-    </div>
+   
 
 
 
