@@ -1,6 +1,7 @@
 // flight_results.js
 import { accessToken, getAccessToken } from './auth.js';
-const USD_TO_INR_RATE = 83.0;
+
+
 
 document.addEventListener('DOMContentLoaded', async function() {
     try {
@@ -25,11 +26,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         // Search flights
         const flightData = await searchFlights(accessToken, originCode, destinationCode, departureDate, adults);
 
-        // Get exchange rate
-        const exchangeRate = await getExchangeRate();
-
         // Display results
-        displayFlightResults(flightData.data, exchangeRate);
+        displayFlightResults(flightData.data);
 
     } catch (error) {
         console.error('Error:', error);
@@ -37,21 +35,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 });
 
-async function getExchangeRate() {
-    const url = "https://data.fixer.io/api/latest?access_key=f9534b49bc07e7c6edc5840c7ed38484&base=EUR&symbols=INR";
-    const options = {
-        method: "GET",
-    };
-
-    try {
-        const response = await fetch(url, options);
-        const result = await response.json();
-        return result.rates.INR;
-    } catch (error) {
-        console.error('Error fetching exchange rate:', error);
-        throw error;
-    }
-}
 
 function displaySearchParams(params) {
     const searchParamsDiv = document.getElementById('searchParams');
@@ -75,13 +58,16 @@ function showLoading() {
             <div class="loading">
                 <p>Searching for flights...</p>
                 <div class="spinner"></div>
+                <video autoplay loopplaysinline id="myVideo">
+                    <source src="/images/plane.mp4" type="video/mp4">
+                </video>
             </div>
         `;
     }
 }
 
 async function searchFlights(accessToken, originCode, destinationCode, departureDate, adults) {
-    const response = await fetch(`https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=${originCode}&destinationLocationCode=${destinationCode}&departureDate=${departureDate}&adults=${adults}`, {
+    const response = await fetch(`https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=${originCode}&destinationLocationCode=${destinationCode}&departureDate=${departureDate}&adults=${adults}&currencyCode=INR`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${accessToken}`
@@ -114,10 +100,6 @@ async function airline_code_lookup(accessToken, airlineCodes) {
     return airlineMap;
 }
 
-function convertToINR(amount, exchangeRate) {
-    const priceInINR = parseFloat(amount) * exchangeRate;
-    return Math.round(priceInINR).toLocaleString('en-IN');
-}
 
 function generateFlightDetails(flight, airlineMap) {
     const itinerary = flight.itineraries[0];
@@ -132,7 +114,7 @@ function generateFlightDetails(flight, airlineMap) {
     `;
 }
 
-async function displayFlightResults(flights, exchangeRate) {
+async function displayFlightResults(flights) {
     const outboundFlightsDiv = document.getElementById('outboundFlights');
     if (!outboundFlightsDiv) return;
 
@@ -149,7 +131,7 @@ async function displayFlightResults(flights, exchangeRate) {
         <div class="flight-card">
             <div class="flight-header">
                 <h3>Flight Option ${index + 1}</h3>
-                <span class="price">₹${convertToINR(flight.price.total, exchangeRate)}</span>
+                <span class="price">${flight.price.total} ${flight.price.currency}</span>
             </div>
             ${generateFlightDetails(flight, airlineMap)}
             <button onclick="selectFlight('${flight.id}')" class="select-button">

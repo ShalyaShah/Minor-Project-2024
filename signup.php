@@ -12,7 +12,7 @@ if($conn){
        echo '<script>
             function datainserted(){
                 alert("Data Inserted Successfully");
-                window.location.href="index.html";   
+                window.location.href="login.html";   
             }
             datainserted();
             
