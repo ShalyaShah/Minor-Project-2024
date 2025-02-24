@@ -23,11 +23,11 @@ session_start();
             <?php
     if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         // Show login/signup link for non-logged in users
-        echo '<a href="login.html" class="menu-item">Login / Signup</a>';
+        echo '<a href="login.html" class="menu-item"><i class="fa-solid fa-user"></i>Login / Signup</a>';
     } else {
         // Show logout link for logged in users
         echo '<a href="logout.php" class="menu-item">Logout</a>';
-        echo '<span class="menu-item">Welcome, User!</span>';
+        echo '<span class="menu-item">Welcome, User!<i class="fa-solid fa-user"></i></span>';
     }
     ?>
             
