@@ -30,34 +30,36 @@
           <form>
             <div class="form__group">
               <div class="input__group">
-                <input type="text" />
-                <label>Location</label>
+                <input type="text" id="city" placeholder="Location" required/>
               </div>
               <p>Where are you going?</p>
             </div>
             <div class="form__group">
               <div class="input__group">
-                <input type="text" />
-                <label>Check In</label>
+                <input type="date" id="check_in_date" required />
               </div>
-              <p>Add date</p>
+              <p>Check In Date</p>
             </div>
             <div class="form__group">
               <div class="input__group">
-                <input type="text" />
-                <label>Check Out</label>
+                <input type="date" id="check_out_date" required/>
               </div>
-              <p>Add date</p>
+              <p>Check Out Date</p>
             </div>
             <div class="form__group">
               <div class="input__group">
-                <input type="text" />
-                <label>Guests</label>
+                <input type="number" id="guests" placeholder="Guests" min="1" required/>
               </div>
               <p>Add guests</p>
             </div>
+            <div class="form__group">
+              <div class="input__group">
+                <input type="number" id="rooms" placeholder="Rooms" min="1" required/>
+              </div>
+              <p>Add Rooms</p>
+            </div>
           </form>
-          <button class="btn"><i class="ri-search-line"></i></button>
+          <button id="hotel_search_button" class="btn"><i class="ri-search-line"></i></button>
         </div>
       </div>
     
@@ -233,6 +235,6 @@
             <p>© 2025 GoTrip. All Rights Reserved.</p>
         </div>
     </footer>
-
+    ><script src="./js/hotel_offers.js"></script>
   </body>
 </html>
