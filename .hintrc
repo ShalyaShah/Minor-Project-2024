@@ -12,6 +12,18 @@
         "html-has-lang": "off"
       }
     ],
-    "button-type": "off"
+    "button-type": "off",
+    "axe/forms": [
+      "default",
+      {
+        "label": "off"
+      }
+    ],
+    "axe/name-role-value": [
+      "default",
+      {
+        "button-name": "off"
+      }
+    ]
   }
 }

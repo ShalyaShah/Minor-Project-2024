@@ -70,7 +70,7 @@ body {
 .hero {
     text-align: center;
     padding: 150px 20px 100px;
-    background: url('../images/yo.jpg') no-repeat center center;
+    background: url('../images/yoo.jpg') no-repeat center center;
     color: white;
     font-size: 20px;
 }
@@ -736,8 +736,10 @@ footer {
 
 .payment-icons img,
 .social-icons img {
-    width: 40px;
-    margin: 5px;
+    width: 50px; /* Set a fixed width */
+    height: 30px; /* Set a fixed height */
+    object-fit: contain; /* Maintain aspect ratio */
+    margin: 5px; /* Add spacing between logos */
 }
 
 .footer-bottom {
@@ -749,4 +751,14 @@ footer {
 .footer-bottom p {
     margin: 0;
     font-size: 14px;
+}
+.footer-section a {
+    color: white; 
+    text-decoration: none; 
+    font-weight: bold; 
+}
+
+.footer-section a:hover {
+    text-decoration: underline; 
+    color: orange; 
 }
