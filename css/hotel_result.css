@@ -1,176 +1,91 @@
 /* General Styles */
-body {
-    font-family: Arial, sans-serif;
+* {
     margin: 0;
     padding: 0;
-    background-color: #f9f9f9;
-    color: #333;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    background-color: #EBECF0;
+    color: #003A6C;
+    line-height: 1.6;
 }
 
 header {
-    background-color: #007bff;
-    color: white;
-    padding: 1rem;
+    background: #007AA5;
+    color: #fff;
     text-align: center;
-}
-
-header h1 {
-    margin: 0;
-    font-size: 1.8rem;
+    padding: 20px 0;
+    font-size: 24px;
 }
 
 main {
-    padding: 1rem;
+    width: 90%;
     max-width: 1200px;
-    margin: 0 auto;
+    margin: 20px auto;
+}
+
+.search-params {
+    background: #C4D8E2;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.hotel-results {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.hotel-card {
+    background: #EBECF0;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+}
+
+.hotel-card:hover {
+    transform: scale(1.03);
+}
+
+.hotel-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-bottom: 3px solid #007AA5;
+}
+
+.hotel-card .hotel-info {
+    padding: 15px;
+    background: #C4D8E2;
+}
+
+.hotel-card h3 {
+    margin-bottom: 10px;
+    font-size: 20px;
+    color: #003A6C;
+}
+
+.hotel-card p {
+    font-size: 16px;
+    color: #708090;
+}
+
+.hotel-card .price {
+    font-size: 18px;
+    font-weight: bold;
+    color: #007AA5;
+    margin-top: 10px;
 }
 
 footer {
     text-align: center;
-    padding: 1rem;
-    background-color: #007bff;
-    color: white;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-}
-
-/* Search Parameters Section */
-.search-params {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.search-params h3 {
-    margin-top: 0;
-    color: #007bff;
-}
-
-.search-params p {
-    margin: 0.5rem 0;
-}
-
-/* Hotel Results Section */
-.hotel-results {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1rem;
-}
-
-/* Hotel Card */
-.hotel-card {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.hotel-header {
-    background-color: #007bff;
-    color: white;
-    padding: 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.hotel-header h3 {
-    margin: 0;
-    font-size: 1.2rem;
-}
-
-.hotel-header .hotel-rating {
-    font-size: 1rem;
-}
-
-.hotel-details {
-    padding: 1rem;
-    border-top: 1px solid #ddd;
-}
-
-.hotel-details p {
-    margin: 0.5rem 0;
-}
-
-.amenities {
-    margin-top: 1rem;
-}
-
-.amenities p {
-    margin: 0.5rem 0;
-    font-size: 0.9rem;
-    color: #555;
-}
-
-/* Offer Details */
-.offer-details {
-    padding: 1rem;
-    border-top: 1px solid #ddd;
-    background-color: #f8f8f8;
-}
-
-.offer-details p {
-    margin: 0.5rem 0;
-}
-
-.offer-details .price {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #007bff;
-}
-
-/* Select Button */
-.select-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 0.8rem;
-    font-size: 1rem;
-    cursor: pointer;
-    text-align: center;
-    width: 100%;
-    border-top: 1px solid #ddd;
-    transition: background-color 0.3s;
-}
-
-.select-button:hover {
-    background-color: #0056b3;
-}
-
-/* Loading State */
-.loading {
-    text-align: center;
-    padding: 2rem;
-}
-
-.loading p {
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-}
-
-.spinner {
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #007bff;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
-    margin: 0 auto;
-}
-
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
+    padding: 15px;
+    background: #003A6C;
+    color: #fff;
+    margin-top: 20px;
 }
