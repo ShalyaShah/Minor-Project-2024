@@ -1,5 +1,7 @@
+// Import authentication module
 import { getAccessToken } from './auth.js';
 
+// Main event listener when DOM is loaded
 document.addEventListener('DOMContentLoaded', async function() {
     try {
         // Get search parameters from sessionStorage
@@ -17,7 +19,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         // Show loading state
         showLoading();
 
-        // Get access token - fixed variable shadowing issue
+        // Get access token
         const token = await getAccessToken();
 
         // Search flights
@@ -32,6 +34,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 });
 
+// Function to display search parameters
 function displaySearchParams(params) {
     const searchParamsDiv = document.getElementById('searchParams');
     if (searchParamsDiv) {
@@ -47,6 +50,7 @@ function displaySearchParams(params) {
     }
 }
 
+// Function to show loading state
 function showLoading() {
     const outboundFlightsDiv = document.getElementById('outboundFlights');
     if (outboundFlightsDiv) {
@@ -54,14 +58,12 @@ function showLoading() {
         <div class="loading">
             <p>Searching for flights...</p>
             <div class="spinner"></div>
-            <video autoplay loop playsinline id="myVideo">
-                <source src="/images/plane.mp4" type="video/mp4">
-            </video>
         </div>
         `;
     }
 }
 
+// Function to search flights
 async function searchFlights(accessToken, originCode, destinationCode, departureDate, adults) {
     try {
         const response = await fetch(`https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=${originCode}&destinationLocationCode=${destinationCode}&departureDate=${departureDate}&adults=${adults}&currencyCode=INR`, {
@@ -82,6 +84,7 @@ async function searchFlights(accessToken, originCode, destinationCode, departure
     }
 }
 
+// Function to look up airline codes
 async function airline_code_lookup(accessToken, airlineCodes) {
     try {
         if (!airlineCodes || airlineCodes.length === 0) {
@@ -111,19 +114,7 @@ async function airline_code_lookup(accessToken, airlineCodes) {
     }
 }
 
-function generateFlightDetails(flight, airlineMap) {
-    const itinerary = flight.itineraries[0];
-    let totalDuration = calculateTotalDuration(itinerary.segments);
-    const airlineNames = flight.validatingAirlineCodes.map(code => airlineMap[code] || code).join(', ');
-    return `
-    <div class="flight-details">
-        <p><strong>Airline:</strong> ${airlineNames}</p>
-        <p><strong>Total Duration:</strong> ${totalDuration}</p>
-        ${generateSegments(itinerary.segments)}
-    </div>
-    `;
-}
-
+// Function to display flight results
 async function displayFlightResults(flights) {
     const outboundFlightsDiv = document.getElementById('outboundFlights');
     if (!outboundFlightsDiv) return;
@@ -159,6 +150,21 @@ async function displayFlightResults(flights) {
     }
 }
 
+// Function to generate flight details
+function generateFlightDetails(flight, airlineMap) {
+    const itinerary = flight.itineraries[0];
+    let totalDuration = calculateTotalDuration(itinerary.segments);
+    const airlineNames = flight.validatingAirlineCodes.map(code => airlineMap[code] || code).join(', ');
+    return `
+    <div class="flight-details">
+        <p><strong>Airline:</strong> ${airlineNames}</p>
+        <p><strong>Total Duration:</strong> ${totalDuration}</p>
+        ${generateSegments(itinerary.segments)}
+    </div>
+    `;
+}
+
+// Function to calculate total duration
 function calculateTotalDuration(segments) {
     let totalMinutes = 0;
     
@@ -179,6 +185,7 @@ function calculateTotalDuration(segments) {
     return durationStr.trim() || '0m';
 }
 
+// Function to generate segments
 function generateSegments(segments) {
     return segments.map(segment => {
         const duration = calculateSegmentDuration(segment);
@@ -204,6 +211,7 @@ function generateSegments(segments) {
     }).join('');
 }
 
+// Function to calculate segment duration
 function calculateSegmentDuration(segment) {
     const departure = new Date(segment.departure.at);
     const arrival = new Date(segment.arrival.at);
@@ -219,6 +227,7 @@ function calculateSegmentDuration(segment) {
     return durationStr.trim() || '0m';
 }
 
+// Function to format date and time
 function formatDateTime(dateTimeString) {
     return new Date(dateTimeString).toLocaleString('en-US', {
         weekday: 'short',
@@ -229,6 +238,7 @@ function formatDateTime(dateTimeString) {
     });
 }
 
+// Function to display error
 function displayError(error) {
     const outboundFlightsDiv = document.getElementById('outboundFlights');
     if (outboundFlightsDiv) {
@@ -241,25 +251,18 @@ function displayError(error) {
     }
 }
 
-// New booking functions
+// Function to select flight
 function selectFlight(flightIndex) {
-    // Get the selected flight from sessionStorage
     const flights = JSON.parse(sessionStorage.getItem('flightResults'));
     const selectedFlight = flights[flightIndex];
-    
-    // Store the selected flight in sessionStorage
     sessionStorage.setItem('selectedFlight', JSON.stringify(selectedFlight));
-    
-    // Get search parameters
     const searchParams = JSON.parse(sessionStorage.getItem('flightSearchParams'));
-    
-    // Show passenger information form
     showPassengerForm(searchParams.adults);
 }
 
+// Function to show passenger form
 function showPassengerForm(numPassengers) {
     const mainContent = document.getElementById('outboundFlights');
-    
     let passengerFormHTML = `
     <div class="booking-section">
         <h3>Passenger Information</h3>
@@ -320,10 +323,9 @@ function showPassengerForm(numPassengers) {
     mainContent.innerHTML = passengerFormHTML;
 }
 
+// Function to submit passenger information
 function submitPassengerInfo() {
     const form = document.getElementById('passengerForm');
-    
-    // Enhanced form validation
     const inputs = form.querySelectorAll('input[required], select[required]');
     let isValid = true;
     
@@ -341,7 +343,6 @@ function submitPassengerInfo() {
         return;
     }
     
-    // Collect passenger data
     const searchParams = JSON.parse(sessionStorage.getItem('flightSearchParams'));
     const numPassengers = searchParams.adults;
     const passengers = [];
@@ -362,16 +363,15 @@ function submitPassengerInfo() {
         phone: document.getElementById('phone').value
     };
     
-    // Store passenger information in sessionStorage
     sessionStorage.setItem('passengerInfo', JSON.stringify({
         passengers: passengers,
         contactInfo: contactInfo
     }));
     
-    // Show payment form
     showPaymentForm();
 }
 
+// Function to show payment form
 function showPaymentForm() {
     const mainContent = document.getElementById('outboundFlights');
     const selectedFlight = JSON.parse(sessionStorage.getItem('selectedFlight'));
@@ -410,183 +410,118 @@ function showPaymentForm() {
         </form>
     </div>
     `;
-    
+
     mainContent.innerHTML = paymentFormHTML;
 }
 
-function processPayment() {
-    const form = document.getElementById('paymentForm');
-    
-    // Enhanced form validation// _c__Users_shaly_Documents_GitHub_Minor-Project-2024_js_flight_results.js
-
-function processPayment() {
-    const form = document.getElementById('paymentForm');
-    
-    // Enhanced form validation
-    // Validate form inputs
-    const cardNumber = document.getElementById('cardNumber').value.trim();
-    const cardName = document.getElementById('cardName').value.trim();
-    const expiryDate = document.getElementById('expiryDate').value.trim();
-    const cvv = document.getElementById('cvv').value.trim();
-
-    // Basic validation
-    if (!cardNumber || !cardName || !expiryDate || !cvv) {
-        alert('Please fill in all payment details');
-        return;
-    }
-
-    // Retrieve data from sessionStorage
-    const selectedFlight = JSON.parse(sessionStorage.getItem('selectedFlight'));
-    const passengerData = JSON.parse(sessionStorage.getItem('passengerInfo'));
-
-    if (!selectedFlight || !passengerData) {
-        alert('Error: Missing booking information. Please start over.');
-        return;
-    }
-
-    // Save booking to database
-    const bookingData = {
-        flightDetails: selectedFlight,
-        passengers: passengerData,
-        paymentInfo: {
-            cardNumber: cardNumber.slice(-4), // Only store last 4 digits for security
-            cardName: cardName
-        },
-        bookingDate: new Date().toISOString(),
-        status: 'CONFIRMED'
-    };
-
-    // Here you would typically make an API call to save the booking
-    // For example:
-    // fetch('/api/bookings', {
-    //    method: 'POST',
-    //    headers: {
-    //    'Content-Type': 'application/json',
-    //    },
-    //    body: JSON.stringify(bookingData)
-    // })
-
-    // For now, we'll simulate a successful booking
-    console.log('Booking data to be saved:', bookingData);
-    const inputs = form.querySelectorAll('input[required], textarea[required]');
-    let isValid = true;
-    
-    inputs.forEach(input => {
-        if (!input.value.trim()) {
-            input.classList.add('error');
-            isValid = false;
-        } else {
-            input.classList.remove('error');
-        }
-    });
-    
-    if (!isValid) {
-        alert('Please fill in all required fields correctly.');
-        return;
-    }
-    
-    // Show loading state
+// Function to process payment
+async function processPayment() {
     const mainContent = document.getElementById('outboundFlights');
-    mainContent.innerHTML = `
-        <div class="loading-payment">
-            <p>Processing your payment...</p>
-            <div class="spinner"></div>
-        </div>
-    `;
-
-    // Simulate payment processing
-    setTimeout(() => {
-        // Generate a random booking reference
-        const bookingRef = 'BK' + Math.random().toString(36).substr(2, 8).toUpperCase();
-        
-        // Show booking confirmation
-        mainContent.innerHTML = `
-        <div class="booking-confirmation">
-            <h2>Booking Confirmed!</h2>
-            <div class="confirmation-details">
-                <p><strong>Booking Reference:</strong> ${bookingRef}</p>
-                <p><strong>Thank you for your booking.</strong></p>
-                <p>A confirmation email has been sent to your email address.</p>
-            </div>
-            <button onclick="window.location.href='index.html'" class="submit-button">Return to Home</button>
-        </div>
-        `;
-    }, 3000);
-}
-    // Validate form inputs
-    const cardNumber = document.getElementById('cardNumber').value.trim();
-    const cardName = document.getElementById('cardName').value.trim();
-    const expiryDate = document.getElementById('expiryDate').value.trim();
-    const cvv = document.getElementById('cvv').value.trim();
-
-    // Basic validation
-    if (!cardNumber || !cardName || !expiryDate || !cvv) {
-        alert('Please fill in all payment details');
+    if (!mainContent) {
+        console.error('Main content container not found');
         return;
     }
 
-    // Save booking to database
-    const bookingData = {
-        flightDetails: selectedFlight,
-        passengers: passengerData,
-        paymentInfo: {
-            cardNumber: cardNumber.slice(-4), // Only store last 4 digits for security
-            cardName: cardName
-        },
-        bookingDate: new Date().toISOString(),
-        status: 'CONFIRMED'
-    };
-
-    // Here you would typically make an API call to save the booking
-    // For example:
-    // fetch('/api/bookings', {
-    //     method: 'POST',
-    //     headers: {
-    //         'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify(bookingData)
-    // })
-
-    // For now, we'll simulate a successful booking
-    console.log('Booking data to be saved:', bookingData);
-    const inputs = form.querySelectorAll('input[required], textarea[required]');
-    let isValid = true;
-    
-    inputs.forEach(input => {
-        if (!input.value.trim()) {
-            input.classList.add('error');
-            isValid = false;
-        } else {
-            input.classList.remove('error');
+    try {
+        // Validate payment form
+        const paymentForm = document.getElementById('paymentForm');
+        if (!paymentForm) {
+            throw new Error('Payment form not found');
         }
-    });
-    
-    if (!isValid) {
-        alert('Please fill in all required fields correctly.');
-        return;
-    }
-    
-    // Show loading state
-    const mainContent = document.getElementById('outboundFlights');
 
-    // Simulate payment processing
-    setTimeout(() => {
-        // Generate a random booking reference
-        const bookingRef = 'BK' + Math.random().toString(36).substr(2, 8).toUpperCase();
-        
-        // Show booking confirmation
+        const requiredFields = ['cardName', 'cardNumber', 'expiryDate', 'cvv', 'billingAddress'];
+        const missingFields = requiredFields.filter(field => {
+            const input = document.getElementById(field);
+            return !input || !input.value.trim();
+        });
+
+        if (missingFields.length > 0) {
+            throw new Error(`Please fill in all required fields: ${missingFields.join(', ')}`);
+        }
+
+        // Get all necessary data
+        const selectedFlight = sessionStorage.getItem('selectedFlight');
+        const passengerInfo = sessionStorage.getItem('passengerInfo');
+        const searchParams = sessionStorage.getItem('flightSearchParams');
+
+        if (!selectedFlight || !passengerInfo || !searchParams) {
+            throw new Error('Missing booking information');
+        }
+
+        // Parse the stored data
+        const flightData = JSON.parse(selectedFlight);
+        const passengerData = JSON.parse(passengerInfo);
+        const searchParamsData = JSON.parse(searchParams);
+
+        // Prepare booking data
+        const bookingData = {
+            flight: flightData,
+            passengers: passengerData.passengers,
+            contactInfo: passengerData.contactInfo,
+            searchParams: searchParamsData
+        };
+
+        // Show loading state
         mainContent.innerHTML = `
-        <div class="booking-confirmation">
-            <h2>Booking Confirmed!</h2>
-            <div class="confirmation-details">
-                <p><strong>Booking Reference:</strong> ${bookingRef}</p>
-                <p><strong>Thank you for your booking.</strong></p>
-                <p>A confirmation email has been sent to your email address.</p>
+            <div class="loading-payment">
+                <p>Processing your payment...</p>
+                <div class="spinner"></div>
             </div>
-            <button onclick="window.location.href='index.html'" class="submit-button">Return to Home</button>
-        </div>
         `;
-    }, 3000);
+
+        // Send booking data to backend
+        const response = await fetch('save_booking.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(bookingData)
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        if (result.success) {
+            mainContent.innerHTML = `
+                <div class="booking-confirmation">
+                    <h2>Booking Confirmed!</h2>
+                    <div class="confirmation-details">
+                        <p><strong>Booking Reference:</strong> ${result.bookingId}</p>
+                        <p><strong>Total Amount:</strong> ${flightData.price.total} ${flightData.price.currency}</p>
+                        <p><strong>Thank you for your booking.</strong></p>
+                        <p>A confirmation email has been sent to ${passengerData.contactInfo.email}</p>
+                    </div>
+                    <button onclick="window.location.href='index.html'" class="submit-button">
+                        Return to Home
+                    </button>
+                </div>
+            `;
+
+            // Clear session storage
+            sessionStorage.removeItem('selectedFlight');
+            sessionStorage.removeItem('passengerInfo');
+            sessionStorage.removeItem('flightSearchParams');
+        } else {
+            throw new Error(result.message || 'Booking failed');
+        }
+
+    } catch (error) {
+        console.error('Payment processing error:', error);
+        if (mainContent) {
+            mainContent.innerHTML = `
+                <div class="error-message">
+                    <h3>Error</h3>
+                    <p>${error.message || 'An error occurred during payment processing.'}</p>
+                    <button onclick="window.location.reload()" class="submit-button">
+                        Try Again
+                    </button>
+                </div>
+            `;
+        }
+    }
 }
 
 // Attach functions to window object for global access

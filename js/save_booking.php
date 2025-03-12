@@ -1,17 +1,15 @@
 <?php
-// Set headers for JSON response
 header('Content-Type: application/json');
+
+// Enable error reporting for debugging
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
 // Database connection parameters
 $host = 'localhost';
 $dbname = 'flight';
-$username = 'root'; // Change this to your database username
-$password = ''; // Change this to your database password
-
-// Function to generate a unique booking reference
-function generateBookingReference() {
-    return 'FLT' . strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 8));
-}
+$username = 'root';
+$password = '';
 
 try {
     // Create database connection
@@ -29,10 +27,10 @@ try {
     // Start transaction
     $pdo->beginTransaction();
     
-    // Generate a unique booking reference
-    $bookingReference = generateBookingReference();
+    // Generate booking reference
+    $bookingReference = 'FLT' . strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 8));
     
-    // Extract flight data
+    // Extract data
     $flight = $bookingData['flight'];
     $searchParams = $bookingData['searchParams'];
     $contactInfo = $bookingData['contactInfo'];
@@ -53,6 +51,9 @@ try {
         'booking_date' => date('Y-m-d H:i:s'),
         'flight_details' => json_encode($flight)
     ];
+    
+    // Debug log
+    error_log('Inserting flight booking data: ' . print_r($flightBookedData, true));
     
     // Insert into flight_booked table
     $sql = "INSERT INTO flight_booked (
@@ -108,6 +109,9 @@ try {
     if (isset($pdo)) {
         $pdo->rollBack();
     }
+    
+    // Log the error
+    error_log('Booking error: ' . $e->getMessage());
     
     // Return error response
     echo json_encode([
