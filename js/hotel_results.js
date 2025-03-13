@@ -1,16 +1,17 @@
-import { accessToken, getAccessToken } from './auth.js';
-const cityCodes = {
-    "Mumbai": "BOM",
-    "New York": "NYC",
-    "London": "LON",
-    "Paris": "PAR",
-    "Tokyo": "TYO",
-    "Dubai": "DXB"
+// hotelSearch.js
+import { getAccessToken } from './auth.js';
+
+// Configuration object
+const config = {
+    RAPIDAPI_KEY: 'dcde4b439emsh36ee5fbd30b29fdp134f82jsn825147056d66', // Verify this key
+    RAPIDAPI_HOST: 'booking-com.p.rapidapi.com',
+    DEFAULT_CURRENCY: 'INR',
+    DEFAULT_LOCALE: 'en-gb'
 };
 
+// Event Listeners
 document.addEventListener('DOMContentLoaded', async function() {
     try {
-        // Get search parameters from sessionStorage
         const searchParamsString = sessionStorage.getItem('hotelSearchParams');
         if (!searchParamsString) {
             throw new Error('No search parameters found');
@@ -19,23 +20,16 @@ document.addEventListener('DOMContentLoaded', async function() {
         const searchParams = JSON.parse(searchParamsString);
         const { city, checkIn, checkOut, guests, rooms } = searchParams;
 
-        // Display search parameters
         displaySearchParams(searchParams);
-
-        // Show loading state
         showLoading();
 
-        // Get access token
-        const accessToken = await getAccessToken();
-
-        // First get city code
-        const cityCode = await getCityCode(city);
-
+        // Get destination ID for the city
+        const destinationId = await getDestinationId(city);
+        
         // Search hotels
-        const hotelData = await searchHotels(accessToken, cityCode, checkIn, checkOut, guests, rooms);
+        const hotelData = await searchHotels(destinationId, checkIn, checkOut, guests, rooms);
 
-        // Display results
-        displayHotelResults(hotelData.data);
+        displayHotelResults(hotelData.result);
 
     } catch (error) {
         console.error('Error:', error);
@@ -43,6 +37,89 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 });
 
+// API Functions
+async function getDestinationId(cityName) {
+    const options = {
+        method: 'GET',
+        headers: {
+            'X-RapidAPI-Key': config.RAPIDAPI_KEY,
+            'X-RapidAPI-Host': config.RAPIDAPI_HOST,
+            'Accept': 'application/json' // Added Accept header
+        }
+    };
+
+    try {
+        const url = `https://${config.RAPIDAPI_HOST}/v1/hotels/locations?name=${encodeURIComponent(cityName)}&locale=${config.DEFAULT_LOCALE}`;
+        const response = await fetch(url, options);
+        
+        if (!response.ok) {
+            throw new Error(`Failed to get destination ID: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        if (!data || data.length === 0) {
+            throw new Error(`No destination found for ${cityName}`);
+        }
+
+        return data[0].dest_id;
+
+    } catch (error) {
+        console.error('Error getting destination ID:', error);
+        throw error;
+    }
+}
+
+async function searchHotels(destId, checkIn, checkOut, guests, rooms) {
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toISOString().split('T')[0];
+    };
+
+    const options = {
+        method: 'GET',
+        headers: {
+            'X-RapidAPI-Key': config.RAPIDAPI_KEY,
+            'X-RapidAPI-Host': config.RAPIDAPI_HOST,
+            'Accept': 'application/json' // Added Accept header
+        }
+    };
+
+    const params = new URLSearchParams({
+        dest_id: destId,
+        order_by: 'popularity',
+        filter_by_currency: config.DEFAULT_CURRENCY,
+        adults_number: guests,
+        room_number: rooms,
+        checkout_date: formatDate(checkOut),
+        checkin_date: formatDate(checkIn),
+        units: 'metric',
+        locale: config.DEFAULT_LOCALE
+    });
+
+    try {
+        const url = `https://${config.RAPIDAPI_HOST}/v1/hotels/search?${params.toString()}`;
+        const response = await fetch(url, options);
+
+        if (!response.ok) {
+            throw new Error(`Hotel search failed: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (!data || !data.result) {
+            throw new Error('Invalid response format from API');
+        }
+
+        return data;
+
+    } catch (error) {
+        console.error('Hotel search error:', error);
+        throw error;
+    }
+}
+
+// UI Functions
 function displaySearchParams(params) {
     const searchParamsDiv = document.getElementById('searchParams');
     if (searchParamsDiv) {
@@ -71,107 +148,6 @@ function showLoading() {
     }
 }
 
-async function getCityCode(cityName) {
-    // Use the inline city codes directly
-    const cityCode = cityCodes[cityName];
-    if (!cityCode) {
-        throw new Error(`City "${cityName}" not found in the predefined list`);
-    }
-    return cityCode;
-}
-
-async function searchHotels(accessToken, cityCode, checkIn, checkOut, guests, rooms) {
-    const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        return date.toISOString().split('T')[0];
-    };
-
-    if (!cityCode || !checkIn || !checkOut || !guests || !rooms) {
-        throw new Error('Missing required parameters');
-    }
-
-    const formattedCheckIn = formatDate(checkIn);
-    const formattedCheckOut = formatDate(checkOut);
-
-    const hotelIds = await fetchHotelIds(accessToken, cityCode);
-    if (!hotelIds || hotelIds.length === 0) {
-        throw new Error('No hotels found for the specified city');
-    }
-
-    const params = new URLSearchParams({
-        cityCode: cityCode,
-        checkInDate: formattedCheckIn,
-        checkOutDate: formattedCheckOut,
-        adults: guests,
-        roomQuantity: rooms,
-        currency: 'INR',
-        hotelIds: hotelIds.join(','), // Include limited hotel IDs
-        bestRateOnly: 'true',
-        radius: '50'
-    });
-
-    try {
-        const response = await fetch(`https://test.api.amadeus.com/v3/shopping/hotel-offers?${params}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${accessToken}`,
-                'Accept': 'application/json'
-            }
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            throw new Error(
-                `API request failed: ${response.status} ${response.statusText}` +
-                (errorData.errors ? ` - ${errorData.errors[0]?.detail || ''}` : '')
-            );
-        }
-
-        const data = await response.json();
-
-        if (!data || !data.data) {
-            throw new Error('Invalid response format from API');
-        }
-
-        return data;
-
-    } catch (error) {
-        console.error('Hotel search error:', error);
-        throw new Error(`Failed to fetch hotel offers: ${error.message}`);
-    }
-}
-async function fetchHotelIds(accessToken, cityCode) {
-    try {
-        const response = await fetch(`https://test.api.amadeus.com/v1/reference-data/locations/hotels/by-city?cityCode=${cityCode}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${accessToken}`,
-                'Accept': 'application/json'
-            }
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            throw new Error(
-                `Failed to fetch hotel IDs: ${response.status} ${response.statusText}` +
-                (errorData.errors ? ` - ${errorData.errors[0]?.detail || ''}` : '')
-            );
-        }
-
-        const data = await response.json();
-
-        // Extract hotel IDs from the response and limit the number of IDs
-        const maxHotelIds = 20; // Adjust this based on the API's limit
-        const hotelIds = data.data.map(hotel => hotel.hotelId).slice(0, maxHotelIds);
-
-        return hotelIds;
-
-    } catch (error) {
-        console.error('Error fetching hotel IDs:', error);
-        throw new Error(`Failed to fetch hotel IDs: ${error.message}`);
-    }
-}
-
 function displayHotelResults(hotels) {
     const hotelResultsDiv = document.getElementById('hotelResults');
     if (!hotelResultsDiv) return;
@@ -181,63 +157,50 @@ function displayHotelResults(hotels) {
         return;
     }
 
-    hotelResultsDiv.innerHTML = hotels.map((hotel, index) => {
-        const hotelName = hotel.hotel?.name || 'Unknown Hotel';
-        const addressLines = hotel.hotel?.address?.lines?.join(', ') || 'Address not available';
-        const cityName = hotel.hotel?.address?.cityName || 'City not available';
-        const distance = hotel.hotel?.hotelDistance?.distance || 'N/A';
-        const distanceUnit = hotel.hotel?.hotelDistance?.distanceUnit || '';
-        const amenities = generateAmenities(hotel.hotel?.amenities);
-        const offers = generateOffers(hotel.offers);
+    hotelResultsDiv.innerHTML = hotels.map(hotel => {
+        const hotelName = hotel.hotel_name || 'Unknown Hotel';
+        const address = hotel.address || 'Address not available';
+        const cityName = hotel.city || 'City not available';
+        const distance = hotel.distance_to_cc || 'N/A';
+        const rating = hotel.review_score || 'N/A';
+        const price = hotel.price_breakdown?.gross_price || 'Price not available';
+        const reviewCount = hotel.review_count || 0;
+        const reviewScore = hotel.review_score_word || 'No reviews';
 
         return `
             <div class="hotel-card">
                 <div class="hotel-header">
                     <h3>${hotelName}</h3>
                     <div class="hotel-rating">
-                        ${generateRatingStars(hotel.hotel?.rating)}
+                        ${rating !== 'N/A' ? `
+                            <span>${rating}/10</span>
+                            <div>${reviewScore}</div>
+                            <div>${reviewCount} reviews</div>
+                        ` : 'No rating'}
                     </div>
                 </div>
                 <div class="hotel-details">
-                    <p><strong>Address:</strong> ${addressLines}, ${cityName}</p>
-                    <p><strong>Distance from city center:</strong> ${distance} ${distanceUnit}</p>
-                    ${amenities}
+                    <p><strong>Address:</strong> ${address}, ${cityName}</p>
+                    <p><strong>Distance from city center:</strong> ${distance} km</p>
+                    ${hotel.facilities ? `
+                        <div class="amenities">
+                            <p><strong>Amenities:</strong></p>
+                            <p>${hotel.facilities.slice(0, 5).join(', ')}</p>
+                        </div>
+                    ` : ''}
                 </div>
                 <div class="offer-details">
-                    ${offers}
+                    <div class="offer">
+                        <p><strong>Room Type:</strong> ${hotel.room_type || 'Standard Room'}</p>
+                        <p class="price"><strong>Price:</strong> ${config.DEFAULT_CURRENCY} ${price}</p>
+                    </div>
                 </div>
-                <button onclick="selectHotel('${hotel.hotel?.hotelId}')" class="select-button">
+                <button onclick="selectHotel('${hotel.hotel_id}')" class="select-button">
                     Select Hotel
                 </button>
             </div>
         `;
     }).join('');
-}
-
-function generateRatingStars(rating) {
-    const stars = parseInt(rating) || 0;
-    return '⭐'.repeat(stars);
-}
-
-function generateAmenities(amenities) {
-    if (!amenities || amenities.length === 0) return '';
-    return `
-        <div class="amenities">
-            <p><strong>Amenities:</strong></p>
-            <p>${amenities.slice(0, 5).join(', ')}</p>
-        </div>
-    `;
-}
-
-function generateOffers(offers) {
-    if (!offers || offers.length === 0) return '';
-    return offers.map(offer => `
-        <div class="offer">
-            <p><strong>Room Type:</strong> ${offer.room.type}</p>
-            <p><strong>Board Type:</strong> ${offer.boardType || 'Not specified'}</p>
-            <p class="price"><strong>Price:</strong> ${offer.price.total} ${offer.price.currency}</p>
-        </div>
-    `).join('');
 }
 
 function displayError(error) {
@@ -252,7 +215,8 @@ function displayError(error) {
     }
 }
 
-function selectHotel(hotelId) {
+// Make selectHotel available globally
+window.selectHotel = function(hotelId) {
     alert(`Hotel ${hotelId} selected! Proceeding to booking...`);
     // Add booking logic here
-}
+};
