@@ -95,7 +95,7 @@ img{
 
 .header__image__container {
   position: relative;
-  min-height: 500px;
+  min-height: 400px;
   background-image: linear-gradient(
       to right,
       rgba(44, 56, 85, 0.9),
@@ -206,7 +206,7 @@ img{
 }
 
 .popular__grid {
-  margin-top: 4rem;
+  margin-top: 1rem;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
