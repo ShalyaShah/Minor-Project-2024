@@ -470,7 +470,7 @@ async function processPayment() {
         `;
 
         // Send booking data to backend
-        const response = await fetch('save_booking.php', {
+        const response = await fetch('./save_booking.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

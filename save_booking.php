@@ -7,7 +7,7 @@ error_reporting(E_ALL);
 
 // Database connection parameters
 $host = 'localhost';
-$dbname = 'flight';
+$dbname = 'minor-project';
 $username = 'root';
 $password = '';
 

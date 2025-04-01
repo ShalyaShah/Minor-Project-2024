@@ -1,6 +1,6 @@
 // auth.js
-const API_KEY = '4YW2bmhwYKjothBbv8eU7tsUR5XytpXj';
-const API_SECRET = 'lyLGo5Qt0LGkGo6Y';
+const API_KEY = 'LDm8gRPChlnF74AOHtLjn3cAwNSGgmfz';
+const API_SECRET = 'MK3n0IDXy0vGA64A';
 let accessToken = '';
 
 async function getAccessToken() {
