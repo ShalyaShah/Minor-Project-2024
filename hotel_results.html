@@ -4,23 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hotel Results</title>
-    <link rel="stylesheet" href="./css/hotel_result.css">
-    <script type="module" src="./js/hotel_results.js" defer></script>
+    <script src="./js/hotel_results.js"></script>
+    <style>
+        .hotel {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px 0;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Hotel Search Results</h1>
-    </header>
-    <main>
-        <section id="searchParams" class="search-params">
-            <!-- Search parameters will be dynamically inserted here -->
-        </section>
-        <section id="hotelResults" class="hotel-results">
-            <!-- Hotel results or loading state will be dynamically inserted here -->
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2025 Hotel Finder</p>
-    </footer>
+    <h1>Hotel Results</h1>
+    <div id="results"></div>
+    
 </body>
 </html>

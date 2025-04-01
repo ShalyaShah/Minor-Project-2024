@@ -180,7 +180,7 @@ body {
 .flight-routes {
     text-align: center;
     padding: 60px 20px;
-    background: url('images/hero-bg.jpg') fixed;
+    background: url('../images/hero-bg.jpg') fixed;
     background-size: cover;
     color: white;
 }

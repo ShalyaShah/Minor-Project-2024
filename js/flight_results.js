@@ -385,6 +385,38 @@ function showPaymentForm() {
         </div>
         <form id="paymentForm">
             <div class="form-group">
+                <label for="paymentMethod">Payment Method</label>
+                <select id="paymentMethod" name="paymentMethod" required>
+                    <option value="">Select a payment method</option>
+                    <option value="credit-card">Credit Card</option>
+                    <option value="paypal">PayPal</option>
+                    <option value="bank-transfer">Bank Transfer</option>
+                    <option value="upi">UPI</option>
+                </select>
+            </div>
+            <div id="paymentDetails"></div>
+            <button type="button" onclick="processPayment()" class="submit-button">Complete Booking</button>
+        </form>
+    </div>
+    `;
+
+    mainContent.innerHTML = paymentFormHTML;
+
+    // Add event listener to dynamically update payment details form
+    const paymentMethodSelect = document.getElementById('paymentMethod');
+    paymentMethodSelect.addEventListener('change', updatePaymentDetailsForm);
+}
+
+// Function to dynamically update payment details form based on selected method
+function updatePaymentDetailsForm() {
+    const paymentMethod = document.getElementById('paymentMethod').value;
+    const paymentDetailsDiv = document.getElementById('paymentDetails');
+
+    let paymentDetailsHTML = '';
+    switch (paymentMethod) {
+        case 'credit-card':
+            paymentDetailsHTML = `
+            <div class="form-group">
                 <label for="cardName">Name on Card</label>
                 <input type="text" id="cardName" name="cardName" required>
             </div>
@@ -402,16 +434,41 @@ function showPaymentForm() {
                     <input type="text" id="cvv" name="cvv" placeholder="XXX" required>
                 </div>
             </div>
+            `;
+            break;
+        case 'paypal':
+            paymentDetailsHTML = `
             <div class="form-group">
-                <label for="billingAddress">Billing Address</label>
-                <textarea id="billingAddress" name="billingAddress" required></textarea>
+                <label for="paypalEmail">PayPal Email</label>
+                <input type="email" id="paypalEmail" name="paypalEmail" required>
             </div>
-            <button type="button" onclick="processPayment()" class="submit-button">Complete Booking</button>
-        </form>
-    </div>
-    `;
+            `;
+            break;
+        case 'bank-transfer':
+            paymentDetailsHTML = `
+            <div class="form-group">
+                <label for="accountNumber">Account Number</label>
+                <input type="text" id="accountNumber" name="accountNumber" required>
+            </div>
+            <div class="form-group">
+                <label for="ifscCode">IFSC Code</label>
+                <input type="text" id="ifscCode" name="ifscCode" required>
+            </div>
+            `;
+            break;
+        case 'upi':
+            paymentDetailsHTML = `
+            <div class="form-group">
+                <label for="upiId">UPI ID</label>
+                <input type="text" id="upiId" name="upiId" required>
+            </div>
+            `;
+            break;
+        default:
+            paymentDetailsHTML = '';
+    }
 
-    mainContent.innerHTML = paymentFormHTML;
+    paymentDetailsDiv.innerHTML = paymentDetailsHTML;
 }
 
 // Function to process payment
@@ -429,14 +486,38 @@ async function processPayment() {
             throw new Error('Payment form not found');
         }
 
-        const requiredFields = ['cardName', 'cardNumber', 'expiryDate', 'cvv', 'billingAddress'];
-        const missingFields = requiredFields.filter(field => {
-            const input = document.getElementById(field);
-            return !input || !input.value.trim();
-        });
+        const paymentMethod = document.getElementById('paymentMethod').value;
+        if (!paymentMethod) {
+            throw new Error('Please select a payment method.');
+        }
 
-        if (missingFields.length > 0) {
-            throw new Error(`Please fill in all required fields: ${missingFields.join(', ')}`);
+        let isValid = false;
+        let errorMessage = '';
+
+        switch (paymentMethod) {
+            case 'credit-card':
+                isValid = validateCreditCard();
+                errorMessage = isValid ? '' : 'Please fill in all credit card fields correctly.';
+                break;
+            case 'paypal':
+                isValid = validatePayPal();
+                errorMessage = isValid ? '' : 'Please enter a valid PayPal email.';
+                break;
+            case 'bank-transfer':
+                isValid = validateBankTransfer();
+                errorMessage = isValid ? '' : 'Please fill in all bank transfer fields correctly.';
+                break;
+            case 'upi':
+                isValid = validateUPI();
+                errorMessage = isValid ? '' : 'Please enter a valid UPI ID.';
+                break;
+            default:
+                errorMessage = 'Please select a payment method.';
+                isValid = false;
+        }
+
+        if (!isValid) {
+            throw new Error(errorMessage);
         }
 
         // Get all necessary data
@@ -458,7 +539,8 @@ async function processPayment() {
             flight: flightData,
             passengers: passengerData.passengers,
             contactInfo: passengerData.contactInfo,
-            searchParams: searchParamsData
+            searchParams: searchParamsData,
+            paymentMethod: paymentMethod
         };
 
         // Show loading state
@@ -494,7 +576,7 @@ async function processPayment() {
                         <p><strong>Thank you for your booking.</strong></p>
                         <p>A confirmation email has been sent to ${passengerData.contactInfo.email}</p>
                     </div>
-                    <button onclick="window.location.href='index.html'" class="submit-button">
+                    <button onclick="window.location.href=''" class="submit-button">
                         Return to Home
                     </button>
                 </div>
@@ -522,6 +604,31 @@ async function processPayment() {
             `;
         }
     }
+}
+
+// Validation functions for each payment method
+function validateCreditCard() {
+    const cardName = document.getElementById('cardName').value.trim();
+    const cardNumber = document.getElementById('cardNumber').value.trim();
+    const expiryDate = document.getElementById('expiryDate').value.trim();
+    const cvv = document.getElementById('cvv').value.trim();
+    return cardName && cardNumber && expiryDate && cvv;
+}
+
+function validatePayPal() {
+    const paypalEmail = document.getElementById('paypalEmail').value.trim();
+    return paypalEmail && /\S+@\S+\.\S+/.test(paypalEmail);
+}
+
+function validateBankTransfer() {
+    const accountNumber = document.getElementById('accountNumber').value.trim();
+    const ifscCode = document.getElementById('ifscCode').value.trim();
+    return accountNumber && ifscCode;
+}
+
+function validateUPI() {
+    const upiId = document.getElementById('upiId').value.trim();
+    return upiId && /^[\w.-]+@[\w.-]+$/.test(upiId);
 }
 
 // Attach functions to window object for global access

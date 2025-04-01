@@ -1,5 +1,5 @@
 <?php
-$conn=mysqli_connect("localhost","root","","login");
+$conn=mysqli_connect("localhost","root","","minor-project");
 if($conn){
     $fname=$_POST['fname'];
     $lname=$_POST['lname'];

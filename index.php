@@ -18,9 +18,9 @@ session_start();
         </div>
         
         <div class="menu">
-            <a href="flight.html" class="menu-item"><i class="fa-solid fa-plane"></i> Flights</a>
-            <a href="hotel.html" class="menu-item"><i class="fa-solid fa-hotel"></i> Hotels</a>
-            <?php
+    <a href="flight.html" class="menu-item"><i class="fa-solid fa-plane"></i> Flights</a>
+    <a href="hotel.html" class="menu-item"><i class="fa-solid fa-hotel"></i> Hotels</a>
+    <?php
     if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         // Show login/signup link for non-logged in users
         echo '<a href="login.html" class="menu-item"><i class="fa-solid fa-user"></i>Login / Signup</a>';
@@ -28,10 +28,11 @@ session_start();
         // Show logout link for logged in users
         echo '<a href="logout.php" class="menu-item">Logout</a>';
         echo '<span class="menu-item">Welcome, User!<i class="fa-solid fa-user"></i></span>';
+        // Add the "View Bookings" button for logged-in users
+        echo '<a href="view_bookings.php" class="menu-item"><i class="fa-solid fa-book"></i> View Bookings</a>';
     }
     ?>
-            
-        </div>
+</div>
         
     </header>
     

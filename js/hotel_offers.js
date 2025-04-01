@@ -1,60 +1,98 @@
-// hotel_offers.js
-document.getElementById('hotel_search_button').addEventListener('click', async function(event) {
-    event.preventDefault();
-    
+import { getAccessToken } from "./auth.js"; // Using existing auth setup
+
+document.getElementById("hotel_search_button").addEventListener("click", async () => {
+    // Get form values
+    const city = document.getElementById("city").value.trim();
+    const checkInDate = document.getElementById("check_in_date").value;
+    const checkOutDate = document.getElementById("check_out_date").value;
+    const guests = document.getElementById("guests").value;
+    const rooms = document.getElementById("rooms").value;
+
+    // Validate form inputs
+    if (!city) {
+        alert("Please enter a city name.");
+        return;
+    }
+    if (!checkInDate || !checkOutDate) {
+        alert("Please select both check-in and check-out dates.");
+        return;
+    }
+    if (new Date(checkInDate) >= new Date(checkOutDate)) {
+        alert("Check-out date must be after the check-in date.");
+        return;
+    }
+    if (!guests || guests <= 0) {
+        alert("Please enter a valid number of guests.");
+        return;
+    }
+    if (!rooms || rooms <= 0) {
+        alert("Please enter a valid number of rooms.");
+        return;
+    }
+
     try {
-        // Get DOM elements
-        const cityInput = document.getElementById('city');
-        const checkInInput = document.getElementById('check_in_date');
-        const checkOutInput = document.getElementById('check_out_date');
-        const guestsInput = document.getElementById('guests');
-        const roomsInput = document.getElementById('rooms');
+        // Get Amadeus API token
+        const accessToken = await getAccessToken();
+        console.log("Access Token:", accessToken);
 
-        // Validate inputs exist
-        if (!cityInput || !checkInInput || !checkOutInput || !guestsInput || !roomsInput) {
-            throw new Error('Required input fields not found');
+        // Get city code from Amadeus API
+        const cityResponse = await fetch(
+            `https://test.api.amadeus.com/v1/reference-data/locations?keyword=${city}&subType=CITY`,
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            }
+        );
+
+        const cityData = await cityResponse.json();
+        console.log("City API Response:", cityData);
+
+        if (!cityData.data || cityData.data.length === 0) {
+            console.error("City API returned no data:", cityData);
+            alert("No matching city found. Please try a different city.");
+            return;
         }
 
-        // Get values
-        const city = cityInput.value;
-        const checkIn = checkInInput.value;
-        const checkOut = checkOutInput.value;
-        const guests = guestsInput.value;
-        const rooms = roomsInput.value;
+        // Ensure we get the correct city entry
+        const cityEntry = cityData.data.find((entry) => entry.subType === "CITY");
 
-        // Validate input values
-        if (!city) {
-            throw new Error('Please enter a city');
+        if (!cityEntry) {
+            console.error("No valid city entry found:", cityData);
+            alert("No valid city found for hotel search.");
+            return;
         }
 
-        // Validate dates
-        if (!checkIn || !checkOut) {
-            throw new Error('Please select both check-in and check-out dates');
+        const cityCode = cityEntry.iataCode;
+        console.log("Using City Code:", cityCode);
+
+        // Fetch hotel offers for the city
+        const hotelResponse = await fetch(
+            `https://test.api.amadeus.com/v1/reference-data/locations/hotels/by-city?cityCode=${cityCode}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            }
+        );
+
+        const hotelData = await hotelResponse.json();
+        console.log("Hotel API Response:", hotelData);
+
+        if (!hotelData.data || hotelData.data.length === 0) {
+            console.error("Hotel API returned no data:", hotelData);
+            alert("No hotels found for this city. Please try a different city.");
+            return;
         }
 
-        const checkInDate = new Date(checkIn);
-        const checkOutDate = new Date(checkOut);
+        // Store hotel results in sessionStorage
+        sessionStorage.setItem("hotelResults", JSON.stringify(hotelData.data));
+        console.log("Stored Hotel Results:", hotelData.data);
 
-        if (checkInDate >= checkOutDate) {
-            throw new Error('Check-out date must be after check-in date');
-        }
-
-        // Store search parameters in sessionStorage
-        const searchParams = {
-            city,
-            checkIn,
-            checkOut,
-            guests,
-            rooms
-        };
-        
-        sessionStorage.setItem('hotelSearchParams', JSON.stringify(searchParams));
-
-        // Redirect to hotel results page
-        window.location.href = 'hotel_results.html';
-
+        // Redirect to the results page
+        window.location.href = "hotel_results.html";
     } catch (error) {
-        console.error('Error:', error);
-        alert(error.message);
+        console.error("Error fetching hotel data:", error);
+        alert("Failed to retrieve hotel offers. Please try again.");
     }
 });
