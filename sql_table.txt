@@ -1,0 +1,38 @@
+CREATE TABLE users (
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    fname VARCHAR(50) NOT NULL,
+    lname VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    wallet_balance DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE flight_booked (
+    id INT AUTO_INCREMENT PRIMARY KEY, 
+    booking_reference VARCHAR(50) NOT NULL UNIQUE,
+    origin_code VARCHAR(10) NOT NULL,
+    destination_code VARCHAR(10) NOT NULL,
+    origin_name VARCHAR(255) NOT NULL,
+    destination_name VARCHAR(255) NOT NULL,
+    departure_date DATE NOT NULL,
+    total_passengers INT NOT NULL CHECK (total_passengers > 0),
+    total_amount DECIMAL(10,2) NOT NULL CHECK (total_amount >= 0),
+    currency VARCHAR(10) NOT NULL,
+    contact_email VARCHAR(255) NOT NULL,
+    contact_phone VARCHAR(20) NOT NULL,
+    booking_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    flight_details TEXT NOT NULL
+);
+
+CREATE TABLE flight_passenger_info (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    booking_id INT NOT NULL,
+    title VARCHAR(10) NOT NULL,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    date_of_birth DATE NOT NULL,
+    passport_number VARCHAR(50) NOT NULL,
+    nationality VARCHAR(100) NOT NULL,
+    FOREIGN KEY (booking_id) REFERENCES flight_booked(id) ON DELETE CASCADE
+);
