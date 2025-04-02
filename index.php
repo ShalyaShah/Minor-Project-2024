@@ -25,16 +25,31 @@ session_start();
         // Show login/signup link for non-logged in users
         echo '<a href="login.html" class="menu-item"><i class="fa-solid fa-user"></i>Login / Signup</a>';
     } else {
-        // Show logout link for logged in users
-        echo '<a href="logout.php" class="menu-item">Logout</a>';
-        echo '<span class="menu-item">Welcome, User!<i class="fa-solid fa-user"></i></span>';
         // Add the "View Bookings" button for logged-in users
         echo '<a href="view_bookings.php" class="menu-item"><i class="fa-solid fa-book"></i> View Bookings</a>';
+        // Add the wallet link for logged-in users
+        echo '<a href="#" class="menu-item wallet-link" id="walletLink"><i class="fa-solid fa-wallet"></i> Wallet</a>';
+        // Show logout link for logged in users
+        echo '<a href="logout.php" class="menu-item"><i class="fa-solid fa-right-from-bracket"></i>Logout</a>';
     }
     ?>
-</div>
+        </div>
         
     </header>
+    <!-- Wallet Popup -->
+<div class="wallet-popup" id="walletPopup">
+    <div class="wallet-popup-content">
+        <h3>💰 Wallet</h3>
+        <p>Your Wallet Balance: ₹<span id="walletBalance">Loading...</span></p>
+        <form id="rechargeWalletForm">
+            <label for="rechargeAmount">Add Amount:</label>
+            <input type="number" id="rechargeAmount" name="amount" min="1" placeholder="Enter amount" required>
+            <button type="submit" class="btn">Recharge</button>
+        </form>
+        <button class="close-btn" id="closeWalletPopup">Close</button>
+        <div id="rechargeMessage"></div>
+    </div>
+</div>
     
 
     <section class="hero">
@@ -311,7 +326,7 @@ session_start();
     </footer>
     <script type="module" src="js/auth.js"></script>
     <script type="module" src="js/airport_search.js"></script>
-    
     <script type="module" src="js/flight_offers.js"></script>
+    <script src="js/wallet.js"></script>
     </body>
 </html>

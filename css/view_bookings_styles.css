@@ -98,6 +98,101 @@ body {
     font-weight: bold;
 }
 
+/* Button Styles */
+.view-passenger-info {
+    background-color: #007AA5; /* Primary button color */
+    color: white; /* Text color */
+    border: none; /* Remove default border */
+    padding: 8px 15px; /* Add padding */
+    font-size: 14px; /* Font size */
+    font-weight: 600; /* Bold text */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: all 0.3s ease; /* Smooth transition */
+}
+
+.view-passenger-info:hover {
+    background-color: #005f7a; /* Darker shade on hover */
+    color: #f4f4f4; /* Slightly lighter text color */
+    transform: scale(1.05); /* Slight zoom effect */
+}
+
+/* Modal Styles */
+#passenger-info-modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Fixed position */
+    top: 0;
+    left: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    z-index: 1000; /* Ensure it appears above other elements */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    display: flex; /* Flexbox for centering */
+}
+
+.modal-content {
+    background: white; /* Modal background color */
+    padding: 20px; /* Add padding */
+    border-radius: 10px; /* Rounded corners */
+    width: 80%; /* Set width */
+    max-width: 600px; /* Max width for larger screens */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Add shadow */
+    position: relative; /* For close button positioning */
+    animation: fadeIn 0.3s ease; /* Fade-in animation */
+}
+
+#close-modal {
+    position: absolute; /* Position relative to modal */
+    top: 10px; /* Top offset */
+    right: 15px; /* Right offset */
+    font-size: 20px; /* Font size */
+    color: #333; /* Close button color */
+    cursor: pointer; /* Pointer cursor */
+    transition: color 0.3s ease; /* Smooth color transition */
+}
+
+#close-modal:hover {
+    color: #007AA5; /* Change color on hover */
+}
+
+/* Passenger Info Table in Modal */
+#passenger-info-content table {
+    width: 100%; /* Full width */
+    border-collapse: collapse; /* Remove gaps between cells */
+    margin-top: 10px; /* Add spacing above table */
+}
+
+#passenger-info-content table th,
+#passenger-info-content table td {
+    border: 1px solid #ddd; /* Light border */
+    padding: 8px; /* Add padding */
+    text-align: left; /* Align text to the left */
+}
+
+#passenger-info-content table th {
+    background-color: #f4f4f4; /* Light gray background for headers */
+    font-weight: bold; /* Bold text */
+    color: #003A6C; /* Header text color */
+}
+
+#passenger-info-content table td {
+    color: #333; /* Table cell text color */
+}
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0; /* Start fully transparent */
+        transform: scale(0.9); /* Slightly smaller */
+    }
+    to {
+        opacity: 1; /* Fully visible */
+        transform: scale(1); /* Original size */
+    }
+}
+
 /* Footer Styles */
 footer {
     background: #1b1b1b;
