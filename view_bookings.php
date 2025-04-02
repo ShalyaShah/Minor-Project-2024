@@ -38,6 +38,7 @@ try {
     <title>View Bookings - GoTrip</title>
     <link rel="stylesheet" href="css/view_bookings_styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <header class="navbar">
@@ -64,6 +65,7 @@ try {
                         <th>Total Passengers</th>
                         <th>Total Amount</th>
                         <th>Booking Date</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -76,6 +78,9 @@ try {
                             <td><?php echo htmlspecialchars($booking['total_passengers']); ?></td>
                             <td><?php echo htmlspecialchars($booking['currency'] . ' ' . $booking['total_amount']); ?></td>
                             <td><?php echo htmlspecialchars($booking['booking_date']); ?></td>
+                            <td>
+                                <button class="view-passenger-info" data-booking-id="<?php echo $booking['id']; ?>">Passenger Info</button>
+                            </td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -85,8 +90,47 @@ try {
         <?php endif; ?>
     </section>
 
+    <!-- Modal for Passenger Info -->
+    <div id="passenger-info-modal" style="display: none;">
+        <div class="modal-content">
+            <span id="close-modal" style="cursor: pointer;">&times;</span>
+            <h2>Passenger Information</h2>
+            <div id="passenger-info-content">
+                <!-- Passenger details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
     <footer>
         <p>© 2025 GoTrip. All Rights Reserved.</p>
     </footer>
+
+    <script>
+        $(document).ready(function () {
+            // Handle Passenger Info button click
+            $('.view-passenger-info').on('click', function () {
+                const bookingId = $(this).data('booking-id');
+
+                // Fetch passenger info via AJAX
+                $.ajax({
+                    url: 'fetch_passenger_info.php',
+                    method: 'POST',
+                    data: { booking_id: bookingId },
+                    success: function (response) {
+                        $('#passenger-info-content').html(response);
+                        $('#passenger-info-modal').show();
+                    },
+                    error: function () {
+                        alert('Failed to fetch passenger information.');
+                    }
+                });
+            });
+
+            // Close modal
+            $('#close-modal').on('click', function () {
+                $('#passenger-info-modal').hide();
+            });
+        });
+    </script>
 </body>
 </html>
