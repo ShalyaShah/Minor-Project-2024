@@ -19,6 +19,7 @@ if ($conn) {
 
         // Set session variables
         $_SESSION['logged_in'] = true;
+        $_SESSION['user_id'] = $user['id'];  // Store the user's ID in the session
         $_SESSION['email'] = $user['email']; // Store the user's email in the session
         $_SESSION['name'] = $user['name'];   // Optionally store the user's name if available
 

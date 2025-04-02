@@ -375,7 +375,7 @@ function submitPassengerInfo() {
 function showPaymentForm() {
     const mainContent = document.getElementById('outboundFlights');
     const selectedFlight = JSON.parse(sessionStorage.getItem('selectedFlight'));
-    
+
     const paymentFormHTML = `
     <div class="booking-section">
         <h3>Payment Information</h3>
@@ -392,6 +392,7 @@ function showPaymentForm() {
                     <option value="paypal">PayPal</option>
                     <option value="bank-transfer">Bank Transfer</option>
                     <option value="upi">UPI</option>
+                    <option value="wallet">Wallet</option>
                 </select>
             </div>
             <div id="paymentDetails"></div>
@@ -464,11 +465,38 @@ function updatePaymentDetailsForm() {
             </div>
             `;
             break;
+        case 'wallet':
+            paymentDetailsHTML = `
+            <div class="form-group">
+                <p id="walletBalance">Fetching wallet balance...</p>
+            </div>
+            `;
+            fetchWalletBalance();
+            break;
         default:
             paymentDetailsHTML = '';
     }
 
     paymentDetailsDiv.innerHTML = paymentDetailsHTML;
+}
+async function fetchWalletBalance() {
+    try {
+        const response = await fetch('./recharge_wallet.php?action=get_balance');
+        const result = await response.json();
+
+        if (result.status === 'success') {
+            const walletBalanceDiv = document.getElementById('walletBalance');
+            walletBalanceDiv.innerHTML = `
+            <p><strong>Wallet Balance:</strong> ₹${result.balance.toFixed(2)}</p>
+            `;
+        } else {
+            throw new Error(result.message || 'Failed to fetch wallet balance');
+        }
+    } catch (error) {
+        console.error('Error fetching wallet balance:', error);
+        const walletBalanceDiv = document.getElementById('walletBalance');
+        walletBalanceDiv.innerHTML = `<p>Error fetching wallet balance. Please try again later.</p>`;
+    }
 }
 
 // Function to process payment
@@ -510,6 +538,10 @@ async function processPayment() {
             case 'upi':
                 isValid = validateUPI();
                 errorMessage = isValid ? '' : 'Please enter a valid UPI ID.';
+                break;
+            case 'wallet':
+                isValid = await validateWallet();
+                errorMessage = isValid ? '' : 'Insufficient wallet balance.';
                 break;
             default:
                 errorMessage = 'Please select a payment method.';
@@ -629,6 +661,45 @@ function validateBankTransfer() {
 function validateUPI() {
     const upiId = document.getElementById('upiId').value.trim();
     return upiId && /^[\w.-]+@[\w.-]+$/.test(upiId);
+}
+async function validateWallet() {
+    try {
+        const response = await fetch('./recharge_wallet.php?action=get_balance');
+        const result = await response.json();
+
+        if (result.status === 'success') {
+            const walletBalance = parseFloat(result.balance); // Ensure it's a number
+            const selectedFlight = JSON.parse(sessionStorage.getItem('selectedFlight'));
+            const totalAmount = parseFloat(selectedFlight.price.total); // Ensure it's a number
+
+            if (walletBalance >= totalAmount) {
+                // Deduct wallet balance
+                const deductResponse = await fetch('./recharge_wallet.php?action=deduct_balance', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ amount: totalAmount }),
+                });
+
+                const deductResult = await deductResponse.json();
+
+                if (deductResult.status === 'success') {
+                    return true;
+                } else {
+                    throw new Error(deductResult.message || 'Failed to deduct wallet balance');
+                }
+            } else {
+                console.error('Insufficient wallet balance');
+                return false;
+            }
+        } else {
+            throw new Error(result.message || 'Failed to fetch wallet balance');
+        }
+    } catch (error) {
+        console.error('Error validating wallet:', error);
+        return false;
+    }
 }
 
 // Attach functions to window object for global access

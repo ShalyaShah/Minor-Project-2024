@@ -25,23 +25,81 @@ session_start();
         // Show login/signup link for non-logged in users
         echo '<a href="login.html" class="menu-item"><i class="fa-solid fa-user"></i>Login / Signup</a>';
     } else {
-        // Show logout link for logged in users
-        echo '<a href="logout.php" class="menu-item">Logout</a>';
-        echo '<span class="menu-item">Welcome, User!<i class="fa-solid fa-user"></i></span>';
         // Add the "View Bookings" button for logged-in users
         echo '<a href="view_bookings.php" class="menu-item"><i class="fa-solid fa-book"></i> View Bookings</a>';
+        // Add the wallet link for logged-in users
+        echo '<a href="#" class="menu-item wallet-link" id="walletLink"><i class="fa-solid fa-wallet"></i> Wallet</a>';
+        // Show logout link for logged in users
+        echo '<a href="logout.php" class="menu-item"><i class="fa-solid fa-right-from-bracket"></i>Logout</a>';
     }
     ?>
-</div>
+        </div>
         
     </header>
+    <!-- Wallet Popup -->
+<div class="wallet-popup" id="walletPopup">
+    <div class="wallet-popup-content">
+        <h3>💰 Wallet</h3>
+        <p>Your Wallet Balance: ₹<span id="walletBalance">Loading...</span></p>
+        <form id="rechargeWalletForm">
+            <label for="rechargeAmount">Add Amount:</label>
+            <input type="number" id="rechargeAmount" name="amount" min="1" placeholder="Enter amount" required>
+            <button type="submit" class="btn">Recharge</button>
+        </form>
+        <button class="close-btn" id="closeWalletPopup">Close</button>
+        <div id="rechargeMessage"></div>
+    </div>
+</div>
     
 
-    <section class="hero">
-        <h1>Discover Your Next Adventure</h1>
-        <p>Book flights, hotels, and more with the best deals!</p>
+  <!-- Hero Section -->
+  <section class="hero">
+        <div class="hero-content">
+            <h1>Discover Your Next Adventure</h1>
+            <?php
+if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
+    // Get the email from the session
+    $email = $_SESSION['email'];
+
+    // Database connection
+    $servername = "localhost"; // Replace with your database server
+    $username = "root"; // Replace with your database username
+    $password = ""; // Replace with your database password
+    $dbname = "minor-project"; // Replace with your database name
+
+    // Create a connection
+    $conn = new mysqli($servername, $username, $password, $dbname);
+
+    // Check the connection
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    // Query to fetch the first name
+    $sql = "SELECT fname FROM users WHERE email = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    // Check if a result is found
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $fname = $row['fname'];
+        echo "<p>Welcome, $fname!</p>";
+    } else {
+        echo "<p>Welcome, Guest!</p>";
+    }
+
+    // Close the statement and connection
+    $stmt->close();
+    $conn->close();
+} else {
+    echo "<p>Welcome, Guest!</p>";
+}
+?>
         <button class="explore-btn">Explore Now</button>
-        
+        </div>
     </section>
 
     <div class="search-form">
@@ -311,7 +369,7 @@ session_start();
     </footer>
     <script type="module" src="js/auth.js"></script>
     <script type="module" src="js/airport_search.js"></script>
-    
     <script type="module" src="js/flight_offers.js"></script>
+    <script src="js/wallet.js"></script>
     </body>
 </html>
