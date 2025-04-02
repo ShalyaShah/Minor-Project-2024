@@ -1,22 +1,21 @@
-
 -- Create Countries Table
 CREATE TABLE countries (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    code TEXT NOT NULL UNIQUE
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    code VARCHAR(10) NOT NULL UNIQUE
 );
 
 -- Create Cities Table
 CREATE TABLE cities (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    country_code TEXT NOT NULL,
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    country_code VARCHAR(10) NOT NULL,
     FOREIGN KEY (country_code) REFERENCES countries (code)
 );
 
 -- Create Hotels Table
 CREATE TABLE hotels (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
     name TEXT NOT NULL,
     city_id INTEGER NOT NULL,
     price_per_night REAL NOT NULL,
@@ -28,21 +27,45 @@ CREATE TABLE hotels (
 
 -- Insert Countries
 INSERT INTO countries (name, code) VALUES 
-('India', 'IN'), ('United States', 'US'), ('United Kingdom', 'UK'), ('France', 'FR'),
-('Germany', 'DE'), ('Canada', 'CA'), ('Australia', 'AU'), ('Japan', 'JP');
+('India', 'IN'), 
+('United States', 'US'), 
+('United Kingdom', 'UK'), 
+('France', 'FR'),
+('Germany', 'DE'), 
+('Canada', 'CA'), 
+('Australia', 'AU'), 
+('Japan', 'JP');
 
 -- Insert Cities
 INSERT INTO cities (name, country_code) VALUES 
-('New Delhi', 'IN'), ('Mumbai', 'IN'), ('Bangalore', 'IN'), ('Kolkata', 'IN'),
-('New York', 'US'), ('Los Angeles', 'US'), ('Chicago', 'US'), ('Houston', 'US'),
-('London', 'UK'), ('Manchester', 'UK'), ('Birmingham', 'UK'),
-('Paris', 'FR'), ('Lyon', 'FR'), ('Marseille', 'FR'),
-('Berlin', 'DE'), ('Munich', 'DE'), ('Frankfurt', 'DE'),
-('Toronto', 'CA'), ('Vancouver', 'CA'), ('Montreal', 'CA'),
-('Sydney', 'AU'), ('Melbourne', 'AU'), ('Brisbane', 'AU'),
-('Tokyo', 'JP'), ('Osaka', 'JP'), ('Kyoto', 'JP');
+('New Delhi', 'IN'), 
+('Mumbai', 'IN'), 
+('Bangalore', 'IN'), 
+('Kolkata', 'IN'),
+('New York', 'US'), 
+('Los Angeles', 'US'), 
+('Chicago', 'US'), 
+('Houston', 'US'),
+('London', 'UK'), 
+('Manchester', 'UK'), 
+('Birmingham', 'UK'),
+('Paris', 'FR'), 
+('Lyon', 'FR'), 
+('Marseille', 'FR'),
+('Berlin', 'DE'), 
+('Munich', 'DE'), 
+('Frankfurt', 'DE'),
+('Toronto', 'CA'), 
+('Vancouver', 'CA'), 
+('Montreal', 'CA'),
+('Sydney', 'AU'), 
+('Melbourne', 'AU'), 
+('Brisbane', 'AU'),
+('Tokyo', 'JP'), 
+('Osaka', 'JP'), 
+('Kyoto', 'JP');
 
--- Insert Hotels (sample hotels for each city)
+-- Insert Hotels
 INSERT INTO hotels (name, city_id, price_per_night, rating, description, image_url) VALUES 
 ('The Oberoi', 1, 15000, 4.8, 'Luxury hotel in the heart of New Delhi.', 'https://example.com/oberoi.jpg'),
 ('Taj Mahal Palace', 2, 20000, 4.9, 'Iconic heritage hotel in Mumbai.', 'https://example.com/taj.jpg'),

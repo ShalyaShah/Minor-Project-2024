@@ -26,10 +26,10 @@
           <p>Book Hotels, Flights and stay packages at lowest price.</p>
         </div>
         <div class="booking__container">
-          <form>
+          <form id="hotelSearchForm">
             <div class="form__group">
               <div class="input__group">
-                <input type="text" id="city" placeholder="Location" required/>
+                <input type="text" id="city" placeholder="Location" required />
               </div>
               <p>Where are you going?</p>
             </div>
@@ -41,27 +41,52 @@
             </div>
             <div class="form__group">
               <div class="input__group">
-                <input type="date" id="check_out_date" required/>
+                <input type="date" id="check_out_date" required />
               </div>
               <p>Check Out Date</p>
             </div>
             <div class="form__group">
               <div class="input__group">
-                <input type="number" id="guests" placeholder="Guests" min="1" required/>
+                <input type="number" id="guests" placeholder="Guests" min="1" required />
               </div>
               <p>Add guests</p>
             </div>
             <div class="form__group">
               <div class="input__group">
-                <input type="number" id="rooms" placeholder="Rooms" min="1" required/>
+                <input type="number" id="rooms" placeholder="Rooms" min="1" required />
               </div>
               <p>Add Rooms</p>
             </div>
+            <button id="hotel_search_button" class="btn">
+              <i class="ri-search-line"></i> Search
+            </button>
           </form>
           <button id="hotel_search_button" class="btn"><i class="ri-search-line"></i></button>
         </div>
       </div>
     
+      <script>
+        document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("hotelSearchForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const city = document.getElementById("city").value;
+    const checkInDate = document.getElementById("check_in_date").value;
+    const checkOutDate = document.getElementById("check_out_date").value;
+    const guests = document.getElementById("guests").value;
+    const rooms = document.getElementById("rooms").value;
+
+    // Save search data to sessionStorage
+    sessionStorage.setItem(
+      "searchData",
+      JSON.stringify({ city, checkInDate, checkOutDate, guests, rooms })
+    );
+
+    // Redirect to results page
+    window.location.href = "hotel_results.html";
+  });
+});
+            </script>
 
       <section class="section__container popular__container">
         <h2 style="margin-top: 20px;" class="section__header">Popular Destinations</h2>
@@ -223,7 +248,7 @@
             <p>© 2025 GoTrip. All Rights Reserved.</p>
         </div>
     </footer>
-    <script type="module" src="./js/hotel_results.js"></script>
+
 
   </body>
 </html>

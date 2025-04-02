@@ -3,10 +3,10 @@ header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
 
 // Connect to Database
-$servername = "localhost";  // Change if necessary
-$username = "root";         // Your MySQL username
-$password = "";             // Your MySQL password (default is empty in XAMPP)
-$dbname = "hotel_booking";  // Your database name
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "hotel_booking";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
