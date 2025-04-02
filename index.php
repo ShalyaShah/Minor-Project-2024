@@ -52,11 +52,54 @@ session_start();
 </div>
     
 
-    <section class="hero">
-        <h1>Discover Your Next Adventure</h1>
-        <p>Book flights, hotels, and more with the best deals!</p>
+  <!-- Hero Section -->
+  <section class="hero">
+        <div class="hero-content">
+            <h1>Discover Your Next Adventure</h1>
+            <?php
+if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
+    // Get the email from the session
+    $email = $_SESSION['email'];
+
+    // Database connection
+    $servername = "localhost"; // Replace with your database server
+    $username = "root"; // Replace with your database username
+    $password = ""; // Replace with your database password
+    $dbname = "minor-project"; // Replace with your database name
+
+    // Create a connection
+    $conn = new mysqli($servername, $username, $password, $dbname);
+
+    // Check the connection
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    // Query to fetch the first name
+    $sql = "SELECT fname FROM users WHERE email = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    // Check if a result is found
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $fname = $row['fname'];
+        echo "<p>Welcome, $fname!</p>";
+    } else {
+        echo "<p>Welcome, Guest!</p>";
+    }
+
+    // Close the statement and connection
+    $stmt->close();
+    $conn->close();
+} else {
+    echo "<p>Welcome, Guest!</p>";
+}
+?>
         <button class="explore-btn">Explore Now</button>
-        
+        </div>
     </section>
 
     <div class="search-form">

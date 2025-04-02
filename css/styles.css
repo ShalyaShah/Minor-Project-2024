@@ -178,22 +178,44 @@ body {
         transform: translate(-50%, -50%);
     }
 }
+/* Hero Section */
 .hero {
+    position: relative;
     text-align: center;
     padding: 150px 20px 100px;
     background: url('../images/yoo.jpg') no-repeat center center;
+    background-size: cover;
     color: white;
     font-size: 20px;
+    overflow: hidden;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Gradient overlay */
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
 }
 
 .hero h1 {
     font-size: 50px;
     margin-bottom: 10px;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
 }
 
 .hero p {
     font-size: 18px;
     margin-bottom: 20px;
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
 }
 
 .explore-btn {

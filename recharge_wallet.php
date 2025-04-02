@@ -78,17 +78,17 @@ if ($action === 'get_balance') {
         echo json_encode(['status' => 'error', 'message' => 'Failed to recharge wallet: ' . $stmt->error]);
     }
     $stmt->close();
-} else {
-    echo json_encode(['status' => 'error', 'message' => 'Invalid action']);
-}
+} elseif ($action === 'deduct_balance') {
+    // Deduct balance from the wallet
+    $input = json_decode(file_get_contents('php://input'), true); // Decode JSON input
+    $amount = floatval($input['amount']); // Ensure amount is parsed correctly
 
-if ($action === 'deduct_balance') {
-    $amount = floatval(file_get_contents('php://input'));
     if ($amount <= 0) {
         echo json_encode(['status' => 'error', 'message' => 'Invalid amount']);
         exit;
     }
 
+    // Fetch the current wallet balance
     $query = "SELECT wallet_balance FROM users WHERE id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param('i', $user_id);
@@ -98,6 +98,7 @@ if ($action === 'deduct_balance') {
     $stmt->close();
 
     if ($wallet_balance >= $amount) {
+        // Deduct the amount from the wallet
         $query = "UPDATE users SET wallet_balance = wallet_balance - ? WHERE id = ?";
         $stmt = $conn->prepare($query);
         $stmt->bind_param('di', $amount, $user_id);
@@ -110,7 +111,8 @@ if ($action === 'deduct_balance') {
     } else {
         echo json_encode(['status' => 'error', 'message' => 'Insufficient balance']);
     }
-    exit;
+} else {
+    echo json_encode(['status' => 'error', 'message' => 'Invalid action']);
 }
 
 // Close the database connection
