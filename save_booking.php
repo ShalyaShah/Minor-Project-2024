@@ -1,4 +1,6 @@
 <?php
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 header('Content-Type: application/json');
 
 // Enable error reporting for debugging
@@ -97,11 +99,73 @@ try {
     // Commit transaction
     $pdo->commit();
     
+    // Send booking details via email
+    require 'vendor/autoload.php'; // Load PHPMailer
+
+    
+
+    $mail = new PHPMailer(true);
+
+    try {
+        // Server settings
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'gotrip.minorproject@gmail.com'; // Your email
+        $mail->Password = 'wwfs dcfp zrlv rbio'; // Your email password
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+        $mail->Port = 465;
+
+        // Recipients
+        $mail->setFrom('gotrip.minorproject@gmail.com', 'GoTrip');
+        $mail->addAddress($contactInfo['email'], $contactInfo['name']); // User's email and name
+
+        // Email content
+        $mail->isHTML(true);
+        $mail->Subject = 'Your Booking Confirmation - ' . $bookingReference;
+        $mail->Body = '
+            <html>
+            <body>
+                <h2>Booking Confirmation</h2>
+                <p>Dear ' . $contactInfo['name'] . ',</p>
+                <p>Thank you for booking with GoTrip! Here are your booking details:</p>
+                <ul>
+                    <li><strong>Booking Reference:</strong> ' . $bookingReference . '</li>
+                    <li><strong>Origin:</strong> ' . $searchParams['origin'] . ' (' . $searchParams['originCode'] . ')</li>
+                    <li><strong>Destination:</strong> ' . $searchParams['destination'] . ' (' . $searchParams['destinationCode'] . ')</li>
+                    <li><strong>Departure Date:</strong> ' . $searchParams['departureDate'] . '</li>
+                    <li><strong>Total Passengers:</strong> ' . $searchParams['adults'] . '</li>
+                    <li><strong>Total Amount:</strong> ' . $flight['price']['total'] . ' ' . $flight['price']['currency'] . '</li>
+                </ul>
+                <p>We wish you a pleasant journey!</p>
+                <p>Best regards,<br>The GoTrip Team</p>
+            </body>
+            </html>';
+        $mail->AltBody = 'Dear ' . $contactInfo['name'] . ',
+        
+        Thank you for booking with GoTrip! Here are your booking details:
+        - Booking Reference: ' . $bookingReference . '
+        - Origin: ' . $searchParams['origin'] . ' (' . $searchParams['originCode'] . ')
+        - Destination: ' . $searchParams['destination'] . ' (' . $searchParams['destinationCode'] . ')
+        - Departure Date: ' . $searchParams['departureDate'] . '
+        - Total Passengers: ' . $searchParams['adults'] . '
+        - Total Amount: ' . $flight['price']['total'] . ' ' . $flight['price']['currency'] . '
+        
+        We wish you a pleasant journey!
+        
+        Best regards,
+        The GoTrip Team';
+
+        $mail->send();
+    } catch (Exception $e) {
+        error_log('Mailer Error: ' . $mail->ErrorInfo);
+    }
+
     // Return success response
     echo json_encode([
         'success' => true,
         'bookingId' => $bookingReference,
-        'message' => 'Booking successfully saved'
+        'message' => 'Booking successfully saved and email sent'
     ]);
     
 } catch (Exception $e) {
