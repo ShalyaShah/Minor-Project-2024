@@ -1,8 +1,9 @@
 import { accessToken, getAccessToken } from './auth.js';
 // Function to search airports
 async function searchAirports(keyword) {
-    if (!accessToken) {
-        accessToken = await getAccessToken();
+    let token = accessToken; // Use a local variable to store the token
+    if (!token) {
+        token = await getAccessToken();
     }
 
     try {

@@ -583,7 +583,6 @@ async function processPayment() {
             </div>
         `;
 
-        // Send booking data to backend
         const response = await fetch('./save_booking.php', {
             method: 'POST',
             headers: {
@@ -591,12 +590,16 @@ async function processPayment() {
             },
             body: JSON.stringify(bookingData)
         });
-
+        
+        // Log the raw response for debugging
+        const responseText = await response.text();
+        console.log('Server Response:', responseText);
+        
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-
-        const result = await response.json();
+        
+        const result = JSON.parse(responseText);
 
         if (result.success) {
             mainContent.innerHTML = `
