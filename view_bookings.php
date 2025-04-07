@@ -80,6 +80,7 @@ try {
                             <td><?php echo htmlspecialchars($booking['booking_date']); ?></td>
                             <td>
                                 <button class="view-passenger-info" data-booking-id="<?php echo $booking['id']; ?>">Passenger Info</button>
+                                <button class="delete-booking" data-booking-id="<?php echo $booking['id']; ?>">Cancel Booking</button>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -100,37 +101,80 @@ try {
             </div>
         </div>
     </div>
-
+<!-- Popup Notification -->
+<div id="popup-notification" style="display: none;">
+    <p id="popup-message"></p>
+</div>
     <footer>
         <p>© 2025 GoTrip. All Rights Reserved.</p>
     </footer>
 
     <script>
-        $(document).ready(function () {
-            // Handle Passenger Info button click
-            $('.view-passenger-info').on('click', function () {
-                const bookingId = $(this).data('booking-id');
+      $(document).ready(function () {
+    // Handle Passenger Info button click
+    $('.view-passenger-info').on('click', function () {
+        const bookingId = $(this).data('booking-id');
 
-                // Fetch passenger info via AJAX
-                $.ajax({
-                    url: 'fetch_passenger_info.php',
-                    method: 'POST',
-                    data: { booking_id: bookingId },
-                    success: function (response) {
-                        $('#passenger-info-content').html(response);
-                        $('#passenger-info-modal').show();
-                    },
-                    error: function () {
-                        alert('Failed to fetch passenger information.');
-                    }
-                });
-            });
-
-            // Close modal
-            $('#close-modal').on('click', function () {
-                $('#passenger-info-modal').hide();
-            });
+        // Fetch passenger info via AJAX
+        $.ajax({
+            url: 'fetch_passenger_info.php',
+            method: 'POST',
+            data: { booking_id: bookingId },
+            success: function (response) {
+                $('#passenger-info-content').html(response);
+                $('#passenger-info-modal').show();
+            },
+            error: function () {
+                alert('Failed to fetch passenger information.');
+            }
         });
+    });
+
+    // Handle Delete Booking button click
+    $('.delete-booking').on('click', function () {
+        const bookingId = $(this).data('booking-id');
+
+        if (confirm('Are you sure you want to delete this booking?')) {
+            // Send delete request via AJAX
+            $.ajax({
+                url: 'delete_booking.php',
+                method: 'POST',
+                data: { booking_id: bookingId },
+                success: function (response) {
+                    const result = JSON.parse(response);
+                    if (result.status === 'success') {
+                        // Show success popup
+                        showPopup('Booking cancelled successfully!');
+                        // Remove the deleted booking row from the table
+                        $(`button[data-booking-id="${bookingId}"]`).closest('tr').remove();
+                    } else {
+                        alert(result.message);
+                    }
+                },
+                error: function () {
+                    alert('Failed to delete booking.');
+                }
+            });
+        }
+    });
+
+    // Close modal
+    $('#close-modal').on('click', function () {
+        $('#passenger-info-modal').hide();
+    });
+
+    // Function to show popup notification
+    function showPopup(message) {
+        const popup = $('#popup-notification');
+        $('#popup-message').text(message);
+        popup.fadeIn();
+
+        // Automatically hide the popup after 3 seconds
+        setTimeout(() => {
+            popup.fadeOut();
+        }, 3000);
+    }
+});
     </script>
 </body>
 </html>

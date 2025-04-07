@@ -180,7 +180,61 @@ body {
 #passenger-info-content table td {
     color: #333; /* Table cell text color */
 }
+/* Delete Button */
+.delete-booking {
+    background-color: #ff4d4d; /* Light Red */
+    color: white; /* White text */
+    border: none; /* Remove default border */
+    padding: 8px 15px; /* Add padding */
+    font-size: 14px; /* Font size */
+    font-weight: 600; /* Bold text */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: all 0.3s ease; /* Smooth transition */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
 
+.delete-booking:hover {
+    background-color: #e60000; /* Darker Red */
+    color: #f4f4f4; /* Slightly lighter text color */
+    transform: scale(1.05); /* Slight zoom effect */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
+}
+/* Popup Notification Styles */
+#popup-notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #28a745; /* Green background for success */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    font-weight: bold;
+    z-index: 1000;
+    animation: fadeInOut 3s ease;
+}
+
+/* Fade-in and Fade-out Animation */
+@keyframes fadeInOut {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    10% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    90% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+}
 /* Fade-in Animation */
 @keyframes fadeIn {
     from {

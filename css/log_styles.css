@@ -1,137 +1,187 @@
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:"poppins",sans-serif;
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
 }
-body{
-    background-color: #c9d6ff;
-    background:linear-gradient(to right,#e2e2e2,#c9d6ff);
-}
-.container{
-    background:#fff;
-    width:450px;
-    padding:1.5rem;
-    margin:50px auto;
-    border-radius:10px;
-    box-shadow:0 20px 35px rgba(0,0,1,0.9);
-}
-form{
-    margin:0 2rem;
-}
-.form-title{
-    font-size:1.5rem;
-    font-weight:bold;
-    text-align:center;
-    padding:1.3rem;
-    margin-bottom:0.4rem;
-}
-input{
-    color:inherit;
-    width:100%;
-    background-color:transparent;
-    border:none;
-    border-bottom:1px solid #757575;
-    padding-left:1.5rem;
-    font-size:15px;
-}
-.input-group{
-    padding:1% 0;
-    position:relative;
 
+/* Body Styles */
+body {
+    background: linear-gradient(to bottom, #003A6C, #007AA5);
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
 }
-.input-group i{
-    position:absolute;
-    color:black;
-}
-input:focus{
-    background-color: transparent;
-    outline:transparent;
-    border-bottom:2px solid hsl(327,90%,28%);
-}
-input::placeholder{
-    color:transparent;
-}
-label{
-    color:#757575;
-    position:relative;
-    left:1.2em;
-    top:-1.3em;
-    cursor:auto;
-    transition:0.3s ease all;
-}
-input:focus~label,input:not(:placeholder-shown)~label{
-    top:-3em;
-    color:hsl(327,90%,28%);
-    font-size:15px;
-}
-.recover{
-    text-align:right;
-    font-size:1rem;
-    margin-bottom:1rem;
 
+/* Login Container */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
 }
-.recover a{
-    text-decoration:none;
-    color:rgb(125,125,235);
+
+/* Form Box */
+.form-box {
+    background: #ffffff;
+    width: 400px;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    text-align: center;
 }
-.recover a:hover{
-    color:blue;
-    text-decoration:underline;
+
+/* Logo Section */
+.logo img {
+    width: 120px;
+    margin-bottom: 1.5rem;
+    border-radius: 10px; /* Optional: Add rounded corners to the logo */
 }
-.btn{
-    font-size:1.1rem;
-    padding:8px 0;
-    border-radius:5px;
-    outline:none;
-    border:none;
-    width:100%;
-    background:rgb(125,125,235);
-    color:white;
-    cursor:pointer;
-    transition:0.9s;
+
+/* Form Title */
+.form-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #003A6C;
+    margin-bottom: 0.5rem;
 }
-.btn:hover{
-    background:#07001f;
+
+.form-subtitle {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 1.5rem;
 }
-.or{
-    font-size:1.1rem;
-    margin-top:0.5rem;
-    text-align:center;
+
+/* Input Group */
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+    text-align: left;
 }
-.icons{
-    text-align:center;
+
+.input-group i {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    color: #757575;
+    font-size: 16px;
 }
-.icons i{
-    color:rgb(125,125,235);
-    padding:0.8rem 1.5rem;
-    border-radius:10px;
-    font-size:1.5rem;
-    cursor:pointer;
-    border:2px solid #dfe9f5;
-    margin:0 15px;
-    transition:1s;
+
+.input-group input {
+    width: 100%;
+    padding: 12px 12px 12px 40px; /* Add space for the icon */
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    background-color: #f9f9f9; /* Light background for inputs */
 }
-.icons i:hover{
-    background:#07001f;
-    font-size:1.6rem;
-    border:2px solid rgb(125,125,235);
+
+.input-group input:focus {
+    border-color: #007AA5;
+    box-shadow: 0 0 5px rgba(0, 122, 165, 0.5);
 }
-.links{
-    display:flex;
-    justify-content:space-around;
-    padding:0 4rem;
-    margin-top:0.9rem;
-    font-weight:bold;
+
+.input-group input::placeholder {
+    color: #757575;
+    font-size: 14px;
 }
-button{
-    color:rgb(125,125,235);
-    border:none;
-    background-color:transparent;
-    font-size:1rem;
-    font-weight:bold;
+
+/* Recover Password Link */
+.recover {
+    text-align: right;
+    font-size: 14px;
+    margin-bottom: 20px;
 }
-button:hover{
-    text-decoration:underline;
-    color:rgb(181, 58, 136);
+
+.recover a {
+    text-decoration: none;
+    color: #007AA5;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.recover a:hover {
+    color: #005f80;
+    text-decoration: underline;
+}
+
+/* Buttons */
+.btn {
+    font-size: 16px;
+    padding: 12px 20px;
+    border-radius: 25px;
+    border: none;
+    background: #007AA5;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 100%; /* Full-width button for better alignment */
+}
+
+.btn:hover {
+    background: #005f80;
+    transform: scale(1.05);
+}
+
+/* Links Section */
+.links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #555;
+}
+
+.links p {
+    margin-right: 5px;
+}
+
+.links button {
+    color: #007AA5;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.links button:hover {
+    color: #005f80;
+    text-decoration: underline;
+}
+
+/* Form Visibility */
+#signIn {
+    display: block; /* Default: Show Sign In form */
+}
+
+#signUp {
+    display: none; /* Default: Hide Sign Up form */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .form-box {
+        width: 90%;
+        padding: 1.5rem;
+    }
+
+    .form-title {
+        font-size: 1.5rem;
+    }
+
+    .btn {
+        font-size: 14px;
+        padding: 10px 15px;
+    }
 }

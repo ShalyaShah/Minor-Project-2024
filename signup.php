@@ -29,7 +29,7 @@ if ($conn) {
             $mail->Host       = 'smtp.gmail.com';                     // Set the SMTP server to send through
             $mail->SMTPAuth   = true;                                   // Enable SMTP authentication
             $mail->Username   = 'gotrip.minorproject@gmail.com';        // SMTP username
-            $mail->Password   = 'wwfs dcfp zrlv rbio';                  // SMTP password
+            $mail->Password   = 'ixij wbyv lqwv bkrr';                  // SMTP password
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            // Enable implicit TLS encryption
             $mail->Port       = 465;                                    // TCP port to connect to
 
