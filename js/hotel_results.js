@@ -36,6 +36,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     <p>${hotel.description}</p>
                     <img src="${hotel.image_url}" width="200" alt="Hotel Image">
                 `;
+                hotelElement.addEventListener("click", () => {
+                    window.location.href = `hotel_details.html?hotel_id=${hotel.id}`;
+                });
+                
                 resultsContainer.appendChild(hotelElement);
             });
         })
