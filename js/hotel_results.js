@@ -1,7 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     const resultsContainer = document.getElementById("results");
 
-    // Get search data from sessionStorage
     const searchData = JSON.parse(sessionStorage.getItem("searchData"));
 
     if (!searchData) {
@@ -9,7 +8,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    // Fetch hotels from the server
     fetch("fetch_hotel.php", {
         method: "POST",
         headers: {
@@ -24,22 +22,23 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            // Display each hotel
             hotels.forEach((hotel) => {
                 const hotelElement = document.createElement("div");
-                hotelElement.className = "hotel";
+                hotelElement.className = "hotel-card";
                 hotelElement.innerHTML = `
-                    <h3>${hotel.name}</h3>
-                    <p>City: ${hotel.city}, ${hotel.country}</p>
-                    <p>Price: ₹${hotel.price_per_night}/night</p>
-                    <p>Rating: ⭐ ${hotel.rating}</p>
-                    <p>${hotel.description}</p>
-                    <img src="${hotel.image_url}" width="200" alt="Hotel Image">
+                    <img src="${hotel.image_url}" alt="Hotel Image" />
+                    <div class="hotel-info">
+                        <h3>${hotel.name}</h3>
+                        <p>${hotel.city}, ${hotel.country}</p>
+                        <p class="price">₹${hotel.price_per_night}/night</p>
+                        <p>Rating: ⭐ ${hotel.rating}</p>
+                        <p>${hotel.description}</p>
+                    </div>
                 `;
                 hotelElement.addEventListener("click", () => {
                     window.location.href = `hotel_details.html?hotel_id=${hotel.id}`;
                 });
-                
+
                 resultsContainer.appendChild(hotelElement);
             });
         })
@@ -47,4 +46,10 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("Error fetching hotels:", error);
             resultsContainer.innerHTML = "<p>There was an error fetching the hotel data. Please try again later.</p>";
         });
+
+    // Toggle Dark Mode
+    const toggleDark = document.getElementById("toggleDark");
+    toggleDark.addEventListener("click", () => {
+        document.body.classList.toggle("dark-mode");
+    });
 });
