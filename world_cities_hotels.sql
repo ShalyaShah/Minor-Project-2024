@@ -24,7 +24,17 @@ CREATE TABLE hotels (
     image_url TEXT,
     FOREIGN KEY (city_id) REFERENCES cities (id)
 );
-
+CREATE TABLE rooms (
+ id int(11) NOT NULL AUTO_INCREMENT,
+ hotel_id int(11) NOT NULL,
+ room_type varchar(100) NOT NULL,
+ price decimal(10,2) NOT NULL,
+ availability int(11) NOT NULL,
+ image_url varchar(255) DEFAULT NULL,
+ PRIMARY KEY (id),
+ KEY hotel_id (hotel_id),
+ CONSTRAINT rooms_ibfk_1 FOREIGN KEY (hotel_id) REFERENCES hotels (id)
+);
 -- Insert Countries
 INSERT INTO countries (name, code) VALUES 
 ('India', 'IN'), 

@@ -1,43 +1,45 @@
 document.addEventListener("DOMContentLoaded", () => {
     const urlParams = new URLSearchParams(window.location.search);
     const hotelId = urlParams.get("hotel_id");
-
+  
     if (!hotelId) {
-        document.getElementById("hotel").innerText = "Invalid hotel.";
-        return;
+      document.getElementById("hotel-details").innerHTML = "<p>Invalid hotel ID. Please go back and try again.</p>";
+      return;
     }
-
+  
     fetch(`fetch_hotel_details.php?hotel_id=${hotelId}`)
-        .then(response => response.json())
-        .then(data => {
-            if (!data.hotel) {
-                document.getElementById("hotel").innerText = "Hotel not found.";
-                return;
-            }
-
-            const hotel = data.hotel;
-            const rooms = data.rooms;
-
-            document.getElementById("hotel").innerHTML = `
-                <h2>${hotel.name}</h2>
-                <p><strong>City:</strong> ${hotel.city}, ${hotel.country}</p>
-                <p><strong>Rating:</strong> ⭐ ${hotel.rating}</p>
-                <p><strong>Description:</strong> ${hotel.description}</p>
-                <img src="${hotel.image_url}" alt="Hotel Image" width="300" style="margin-top:10px;">
-                <h3 style="margin-top: 30px;">Available Rooms</h3>
-            `;
-
-            const roomList = document.getElementById("roomList");
-            rooms.forEach(room => {
-                roomList.innerHTML += `
-                    <div class="room">
-                        <h4>${room.room_type}</h4>
-                        <p>Price: ₹${room.room_price} / night</p>
-                    </div>
-                `;
-            });
-        })
-        .catch(err => {
-            console.error("Error:", err);
-        });
-});
+      .then((response) => response.json())
+      .then((data) => {
+        const hotelDetailsContainer = document.getElementById("hotel-details");
+  
+        const hotel = data.hotel;
+        hotelDetailsContainer.innerHTML = `
+          <div class="hotel-info">
+            <img src="${hotel.image_url}" alt="Hotel Image" />
+            <h2>${hotel.name}</h2>
+            <p>${hotel.description}</p>
+            <p>Location: ${hotel.city}, ${hotel.country}</p>
+            <p>Price per night: ₹${parseFloat(hotel.price_per_night).toLocaleString()}</p>
+            <p>Rating: ⭐ ${parseFloat(hotel.rating).toFixed(2)}</p>
+          </div>
+          <h3>Available Rooms</h3>
+          <div class="rooms-container">
+            ${data.rooms
+              .map(
+                (room) => `
+              <div class="room-card">
+                <img src="${room.image_url}" alt="Room Image" />
+                <h4>${room.room_type}</h4>
+                <p>Price: ₹${parseFloat(room.price).toLocaleString()}</p>
+                <p>Availability: ${room.availability} rooms</p>
+              </div>
+            `
+              )
+              .join("")}
+          </div>
+        `;
+      })
+      .catch(() => {
+        document.getElementById("hotel-details").innerHTML = "<p>Error fetching hotel details. Please try again later.</p>";
+      });
+  });

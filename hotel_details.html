@@ -1,20 +1,26 @@
-<!-- hotel_details.html -->
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./css/hotel_styles.css" />
     <title>Hotel Details</title>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        .hotel-details, .rooms { margin-top: 20px; }
-        .room { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; }
-    </style>
-</head>
-<body>
-    <h1>Hotel Details</h1>
-    <div id="hotel"></div>
-<div id="roomList"></div>
+  </head>
+  <body>
+    <header class="navbar">
+      <div class="logo">
+        <img src="./images/Logo GoTrip.jpeg" alt="GoTrip Logo" />
+        <span>GoTrip</span>
+      </div>
+    </header>
+
+    <main>
+      <h1>Hotel Details</h1>
+      <div id="hotel-details" class="hotel-details-container">
+        <!-- Hotel details and room types will be dynamically inserted here -->
+      </div>
+    </main>
 
     <script src="./js/hotel_details.js"></script>
-</body>
+  </body>
 </html>
