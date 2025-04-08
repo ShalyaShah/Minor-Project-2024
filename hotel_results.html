@@ -3,8 +3,183 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="./css/hotel_styles.css" />
     <title>Hotel Results</title>
+    <style>
+      :root {
+        --bg: #f4f6f8;
+        --text: #333;
+        --card-bg: white;
+        --card-shadow: rgba(0, 0, 0, 0.1);
+        --accent: #003366;
+        --price: #00704a;
+        --input-bg: white;
+        --input-border: #ccc;
+      }
+
+      body.dark {
+        --bg: #1e1e1e;
+        --text: #f0f0f0;
+        --card-bg: #2c2c2c;
+        --card-shadow: rgba(255, 255, 255, 0.1);
+        --accent: #90caf9;
+        --price: #80e27e;
+        --input-bg: #333;
+        --input-border: #555;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        padding-bottom: 50px;
+        transition: background-color 0.3s, color 0.3s;
+      }
+
+      .navbar {
+        background-color: #003366;
+        color: white;
+        padding: 15px 30px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .logo img {
+        width: 50px;
+        height: 50px;
+        border-radius: 8px;
+        object-fit: cover;
+      }
+
+      .logo span {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: white;
+      }
+
+      .theme-toggle {
+        cursor: pointer;
+        background: #fff;
+        color: #003366;
+        border: none;
+        padding: 8px 12px;
+        font-size: 0.9rem;
+        border-radius: 20px;
+        transition: 0.3s ease;
+      }
+
+      .theme-toggle:hover {
+        background: #ddd;
+      }
+
+      main {
+        padding: 30px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: var(--accent);
+        font-size: 2rem;
+      }
+
+      .search-bar {
+        max-width: 500px;
+        margin: 0 auto 30px auto;
+        display: flex;
+      }
+
+      .search-bar input {
+        flex: 1;
+        padding: 10px 15px;
+        font-size: 1rem;
+        border: 2px solid var(--input-border);
+        border-radius: 8px;
+        outline: none;
+        background-color: var(--input-bg);
+        color: var(--text);
+        transition: 0.3s ease;
+      }
+
+      .results-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+      }
+
+      .hotel-card {
+        background-color: var(--card-bg);
+        border-radius: 12px;
+        box-shadow: 0 4px 12px var(--card-shadow);
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .hotel-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px var(--card-shadow);
+      }
+
+      .hotel-card img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+      }
+
+      .hotel-card-content {
+        padding: 15px;
+      }
+
+      .hotel-card h2 {
+        font-size: 1.3rem;
+        margin-bottom: 8px;
+        color: var(--accent);
+      }
+
+      .hotel-card p {
+        font-size: 0.95rem;
+        margin-bottom: 6px;
+        color: var(--text);
+      }
+
+      .hotel-card .price {
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: var(--price);
+        margin-top: 10px;
+      }
+
+      .no-results {
+        text-align: center;
+        margin-top: 30px;
+        font-size: 1.2rem;
+        color: #999;
+      }
+
+      @media (max-width: 600px) {
+        .logo span {
+          font-size: 1.2rem;
+        }
+      }
+    </style>
   </head>
   <body>
     <header class="navbar">
@@ -12,15 +187,62 @@
         <img src="./images/Logo GoTrip.jpeg" alt="GoTrip Logo" />
         <span>GoTrip</span>
       </div>
+      <button class="theme-toggle" id="themeToggle">🌙 Dark Mode</button>
     </header>
 
     <main>
       <h1>Search Results</h1>
+
+      <div class="search-bar">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Search by hotel name or location..."
+        />
+      </div>
+
       <div id="results" class="results-container">
         <!-- Hotel cards will be dynamically inserted here -->
+      </div>
+
+      <div id="noResults" class="no-results" style="display: none;">
+        No matching hotels found.
       </div>
     </main>
 
     <script src="./js/hotel_results.js"></script>
+    <script>
+      // Theme Toggle
+      const toggleBtn = document.getElementById('themeToggle');
+      const body = document.body;
+
+      toggleBtn.addEventListener('click', () => {
+        body.classList.toggle('dark');
+        toggleBtn.textContent = body.classList.contains('dark')
+          ? '☀️ Light Mode'
+          : '🌙 Dark Mode';
+      });
+
+      // Live Search
+      const searchInput = document.getElementById('searchInput');
+      const resultsContainer = document.getElementById('results');
+      const noResults = document.getElementById('noResults');
+
+      searchInput.addEventListener('input', () => {
+        const query = searchInput.value.toLowerCase();
+        const cards = resultsContainer.querySelectorAll('.hotel-card');
+
+        let visibleCount = 0;
+
+        cards.forEach(card => {
+          const text = card.innerText.toLowerCase();
+          const match = text.includes(query);
+          card.style.display = match ? 'block' : 'none';
+          if (match) visibleCount++;
+        });
+
+        noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+      });
+    </script>
   </body>
 </html>
