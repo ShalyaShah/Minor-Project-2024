@@ -1,28 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Hotel Results</title>
-    <link rel="stylesheet" href="hotel_result.css">
+    <link rel="stylesheet" href="hotel_result.css" />
 </head>
 <body>
-    <h1>Hotel Results</h1>
-    <div class="toggle-theme">
-        <button id="toggleDark">Toggle Dark Mode</button>
-    </div>
-    <div class="sort-container">
-        <label for="sort">Sort by: </label>
-        <select id="sort">
-            <option value="default">Default</option>
-            <option value="priceAsc">Price: Low to High</option>
-            <option value="priceDesc">Price: High to Low</option>
-            <option value="ratingDesc">Rating: High to Low</option>
-        </select>
-    </div>
-    <div id="results">
-        <!-- Hotel cards will be dynamically inserted here -->
-    </div>
+    <main>
+        <h1 class="page-title">Hotel Results</h1>
+
+        <div class="top-bar">
+            <div class="sort-container">
+                <label for="sort">Sort by:</label>
+                <select id="sort">
+                    <option value="default">Default</option>
+                    <option value="priceAsc">Price: Low to High</option>
+                    <option value="priceDesc">Price: High to Low</option>
+                    <option value="ratingDesc">Rating: High to Low</option>
+                </select>
+            </div>
+
+            <div class="toggle-theme">
+                <button id="toggleDark">🌙 Toggle Dark Mode</button>
+            </div>
+        </div>
+
+        <div id="results" class="hotel-results">
+            <!-- Hotel cards will be inserted here -->
+        </div>
+    </main>
 
     <script src="./js/hotel_results.js"></script>
 </body>
