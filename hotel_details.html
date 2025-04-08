@@ -1,26 +1,224 @@
 <!DOCTYPE html>
+<?php
+$conn = mysqli_connect("localhost", "root", "", "hotel_booking");
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
+}
+
+$hotel_id = $_GET['id'] ?? 1; // fallback to 1 if not provided
+$rooms = [];
+$sql = "SELECT * FROM rooms WHERE hotel_id = $hotel_id";
+$result = mysqli_query($conn, $sql);
+while ($row = mysqli_fetch_assoc($result)) {
+    $rooms[] = $row;
+}
+?>
+
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="./css/hotel_styles.css" />
-    <title>Hotel Details</title>
-  </head>
-  <body>
-    <header class="navbar">
-      <div class="logo">
-        <img src="./images/Logo GoTrip.jpeg" alt="GoTrip Logo" />
-        <span>GoTrip</span>
-      </div>
-    </header>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hotel Details</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #fffaf4;
+      color: #333;
+    }
 
-    <main>
-      <h1>Hotel Details</h1>
-      <div id="hotel-details" class="hotel-details-container">
-        <!-- Hotel details and room types will be dynamically inserted here -->
-      </div>
-    </main>
+    .navbar {
+      background-color: #ff5e5e;
+      padding: 15px 30px;
+      display: flex;
+      align-items: center;
+    }
 
-    <script src="./js/hotel_details.js"></script>
-  </body>
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo img {
+      height: 40px;
+      border-radius: 8px;
+    }
+
+    .logo span {
+      font-size: 24px;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 36px;
+      color: #222;
+    }
+
+    .hotel-details-container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 0 20px;
+    }
+
+    .hotel-info {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+    }
+
+    .gallery {
+      display: flex;
+      gap: 15px;
+      overflow-x: auto;
+      margin-bottom: 25px;
+    }
+
+    .gallery img {
+      height: 180px;
+      border-radius: 10px;
+      object-fit: cover;
+    }
+
+    .section {
+      margin-bottom: 30px;
+    }
+
+    .section h2 {
+      font-size: 24px;
+      margin-bottom: 15px;
+      color: #b00020;
+    }
+
+    .amenities-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .amenities-list span {
+      background: #ffe8cc;
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 14px;
+    }
+
+    .rooms {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    .room {
+      display: flex;
+      flex-wrap: wrap;
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.07);
+      overflow: hidden;
+    }
+
+    .room img {
+      width: 100%;
+      max-width: 320px;
+      object-fit: cover;
+      height: auto;
+    }
+
+    .room-details {
+      flex: 1;
+      padding: 20px;
+    }
+
+    .room-details h3 {
+      margin: 0;
+      color: #b00020;
+    }
+
+    .room-details p {
+      margin: 8px 0;
+    }
+
+    .price {
+      font-weight: bold;
+      font-size: 18px;
+      margin-top: 10px;
+    }
+
+    .room-details button {
+      margin-top: 12px;
+      background-color: #ff5e5e;
+      border: none;
+      padding: 10px 20px;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .room-details button:hover {
+      background-color: #e94a4a;
+    }
+
+    @media screen and (max-width: 768px) {
+      .room {
+        flex-direction: column;
+      }
+      .room img {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo">
+      <img src="./images/Logo GoTrip.jpeg" alt="GoTrip Logo" />
+      <span>GoTrip</span>
+    </div>
+  </header>
+
+  <main>
+    <h1>Hotel Details</h1>
+
+    <div id="hotel-details" class="hotel-details-container">
+
+      <!-- This part is dynamic: gallery, room details, etc. -->
+      <!-- Add a static Amenities section -->
+      <div class="section">
+        <h2>Amenities</h2>
+        <div class="amenities-list">
+          <span>📶 Free WiFi</span>
+          <span>🏊 Infinity Pool</span>
+          <span>🧘 Yoga Pavilion</span>
+          <span>🍽️ Fine Dining</span>
+          <span>🛳️ Boat Ride</span>
+          <span>🛁 Luxury Spa</span>
+          <span>🧳 Concierge</span>
+          <span>🚗 Free Parking</span>
+          <span>📺 Smart TV</span>
+          <span>🌇 Lake View</span>
+        </div>
+      </div>
+
+      <!-- Room and hotel info will be dynamically loaded using JS -->
+    </div>
+  </main>
+
+  <!-- Inject dynamic room data from PHP -->
+<script>
+  const roomsFromDB = <?php echo json_encode($rooms); ?>;
+</script>
+
+<!-- Then load your external JavaScript -->
+<script src="./js/hotel_details.js"></script>
+</body>
+</html>
+
+</body>
 </html>
