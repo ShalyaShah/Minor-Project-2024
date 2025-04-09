@@ -56,7 +56,7 @@ img {
 }
 
 main {
-  padding: 100px 20px 50px;
+  padding: 120px 20px 50px; /* Adjusted padding to account for the fixed navbar */
   max-width: var(--max-width);
   margin: auto;
 }
@@ -67,6 +67,38 @@ h1 {
   text-align: center;
   margin-bottom: 2rem;
   color: var(--primary-color);
+}
+
+.amenities-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem; /* Increased gap for better spacing */
+  margin-top: 2rem;
+  justify-content: center; /* Center the amenities */
+}
+
+.amenities-list span {
+  background: linear-gradient(135deg, #f9a826, #ffcd3c); /* Add a gradient background */
+  padding: 0.7rem 1.5rem; /* Increased padding for a more prominent look */
+  border-radius: 30px; /* Rounded pill-like shape */
+  font-size: 1rem; /* Slightly larger font size */
+  color: var(--white); /* White text for contrast */
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effect */
+  cursor: pointer; /* Pointer cursor for interactivity */
+}
+
+.amenities-list span:hover {
+  transform: translateY(-5px); /* Lift the item slightly on hover */
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Enhance shadow on hover */
+}
+
+.amenities-list span i {
+  font-size: 1.2rem; /* Slightly larger icons */
+  color: var(--white); /* Match icon color with text */
 }
 
 .hotel-details-container {
@@ -137,24 +169,6 @@ h1 {
   font-size: 1rem;
   color: var(--text-light);
   margin-bottom: 0.5rem;
-}
-
-.amenities-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin-top: 2rem; /* Add spacing above the amenities section */
-}
-
-.amenities-list span {
-  background: var(--extra-light);
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
-  font-size: 0.9rem;
-  color: var(--text-dark);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
 }
 
 footer {
