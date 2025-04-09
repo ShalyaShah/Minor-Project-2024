@@ -18,24 +18,52 @@
   <main>
     <h1>Hotel Details</h1>
 
-    <div id="hotel-details" class="hotel-details-container">
-      </div>
+    <!-- Hotel Details Section -->
+    <div id="hotel-details" class="hotel-details-container"></div>
 
-      <div class="section">
-        <h2>Amenities</h2>
-        <div class="amenities-list">
-          <span>📶 Free WiFi</span>
-          <span>🏊 Infinity Pool</span>
-          <span>🧘 Yoga Pavilion</span>
-          <span>🍽️ Fine Dining</span>
-          <span>🛳️ Boat Ride</span>
-          <span>🛁 Luxury Spa</span>
-          <span>🧳 Concierge</span>
-          <span>🚗 Free Parking</span>
-          <span>📺 Smart TV</span>
-          <span>🌇 Lake View</span>
-        </div>
+    <!-- Amenities Section -->
+    <div class="section">
+      <h2>Amenities</h2>
+      <div class="amenities-list">
+        <span>📶 Free WiFi</span>
+        <span>🏊 Infinity Pool</span>
+        <span>🧘 Yoga Pavilion</span>
+        <span>🍽️ Fine Dining</span>
+        <span>🛳️ Boat Ride</span>
+        <span>🛁 Luxury Spa</span>
+        <span>🧳 Concierge</span>
+        <span>🚗 Free Parking</span>
+        <span>📺 Smart TV</span>
+        <span>🌇 Lake View</span>
       </div>
+    </div>
+
+    <!-- Guest Information Section -->
+    <div id="guest-info-section" style="display: none;">
+      <h2>Guest Information</h2>
+      <form id="guestInfoForm">
+        <div id="guestDetails"></div>
+        <button type="button" onclick="showPaymentSection()">Continue to Payment</button>
+      </form>
+    </div>
+
+    <!-- Payment Section -->
+    <div id="payment-section" style="display: none;">
+      <h2>Payment</h2>
+      <form id="paymentForm">
+        <label>Payment Method:
+          <select id="paymentMethod" required>
+            <option value="">Select a payment method</option>
+            <option value="credit-card">Credit Card</option>
+            <option value="paypal">PayPal</option>
+            <option value="bank-transfer">Bank Transfer</option>
+            <option value="upi">UPI</option>
+            <option value="wallet">Wallet</option>
+          </select>
+        </label>
+        <div id="paymentDetails"></div>
+        <button type="button" onclick="processPayment()">Complete Booking</button>
+      </form>
     </div>
   </main>
 
