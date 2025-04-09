@@ -35,6 +35,33 @@ CREATE TABLE rooms (
  KEY hotel_id (hotel_id),
  CONSTRAINT rooms_ibfk_1 FOREIGN KEY (hotel_id) REFERENCES hotels (id)
 );
+CREATE TABLE hotel_bookings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    booking_reference VARCHAR(20) NOT NULL UNIQUE,
+    hotel_id INT NOT NULL,
+    room_id INT NOT NULL,
+    guest_name VARCHAR(100) NOT NULL,
+    guest_email VARCHAR(100) NOT NULL,
+    guest_phone VARCHAR(15) NOT NULL,
+    check_in_date DATE NOT NULL,
+    check_out_date DATE NOT NULL,
+    total_price DECIMAL(10, 2) NOT NULL,
+    payment_method VARCHAR(50) NOT NULL,
+    booking_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (hotel_id) REFERENCES hotels(id),
+    FOREIGN KEY (room_id) REFERENCES rooms(id)
+);
+CREATE TABLE hotel_guest_info (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    booking_id INT NOT NULL,
+    title VARCHAR(10) NOT NULL,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    date_of_birth DATE NOT NULL,
+    passport_number VARCHAR(20) NOT NULL,
+    nationality VARCHAR(50) NOT NULL,
+    FOREIGN KEY (booking_id) REFERENCES hotel_bookings(id)
+);
 -- Insert Countries
 INSERT INTO countries (name, code) VALUES 
 ('India', 'IN'), 
