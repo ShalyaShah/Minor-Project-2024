@@ -319,7 +319,6 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
                     <li><a href="#">Destinations</a></li>
                     <li><a href="#">Hotels</a></li>
                     <li><a href="#">Flights</a></li>
-                    <li><a href="#">Holiday Packages</a></li>
                     <li><a href="#">Contact Us</a></li>
                     <li><a href="#">FAQs</a></li>
                 </ul>
