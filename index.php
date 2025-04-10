@@ -319,8 +319,8 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
                     <li><a href="#">Destinations</a></li>
                     <li><a href="#">Hotels</a></li>
                     <li><a href="#">Flights</a></li>
-                    <li><a href="#">Contact Us</a></li>
-                    <li><a href="#">FAQs</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="faq.html">FAQs</a></li>
                 </ul>
             </div>
     
@@ -328,9 +328,9 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
                 <h3>Customer Support</h3>
                 <ul>
                     <li><a href="#">Help Center</a></li>
-                    <li><a href="#">Cancellation & Refund Policy</a></li>
-                    <li><a href="#">Terms & Conditions</a></li>
-                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="cancellation.html">Cancellation & Refund Policy</a></li>
+                    <li><a href="terms.html">Terms & Conditions</a></li>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
                 </ul>
             </div>
     

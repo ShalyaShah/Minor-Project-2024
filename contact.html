@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Us - GoTrip</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="css/contact.css" />
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo">
+          <img src="./images/Logo GoTrip.jpeg" alt="GoTrip Logo" />
+          <span>GoTrip</span>
+        </div>
+  
+        <div class="menu">
+          <a href="index.php" class="menu-item"><i class="fa-solid fa-house"></i> Home</a>
+          <a href="flight.html" class="menu-item"><i class="fa-solid fa-plane"></i> Flights</a>
+          <a href="hotel.html" class="menu-item"><i class="fa-solid fa-hotel"></i> Hotels</a>
+        </div>
+  <section class="contact">
+    <div class="contact-container">
+      <h1>Contact Us</h1>
+      <p>Have questions or feedback? We'd love to hear from you!</p>
+
+      <div class="contact-wrapper">
+        <!-- Contact Form -->
+        <form action="send_mail.php" method="POST" class="contact-form">
+          <input type="text" name="name" placeholder="Your Name" required />
+          <input type="email" name="email" placeholder="Your Email" required />
+          <input type="text" name="subject" placeholder="Subject" />
+          <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
+          <button type="submit">Send Message</button>
+        </form>
+
+        <!-- Map -->
+        <div class="map-container">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18..."
+            width="100%"
+            height="100%"
+            style="border:0;"
+            allowfullscreen=""
+            loading="lazy"
+          ></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>
