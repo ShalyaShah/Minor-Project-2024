@@ -331,6 +331,73 @@ body {
     font-size: 1rem;
     color: #555;
 }
+/* Sort and filter container styles */
+.sort-filter-container {
+    display: flex;
+    justify-content: space-between;
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    max-width: 800px;
+    margin: 20px auto;
+}
+
+.sort-options, .filter-options {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.filter-options input[type="number"],
+.filter-options input[type="text"],
+.sort-options select {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.filter-options input[type="number"] {
+    width: 120px;
+}
+
+.filter-options input[type="text"] {
+    width: 150px;
+}
+
+.sort-options select {
+    width: 180px;
+}
+
+/* Responsive styles for sort and filter */
+@media (max-width: 768px) {
+    .sort-filter-container {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .sort-options, .filter-options {
+        flex-wrap: wrap;
+    }
+}
+
+/* Highlight for filtered results */
+.flight-card.filtered {
+    border-left: 4px solid #28a745;
+}
+
+/* No results message */
+.no-results {
+    text-align: center;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    margin: 20px auto;
+    max-width: 800px;
+    color: #6c757d;
+}
 
 /* Booking Confirmation */
 .booking-confirmation {

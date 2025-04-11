@@ -4,7 +4,6 @@
     <title>Flight Results</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="./css/flight_style.css">
-
 </head>
 <body>
     <header class="navbar">
@@ -21,12 +20,31 @@
 
     <div class="flight-container">
         <div id="searchParams"></div> 
+
+        <!-- Sort and Filter Options -->
+        <div class="sort-filter-container">
+            <div class="sort-options">
+                <label for="sortBy">Sort By:</label>
+                <select id="sortBy" onchange="applySortAndFilter()">
+                    <option value="priceLowToHigh">Price: Low to High</option>
+                    <option value="priceHighToLow">Price: High to Low</option>
+                    <option value="durationShortToLong">Duration: Short to Long</option>
+                    <option value="durationLongToShort">Duration: Long to Short</option>
+                </select>
+            </div>
+            <div class="filter-options">
+                <label for="maxPrice">Max Price:</label>
+                <input type="number" id="maxPrice" placeholder="Enter max price" oninput="applySortAndFilter()">
+                <label for="airlineFilter">Airline:</label>
+                <input type="text" id="airlineFilter" placeholder="Enter airline name" oninput="applySortAndFilter()">
+            </div>
+        </div>
+
         <div id="outboundFlights"></div>
         <div id="returnFlights"></div>
     </div>
     
     <script type="module" src="js/auth.js"></script>
     <script type="module" src="js/flight_results.js"></script>
-
 </body>
 </html>

@@ -25,6 +25,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         // Search flights
         const flightData = await searchFlights(token, originCode, destinationCode, departureDate, adults);
 
+        // Store original flight data for filtering
+        window.originalFlightData = flightData.data;
+
         // Display results
         displayFlightResults(flightData.data);
 
@@ -131,6 +134,9 @@ async function displayFlightResults(flights) {
 
         // Store flights in sessionStorage for later use
         sessionStorage.setItem('flightResults', JSON.stringify(flights));
+        
+        // Store airline map in window object for filtering
+        window.airlineMap = airlineMap;
 
         outboundFlightsDiv.innerHTML = flights.map((flight, index) => `
         <div class="flight-card">
@@ -183,6 +189,21 @@ function calculateTotalDuration(segments) {
     if (minutes > 0) durationStr += `${minutes}m`;
 
     return durationStr.trim() || '0m';
+}
+
+// Function to get duration in minutes for sorting
+function getDurationInMinutes(flight) {
+    const segments = flight.itineraries[0].segments;
+    let totalMinutes = 0;
+    
+    segments.forEach(segment => {
+        const departure = new Date(segment.departure.at);
+        const arrival = new Date(segment.arrival.at);
+        const durationInMinutes = (arrival - departure) / (1000 * 60);
+        totalMinutes += durationInMinutes;
+    });
+
+    return totalMinutes;
 }
 
 // Function to generate segments
@@ -249,6 +270,51 @@ function displayError(error) {
         </div>
         `;
     }
+}
+
+// Function to apply sort and filter
+function applySortAndFilter() {
+    // Get filter values
+    const sortBy = document.getElementById('sortBy').value;
+    const maxPrice = document.getElementById('maxPrice').value;
+    const airlineFilter = document.getElementById('airlineFilter').value.toLowerCase();
+    
+    // Get original flight data
+    let flights = JSON.parse(JSON.stringify(window.originalFlightData || []));
+    
+    // Apply filters
+    if (maxPrice && !isNaN(maxPrice) && maxPrice > 0) {
+        flights = flights.filter(flight => parseFloat(flight.price.total) <= parseFloat(maxPrice));
+    }
+    
+    if (airlineFilter) {
+        flights = flights.filter(flight => {
+            const airlineNames = flight.validatingAirlineCodes.map(code => {
+                const name = window.airlineMap[code] || code;
+                return name.toLowerCase();
+            }).join(' ');
+            return airlineNames.includes(airlineFilter);
+        });
+    }
+    
+    // Apply sorting
+    switch (sortBy) {
+        case 'priceLowToHigh':
+            flights.sort((a, b) => parseFloat(a.price.total) - parseFloat(b.price.total));
+            break;
+        case 'priceHighToLow':
+            flights.sort((a, b) => parseFloat(b.price.total) - parseFloat(a.price.total));
+            break;
+        case 'durationShortToLong':
+            flights.sort((a, b) => getDurationInMinutes(a) - getDurationInMinutes(b));
+            break;
+        case 'durationLongToShort':
+            flights.sort((a, b) => getDurationInMinutes(b) - getDurationInMinutes(a));
+            break;
+    }
+    
+    // Update the display
+    displayFlightResults(flights);
 }
 
 // Function to select flight
@@ -611,7 +677,7 @@ async function processPayment() {
                         <p><strong>Thank you for your booking.</strong></p>
                         <p>A confirmation email has been sent to ${passengerData.contactInfo.email}</p>
                     </div>
-                    <button onclick="window.location.href=''" class="submit-button">
+                    <button onclick="window.location.href='index.php'" class="submit-button">
                         Return to Home
                     </button>
                 </div>
@@ -709,3 +775,4 @@ async function validateWallet() {
 window.selectFlight = selectFlight;
 window.submitPassengerInfo = submitPassengerInfo;
 window.processPayment = processPayment;
+window.applySortAndFilter = applySortAndFilter;

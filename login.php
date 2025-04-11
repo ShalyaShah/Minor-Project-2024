@@ -21,27 +21,28 @@ if ($conn) {
         $_SESSION['logged_in'] = true;
         $_SESSION['user_id'] = $user['id'];  // Store the user's ID in the session
         $_SESSION['email'] = $user['email']; // Store the user's email in the session
-        $_SESSION['name'] = $user['name'];   // Optionally store the user's name if available
-
-        // Redirect to the index page with a success message
-        echo '
-        <script>
-            function login() {
-                alert("Login Successfully");
-                window.location.href = "index.php";   
-            }
-            login();
-        </script>';
-        exit();
+        $_SESSION['name'] = $user['fname'] . ' ' . $user['lname'];   // Store the user's name
+        
+        // Check if the user is an admin
+        if (isset($user['is_admin']) && $user['is_admin'] == 1) {
+            $_SESSION['is_admin'] = true;
+            
+            // Direct PHP redirect instead of JavaScript
+            header("Location: admin_dashboard.php");
+            exit();
+        } else {
+            $_SESSION['is_admin'] = false;
+            
+            // Direct PHP redirect instead of JavaScript
+            header("Location: index.php");
+            exit();
+        }
     } else {
         // Invalid email or password
         echo '
         <script>
-            function login() {
-                alert("Invalid Email or Password");
-                window.location.href = "login.html";   
-            }
-            login();
+            alert("Invalid Email or Password");
+            window.location.href = "login.html";   
         </script>';
     }
 } else {
