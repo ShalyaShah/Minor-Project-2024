@@ -1,599 +1,458 @@
-<!-- admin_sections/users.php -->
-<section id="users-section" class="admin-section">
-    <div class="section-header">
-        <h2>User Management</h2>
-        <div class="section-actions">
-            <div class="search-box">
-                <input type="text" id="user-search" placeholder="Search users...">
-                <i class="fas fa-search"></i>
-            </div>
-            <button class="add-btn" id="add-user-btn">
-                <i class="fas fa-plus"></i> Add User
-            </button>
-        </div>
-    </div>
-    
-    <div class="filter-options">
-        <div class="filter-group">
-            <label for="admin-filter">Admin Status:</label>
-            <select id="admin-filter">
-                <option value="all">All</option>
-                <option value="1">Admin</option>
-                <option value="0">Regular User</option>
-            </select>
-        </div>
-        <div class="filter-group">
-            <label for="wallet-filter">Wallet Balance:</label>
-            <select id="wallet-filter">
-                <option value="all">All</option>
-                <option value="0">Zero Balance</option>
-                <option value="positive">Positive Balance</option>
-            </select>
-        </div>
-        <button class="filter-btn">Apply Filters</button>
-        <button class="reset-btn">Reset</button>
-    </div>
-    
-    <div class="table-container">
-        <table class="user-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Wallet Balance</th>
-                    <th>Admin Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                // Database connection
-                $conn = new mysqli("localhost", "root", "", "minor-project");
-                
-                // Check connection
-                if ($conn->connect_error) {
-                    die("Connection failed: " . $conn->connect_error);
+<?php
+// Check if this file is accessed directly
+if (!defined('ADMIN_ACCESS')) {
+    // If accessed via AJAX from admin_dashboard.php, this will be defined
+    define('ADMIN_ACCESS', true);
+}
+
+// Check for admin session if accessed directly
+if (!isset($_SESSION) || !isset($_SESSION['user_id']) || !isset($_SESSION['is_admin']) || $_SESSION['is_admin'] != 1) {
+    session_start();
+    if (!isset($_SESSION['user_id']) || !isset($_SESSION['is_admin']) || $_SESSION['is_admin'] != 1) {
+        echo "Unauthorized access";
+        exit();
+    }
+}
+
+// Database connection
+$conn = new mysqli("localhost", "root", "", "minor-project");
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Get all users with pagination
+$page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+$limit = 10;
+$offset = ($page - 1) * $limit;
+
+// Search functionality
+$search = isset($_GET['search']) ? $_GET['search'] : '';
+$search_condition = '';
+if (!empty($search)) {
+    $search = $conn->real_escape_string($search);
+    $search_condition = " WHERE fname LIKE '%$search%' OR lname LIKE '%$search%' OR email LIKE '%$search%'";
+}
+
+$total_query = "SELECT COUNT(*) as total FROM users" . $search_condition;
+$total_result = $conn->query($total_query);
+$total_users = $total_result->fetch_assoc()['total'];
+$total_pages = ceil($total_users / $limit);
+
+$users_query = "SELECT * FROM users" . $search_condition . " ORDER BY id DESC LIMIT $offset, $limit";
+$users_result = $conn->query($users_query);
+?>
+
+<div class="section-header">
+    <h2>User Management</h2>
+    <button id="add-user-btn" class="action-btn">
+        <i class="fas fa-plus"></i> Add New User
+    </button>
+</div>
+
+<div class="search-container">
+    <form id="user-search-form" class="search-form">
+        <input type="text" id="user-search" name="search" placeholder="Search by name or email..." value="<?php echo htmlspecialchars($search); ?>">
+        <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+    </form>
+</div>
+
+<div class="table-container">
+    <table id="users-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Wallet Balance</th>
+                <th>Admin</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            if ($users_result && $users_result->num_rows > 0) {
+                while($row = $users_result->fetch_assoc()) {
+                    $is_admin = $row['is_admin'] == 1 ? 'Yes' : 'No';
+                    echo "<tr>
+                            <td>" . $row['id'] . "</td>
+                            <td>" . $row['fname'] . " " . $row['lname'] . "</td>
+                            <td>" . $row['email'] . "</td>
+                            <td>" . $row['wallet_balance'] . "</td>
+                            <td>" . $is_admin . "</td>
+                            <td>
+                                <div class='actions'>
+                                    <button class='edit-user' data-id='" . $row['id'] . "'>
+                                        <i class='fas fa-edit'></i>
+                                    </button>
+                                    <button class='delete-user' data-id='" . $row['id'] . "'>
+                                        <i class='fas fa-trash'></i>
+                                    </button>
+                                </div>
+                            </td>
+                          </tr>";
                 }
-                
-                // Get users with pagination
-                $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
-                $limit = 10;
-                $offset = ($page - 1) * $limit;
-                
-                $sql = "SELECT id, fname, lname, email, wallet_balance, is_admin FROM users ORDER BY id DESC LIMIT $limit OFFSET $offset";
-                $result = $conn->query($sql);
-                
-                if ($result->num_rows > 0) {
-                    while($row = $result->fetch_assoc()) {
-                        $adminStatus = $row['is_admin'] ? 'Admin' : 'User';
-                        $adminClass = $row['is_admin'] ? 'admin' : 'user';
-                        
-                        echo "<tr>
-                                <td>#" . $row['id'] . "</td>
-                                <td>" . $row['fname'] . " " . $row['lname'] . "</td>
-                                <td>" . $row['email'] . "</td>
-                                <td>₹" . number_format($row['wallet_balance'], 2) . "</td>
-                                <td><span class='status " . $adminClass . "'>" . $adminStatus . "</span></td>
-                                <td>
-                                    <div class='actions'>
-                                        <a href='#' class='view-btn' data-id='" . $row['id'] . "'><i class='fas fa-eye'></i></a>
-                                        <a href='#' class='edit-btn' data-id='" . $row['id'] . "'><i class='fas fa-edit'></i></a>
-                                        <a href='#' class='delete-btn' data-id='" . $row['id'] . "'><i class='fas fa-trash'></i></a>
-                                    </div>
-                                </td>
-                            </tr>";
-                    }
-                } else {
-                    echo "<tr><td colspan='6' class='no-data'>No users found</td></tr>";
-                }
-                
-                // Get total number of users for pagination
-                $totalUsers = $conn->query("SELECT COUNT(*) as count FROM users")->fetch_assoc()['count'];
-                $totalPages = ceil($totalUsers / $limit);
-                
-                $conn->close();
-                ?>
-            </tbody>
-        </table>
-    </div>
-    
-    <div class="pagination">
-        <?php if($totalPages > 1): ?>
-            <?php if($page > 1): ?>
+            } else {
+                echo "<tr><td colspan='6' class='no-data'>No users found</td></tr>";
+            }
+            ?>
+        </tbody>
+    </table>
+</div>
+
+<!-- Pagination -->
+<div class="pagination">
+    <?php if ($total_pages > 1): ?>
+        <div class="pagination-info">
+            Showing <?php echo $offset + 1; ?> to <?php echo min($offset + $limit, $total_users); ?> of <?php echo $total_users; ?> users
+        </div>
+        <div class="pagination-controls">
+            <?php if ($page > 1): ?>
                 <a href="#" class="page-link" data-page="<?php echo $page - 1; ?>">Previous</a>
             <?php endif; ?>
             
-            <?php for($i = 1; $i <= $totalPages; $i++): ?>
-                <a href="#" class="page-link <?php echo $i == $page ? 'active' : ''; ?>" data-page="<?php echo $i; ?>"><?php echo $i; ?></a>
-            <?php endfor; ?>
+            <?php
+            $start_page = max(1, $page - 2);
+            $end_page = min($total_pages, $page + 2);
             
-            <?php if($page < $totalPages): ?>
+            if ($start_page > 1) {
+                echo '<a href="#" class="page-link" data-page="1">1</a>';
+                if ($start_page > 2) {
+                    echo '<span class="page-ellipsis">...</span>';
+                }
+            }
+            
+            for ($i = $start_page; $i <= $end_page; $i++) {
+                $active_class = ($i == $page) ? 'active' : '';
+                echo '<a href="#" class="page-link ' . $active_class . '" data-page="' . $i . '">' . $i . '</a>';
+            }
+            
+            if ($end_page < $total_pages) {
+                if ($end_page < $total_pages - 1) {
+                    echo '<span class="page-ellipsis">...</span>';
+                }
+                echo '<a href="#" class="page-link" data-page="' . $total_pages . '">' . $total_pages . '</a>';
+            }
+            ?>
+            
+            <?php if ($page < $total_pages): ?>
                 <a href="#" class="page-link" data-page="<?php echo $page + 1; ?>">Next</a>
             <?php endif; ?>
-        <?php endif; ?>
-    </div>
-</section>
+        </div>
+    <?php endif; ?>
+</div>
 
-<!-- User Modal -->
-<div class="modal" id="user-modal">
+<!-- Add User Modal -->
+<div id="add-user-modal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h3 id="modal-title">Add New User</h3>
-            <span class="close-modal">&times;</span>
+            <h3>Add New User</h3>
+            <span class="close">&times;</span>
         </div>
         <div class="modal-body">
-            <form id="user-form">
-                <input type="hidden" id="user-id" name="id">
-                
+            <form id="add-user-form">
                 <div class="form-group">
-                    <label for="first-name">First Name</label>
-                    <input type="text" id="first-name" name="fname" required>
+                    <label for="add_fname">First Name</label>
+                    <input type="text" id="add_fname" name="fname" required>
                 </div>
                 
                 <div class="form-group">
-                    <label for="last-name">Last Name</label>
-                    <input type="text" id="last-name" name="lname" required>
+                    <label for="add_lname">Last Name</label>
+                    <input type="text" id="add_lname" name="lname" required>
                 </div>
                 
                 <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required>
+                    <label for="add_email">Email</label>
+                    <input type="email" id="add_email" name="email" required>
                 </div>
                 
                 <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password">
-                    <small>Leave blank to keep current password (when editing)</small>
+                    <label for="add_password">Password</label>
+                    <input type="password" id="add_password" name="password" required>
                 </div>
                 
                 <div class="form-group">
-                    <label for="wallet-balance">Wallet Balance</label>
-                    <input type="number" id="wallet-balance" name="wallet_balance" step="0.01" min="0" value="0.00">
+                    <label for="add_wallet_balance">Wallet Balance</label>
+                    <input type="number" id="add_wallet_balance" name="wallet_balance" step="0.01" value="0.00">
                 </div>
                 
                 <div class="form-group">
-                    <label for="is-admin">Admin Status</label>
-                    <select id="is-admin" name="is_admin">
-                        <option value="0">Regular User</option>
-                        <option value="1">Admin</option>
+                    <label for="add_is_admin">Admin</label>
+                    <select id="add_is_admin" name="is_admin">
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
                     </select>
                 </div>
                 
                 <div class="form-actions">
-                    <button type="button" class="cancel-btn" id="cancel-user">Cancel</button>
-                    <button type="submit" class="save-btn">Save User</button>
+                    <button type="submit" class="submit-btn">Add User</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-<style>
-    .admin-section {
-        background-color: #fff;
-        border-radius: 10px;
-        padding: 20px;
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
-    }
-    
-    .section-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-    }
-    
-    .section-actions {
-        display: flex;
-        gap: 15px;
-    }
-    
-    .search-box {
-        position: relative;
-    }
-    
-    .search-box input {
-        padding: 10px 15px;
-        padding-right: 40px;
-        border: 1px solid #eee;
-        border-radius: 5px;
-        width: 250px;
-        font-size: 14px;
-    }
-    
-    .search-box i {
-        position: absolute;
-        right: 15px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: var(--secondary-color);
-    }
-    
-    .add-btn {
-        background-color: var(--primary-color);
-        color: white;
-        border: none;
-        border-radius: 5px;
-        padding: 10px 15px;
-        font-size: 14px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
-    
-    .filter-options {
-        display: flex;
-        gap: 15px;
-        margin-bottom: 20px;
-        padding: 15px;
-        background-color: #f8f9fa;
-        border-radius: 5px;
-        align-items: center;
-    }
-    
-    .filter-group {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
-    
-    .filter-group label {
-        font-size: 14px;
-        color: var(--secondary-color);
-    }
-    
-    .filter-group select {
-        padding: 8px 10px;
-        border: 1px solid #eee;
-        border-radius: 5px;
-        font-size: 14px;
-    }
-    
-    .filter-btn, .reset-btn {
-        padding: 8px 15px;
-        border: none;
-        border-radius: 5px;
-        font-size: 14px;
-        cursor: pointer;
-    }
-    
-    .filter-btn {
-        background-color: var(--primary-color);
-        color: white;
-    }
-    
-    .reset-btn {
-        background-color: var(--secondary-color);
-        color: white;
-    }
-    
-    .table-container {
-        overflow-x: auto;
-        margin-bottom: 20px;
-    }
-    
-    .user-table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-    
-    .user-table th, .user-table td {
-        padding: 12px 15px;
-        text-align: left;
-        border-bottom: 1px solid #eee;
-    }
-    
-    .user-table th {
-        color: var(--secondary-color);
-        font-weight: 500;
-        font-size: 14px;
-    }
-    
-    .user-table td {
-        color: var(--dark-color);
-        font-size: 14px;
-    }
-    
-    .status {
-        padding: 5px 10px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 500;
-    }
-    
-    .status.admin {
-        background-color: rgba(220, 53, 69, 0.1);
-        color: var(--danger-color);
-    }
-    
-    .status.user {
-        background-color: rgba(40, 167, 69, 0.1);
-        color: var(--success-color);
-    }
-    
-    .actions {
-        display: flex;
-        gap: 10px;
-    }
-    
-    .view-btn, .edit-btn, .delete-btn {
-        width: 30px;
-        height: 30px;
-        border-radius: 5px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        text-decoration: none;
-    }
-    
-    .view-btn {
-        background-color: var(--info-color);
-    }
-    
-    .edit-btn {
-        background-color: var(--warning-color);
-    }
-    
-    .delete-btn {
-        background-color: var(--danger-color);
-    }
-    
-    .pagination {
-        display: flex;
-        justify-content: center;
-        gap: 5px;
-        margin-top: 20px;
-    }
-    
-    .page-link {
-        padding: 8px 12px;
-        border: 1px solid #eee;
-        border-radius: 5px;
-        color: var(--dark-color);
-        text-decoration: none;
-        font-size: 14px;
-    }
-    
-    .page-link.active {
-        background-color: var(--primary-color);
-        color: white;
-        border-color: var(--primary-color);
-    }
-    
-    /* Modal Styles */
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 1000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-    }
-    
-    .modal-content {
-        background-color: #fff;
-        margin: 10% auto;
-        padding: 20px;
-        border-radius: 10px;
-        width: 500px;
-        max-width: 90%;
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    }
-    
-    .modal-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-        padding-bottom: 10px;
-        border-bottom: 1px solid #eee;
-    }
-    
-    .close-modal {
-        font-size: 24px;
-        cursor: pointer;
-        color: var(--secondary-color);
-    }
-    
-    .form-group {
-        margin-bottom: 15px;
-    }
-    
-    .form-group label {
-        display: block;
-        margin-bottom: 5px;
-        font-size: 14px;
-        color: var(--dark-color);
-    }
-    
-    .form-group input, .form-group select {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #eee;
-        border-radius: 5px;
-        font-size: 14px;
-    }
-    
-    .form-group small {
-        display: block;
-        margin-top: 5px;
-        font-size: 12px;
-        color: var(--secondary-color);
-    }
-    
-    .form-actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-        margin-top: 20px;
-    }
-    
-    .cancel-btn, .save-btn {
-        padding: 10px 15px;
-        border: none;
-        border-radius: 5px;
-        font-size: 14px;
-        cursor: pointer;
-    }
-    
-    .cancel-btn {
-        background-color: var(--light-color);
-        color: var(--dark-color);
-    }
-    
-    .save-btn {
-        background-color: var(--primary-color);
-        color: white;
-    }
-</style>
+<!-- Edit User Modal -->
+<div id="edit-user-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Edit User</h3>
+            <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="edit-user-form">
+                <input type="hidden" id="edit_user_id" name="id">
+                
+                <div class="form-group">
+                    <label for="edit_fname">First Name</label>
+                    <input type="text" id="edit_fname" name="fname" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit_lname">Last Name</label>
+                    <input type="text" id="edit_lname" name="lname" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit_email">Email</label>
+                    <input type="email" id="edit_email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit_password">Password (leave blank to keep current)</label>
+                    <input type="password" id="edit_password" name="password">
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit_wallet_balance">Wallet Balance</label>
+                    <input type="number" id="edit_wallet_balance" name="wallet_balance" step="0.01">
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit_is_admin">Admin</label>
+                    <select id="edit_is_admin" name="is_admin">
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="submit-btn">Update User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete User Confirmation Modal -->
+<div id="delete-user-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Delete User</h3>
+            <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to delete this user? This action cannot be undone.</p>
+            <input type="hidden" id="delete_user_id">
+            <div class="form-actions">
+                <button id="confirm-delete-btn" class="delete-btn">Delete</button>
+                <button id="cancel-delete-btn" class="cancel-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
-    // User management functionality
-    document.addEventListener('DOMContentLoaded', function() {
-        const addUserBtn = document.getElementById('add-user-btn');
-        const userModal = document.getElementById('user-modal');
-        const closeModal = document.querySelector('.close-modal');
-        const cancelUserBtn = document.getElementById('cancel-user');
-        const userForm = document.getElementById('user-form');
-        const modalTitle = document.getElementById('modal-title');
-        
-        // Open modal for adding a new user
-        addUserBtn.addEventListener('click', function() {
-            modalTitle.textContent = 'Add New User';
-            userForm.reset();
-            document.getElementById('user-id').value = '';
-            userModal.style.display = 'block';
+    $(document).ready(function() {
+        // Add User button click
+        $("#add-user-btn").click(function() {
+            $("#add-user-modal").css("display", "block");
         });
         
-        // Close modal
-        closeModal.addEventListener('click', function() {
-            userModal.style.display = 'none';
+        // Close modals when clicking the close button
+        $(".close").click(function() {
+            $(".modal").css("display", "none");
         });
         
-        cancelUserBtn.addEventListener('click', function() {
-            userModal.style.display = 'none';
-        });
-        
-        // Close modal when clicking outside
-        window.addEventListener('click', function(event) {
-            if (event.target === userModal) {
-                userModal.style.display = 'none';
+        // Close modals when clicking outside the modal
+        $(window).click(function(event) {
+            if ($(event.target).hasClass("modal")) {
+                $(".modal").css("display", "none");
             }
         });
         
+        // Search form submission
+        $("#user-search-form").submit(function(e) {
+            e.preventDefault();
+            const search = $("#user-search").val();
+            loadUsersWithSearch(search);
+        });
+        
+        // Pagination
+        $(".page-link").click(function(e) {
+            e.preventDefault();
+            const page = $(this).data("page");
+            const search = $("#user-search").val();
+            loadUsersPage(page, search);
+        });
+        
+        // Add user form submission
+        $("#add-user-form").submit(function(e) {
+            e.preventDefault();
+            
+            $.ajax({
+                type: "POST",
+                url: "admin_ajax/add_user.php",
+                data: $(this).serialize(),
+                dataType: "json",
+                success: function(response) {
+                    if (response.status === "success") {
+                        alert("User added successfully!");
+                        $("#add-user-modal").css("display", "none");
+                        $("#add-user-form")[0].reset();
+                        // Reload users to show the new user
+                        const search = $("#user-search").val();
+                        loadUsersWithSearch(search);
+                    } else {
+                        alert("Error: " + response.message);
+                    }
+                },
+                error: function() {
+                    alert("An error occurred while adding the user.");
+                }
+            });
+        });
+        
         // Edit user
-        const editBtns = document.querySelectorAll('.edit-btn');
-        editBtns.forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.preventDefault();
-                const userId = this.getAttribute('data-id');
-                modalTitle.textContent = 'Edit User';
-                
-                // Fetch user data and populate the form
-                fetch(`admin_ajax/get_user.php?id=${userId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        document.getElementById('user-id').value = data.id;
-                        document.getElementById('first-name').value = data.fname;
-                        document.getElementById('last-name').value = data.lname;
-                        document.getElementById('email').value = data.email;
-                        document.getElementById('wallet-balance').value = data.wallet_balance;
-                        document.getElementById('is-admin').value = data.is_admin;
+        $(".edit-user").click(function() {
+            const userId = $(this).data("id");
+            
+            $.ajax({
+                type: "GET",
+                url: "admin_ajax/get_user.php",
+                data: { id: userId },
+                dataType: "json",
+                success: function(response) {
+                    if (response.status === "success") {
+                        const user = response.data;
                         
-                        userModal.style.display = 'block';
-                    })
-                    .catch(error => {
-                        console.error('Error fetching user data:', error);
-                        alert('Failed to load user data. Please try again.');
-                    });
+                        // Fill the edit form with user data
+                        $("#edit_user_id").val(user.id);
+                        $("#edit_fname").val(user.fname);
+                        $("#edit_lname").val(user.lname);
+                        $("#edit_email").val(user.email);
+                        $("#edit_password").val(''); // Clear password field
+                        $("#edit_wallet_balance").val(user.wallet_balance);
+                        $("#edit_is_admin").val(user.is_admin);
+                        
+                        // Show the edit modal
+                        $("#edit-user-modal").css("display", "block");
+                    } else {
+                        alert("Error: " + response.message);
+                    }
+                },
+                error: function() {
+                    alert("An error occurred while fetching user data.");
+                }
+            });
+        });
+        
+        // Edit user form submission
+        $("#edit-user-form").submit(function(e) {
+            e.preventDefault();
+            
+            $.ajax({
+                type: "POST",
+                url: "admin_ajax/update_user.php",
+                data: $(this).serialize(),
+                dataType: "json",
+                success: function(response) {
+                    if (response.status === "success") {
+                        alert("User updated successfully!");
+                        $("#edit-user-modal").css("display", "none");
+                        // Reload users to show the updated user
+                        const search = $("#user-search").val();
+                        loadUsersWithSearch(search);
+                    } else {
+                        alert("Error: " + response.message);
+                    }
+                },
+                error: function() {
+                    alert("An error occurred while updating the user.");
+                }
             });
         });
         
         // Delete user
-        const deleteBtns = document.querySelectorAll('.delete-btn');
-        deleteBtns.forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.preventDefault();
-                const userId = this.getAttribute('data-id');
-                
-                if (confirm('Are you sure you want to delete this user?')) {
-                    fetch(`admin_ajax/delete_user.php`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        body: `id=${userId}`
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('User deleted successfully');
-                            // Reload the users section
-                            loadSectionContent('users');
-                        } else {
-                            alert('Failed to delete user: ' + data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error deleting user:', error);
-                        alert('Failed to delete user. Please try again.');
-                    });
-                }
-            });
+        $(".delete-user").click(function() {
+            const userId = $(this).data("id");
+            $("#delete_user_id").val(userId);
+            $("#delete-user-modal").css("display", "block");
         });
         
-        // Submit user form
-        userForm.addEventListener('submit', function(e) {
-            e.preventDefault();
+        // Confirm delete user
+        $("#confirm-delete-btn").click(function() {
+            const userId = $("#delete_user_id").val();
             
-            const formData = new FormData(this);
-            const userId = document.getElementById('user-id').value;
-            const url = userId ? 'admin_ajax/update_user.php' : 'admin_ajax/add_user.php';
-            
-            fetch(url, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert(userId ? 'User updated successfully' : 'User added successfully');
-                    userModal.style.display = 'none';
-                    // Reload the users section
-                    loadSectionContent('users');
-                } else {
-                    alert('Failed: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred. Please try again.');
-            });
-        });
-        
-        // User search functionality
-        const userSearchInput = document.getElementById('user-search');
-        if (userSearchInput) {
-            userSearchInput.addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase();
-                const userRows = document.querySelectorAll('.user-table tbody tr');
-                
-                userRows.forEach(row => {
-                    const userName = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
-                    const userEmail = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
-                    
-                    if (userName.includes(searchTerm) || userEmail.includes(searchTerm)) {
-                        row.style.display = '';
+            $.ajax({
+                type: "POST",
+                url: "admin_ajax/delete_user.php",
+                data: { id: userId },
+                dataType: "json",
+                success: function(response) {
+                    if (response.status === "success") {
+                        alert("User deleted successfully!");
+                        $("#delete-user-modal").css("display", "none");
+                        // Reload users to remove the deleted user
+                        const search = $("#user-search").val();
+                        loadUsersWithSearch(search);
                     } else {
-                        row.style.display = 'none';
+                        alert("Error: " + response.message);
                     }
-                });
+                },
+                error: function() {
+                    alert("An error occurred while deleting the user.");
+                }
             });
-        }
+        });
+        
+        // Cancel delete user
+        $("#cancel-delete-btn").click(function() {
+            $("#delete-user-modal").css("display", "none");
+        });
     });
+    
+    // Function to load users page
+    function loadUsersPage(page, search = '') {
+        $("#users-section").html('<div class="loading">Loading users...</div>');
+        
+        let url = "admin_sections/users.php?page=" + page;
+        if (search) {
+            url += "&search=" + encodeURIComponent(search);
+        }
+        
+        $.ajax({
+            url: url,
+            success: function(response) {
+                $("#users-section").html(response);
+            },
+            error: function() {
+                $("#users-section").html('<div class="error">Failed to load users.</div>');
+            }
+        });
+    }
+    
+    // Function to load users with search
+    function loadUsersWithSearch(search) {
+        $("#users-section").html('<div class="loading">Searching users...</div>');
+        
+        $.ajax({
+            url: "admin_sections/users.php?search=" + encodeURIComponent(search),
+            success: function(response) {
+                $("#users-section").html(response);
+            },
+            error: function() {
+                $("#users-section").html('<div class="error">Failed to search users.</div>');
+            }
+        });
+    }
 </script>

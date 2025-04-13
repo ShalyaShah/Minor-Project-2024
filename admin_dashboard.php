@@ -2,46 +2,68 @@
 session_start();
 
 // Check if user is logged in and is an admin
-if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true || !isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
-    // Redirect to login page if not logged in as admin
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['is_admin']) || $_SESSION['is_admin'] != 1) {
     header("Location: login.html");
     exit();
 }
 
 // Database connection
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "minor-project";
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
+$conn = new mysqli("localhost", "root", "", "minor-project");
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Get counts for dashboard
-$userCount = $conn->query("SELECT COUNT(*) as count FROM users")->fetch_assoc()['count'];
-$flightBookingCount = $conn->query("SELECT COUNT(*) as count FROM flight_booked")->fetch_assoc()['count'];
-$passengerCount = $conn->query("SELECT COUNT(*) as count FROM flight_passenger_info")->fetch_assoc()['count'];
+// Get admin info
+$admin_id = $_SESSION['user_id'];
+$admin_query = "SELECT fname, lname FROM users WHERE id = $admin_id";
+$admin_result = $conn->query($admin_query);
+$admin_name = "Admin";
+if ($admin_result && $admin_result->num_rows > 0) {
+    $admin_data = $admin_result->fetch_assoc();
+    $admin_name = $admin_data['fname'] . " " . $admin_data['lname'];
+}
 
-// Get total revenue
-$totalRevenue = $conn->query("SELECT SUM(total_amount) as total FROM flight_booked")->fetch_assoc()['total'];
-$totalRevenue = $totalRevenue ? $totalRevenue : 0;
+// Get counts for dashboard
+$users_count = 0;
+$bookings_count = 0;
+$revenue = 0;
+
+// Count users
+$users_query = "SELECT COUNT(*) as count FROM users";
+$users_result = $conn->query($users_query);
+if ($users_result && $users_result->num_rows > 0) {
+    $users_count = $users_result->fetch_assoc()['count'];
+}
+
+// Count bookings
+$bookings_query = "SELECT COUNT(*) as count FROM flight_booked";
+$bookings_result = $conn->query($bookings_query);
+if ($bookings_result && $bookings_result->num_rows > 0) {
+    $bookings_count = $bookings_result->fetch_assoc()['count'];
+}
+
+// Calculate revenue
+$revenue_query = "SELECT SUM(total_amount) as total FROM flight_booked";
+$revenue_result = $conn->query($revenue_query);
+if ($revenue_result && $revenue_result->num_rows > 0) {
+    $revenue_data = $revenue_result->fetch_assoc();
+    $revenue = $revenue_data['total'] ? $revenue_data['total'] : 0;
+}
 
 // Get recent bookings
-$recentBookings = $conn->query("SELECT fb.id, fb.booking_reference, fb.origin_name, fb.destination_name, 
-                                fb.departure_date, fb.total_passengers, fb.total_amount, fb.booking_date, 
-                                fb.contact_email
-                                FROM flight_booked fb
-                                ORDER BY fb.booking_date DESC LIMIT 5");
+$recent_bookings_query = "SELECT booking_reference, origin_name, destination_name, 
+                          departure_date, total_passengers, total_amount 
+                          FROM flight_booked 
+                          ORDER BY booking_date DESC LIMIT 5";
+$recent_bookings_result = $conn->query($recent_bookings_query);
 
 // Get recent users
-$recentUsers = $conn->query("SELECT id, fname, lname, email, wallet_balance
-                            FROM users 
-                            ORDER BY id DESC LIMIT 5");
+$recent_users_query = "SELECT id, fname, lname, email, wallet_balance 
+                      FROM users 
+                      ORDER BY id DESC LIMIT 5";
+$recent_users_result = $conn->query($recent_users_query);
+
+$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -50,198 +72,185 @@ $recentUsers = $conn->query("SELECT id, fname, lname, email, wallet_balance
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GoTrip Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/admin.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <div class="admin-container">
         <!-- Sidebar -->
         <div class="sidebar">
-            <div class="logo">
-                <img src="images/Logo GoTrip.jpeg" alt="GoTrip Logo">
-                <span>GoTrip Admin</span>
+            <div class="sidebar-header">
+                <h2>GoTrip</h2>
+                <span>Admin Panel</span>
             </div>
-            <ul class="nav-links">
-                <li class="active">
-                    <a href="#dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            <ul class="sidebar-menu">
+                <li class="active" data-section="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
                 </li>
-                <li>
-                    <a href="#users"><i class="fas fa-users"></i> Users</a>
+                <li data-section="users">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
                 </li>
-                <li>
-                    <a href="#bookings"><i class="fas fa-ticket-alt"></i> Flight Bookings</a>
+                <li data-section="bookings">
+                    <i class="fas fa-ticket-alt"></i>
+                    <span>Bookings</span>
                 </li>
-                <li>
-                    <a href="#passengers"><i class="fas fa-user-friends"></i> Passengers</a>
+                <li data-section="passengers">
+                    <i class="fas fa-user-friends"></i>
+                    <span>Passengers</span>
                 </li>
-                <li>
-                    <a href="#reports"><i class="fas fa-chart-bar"></i> Reports</a>
+                <li data-section="reports">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Reports</span>
                 </li>
-                <li>
-                    <a href="#settings"><i class="fas fa-cog"></i> Settings</a>
-                </li>
-                <li>
-                    <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                <li data-section="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
                 </li>
             </ul>
-        </div>
-
-        <!-- Main Content -->
-        <div class="main-content">
-            <header>
-                <div class="header-title">
-                    <h2>Dashboard</h2>
-                    <span><?php echo date("l, F j, Y"); ?></span>
-                </div>
-                <div class="user-info">
-                    <div class="search">
-                        <input type="text" placeholder="Search...">
-                        <i class="fas fa-search"></i>
-                    </div>
-                    <div class="notification">
-                        <i class="fas fa-bell"></i>
-                        <span class="badge">3</span>
-                    </div>
-                    <div class="profile">
-                        <img src="images/admin-avatar.png" alt="Admin">
-                        <span><?php echo $_SESSION['name'] ?? 'Admin'; ?></span>
-                    </div>
-                </div>
-            </header>
-
-            <!-- Dashboard Section -->
-            <section id="dashboard" class="dashboard-section">
-                <div class="stats-cards">
-                    <div class="card">
-                        <div class="card-info">
-                            <h3>Total Users</h3>
-                            <h2><?php echo $userCount; ?></h2>
-                        </div>
-                        <div class="card-icon user-icon">
-                            <i class="fas fa-users"></i>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-info">
-                            <h3>Flight Bookings</h3>
-                            <h2><?php echo $flightBookingCount; ?></h2>
-                        </div>
-                        <div class="card-icon booking-icon">
-                            <i class="fas fa-plane-departure"></i>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-info">
-                            <h3>Total Passengers</h3>
-                            <h2><?php echo $passengerCount; ?></h2>
-                        </div>
-                        <div class="card-icon passenger-icon">
-                            <i class="fas fa-user-friends"></i>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-info">
-                            <h3>Total Revenue</h3>
-                            <h2>₹<?php echo number_format($totalRevenue, 2); ?></h2>
-                        </div>
-                        <div class="card-icon revenue-icon">
-                            <i class="fas fa-rupee-sign"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="recent-data">
-                    <div class="recent-bookings">
-                        <div class="card-header">
-                            <h3>Recent Flight Bookings</h3>
-                            <a href="#bookings" class="view-all">View All</a>
-                        </div>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Ref</th>
-                                    <th>Route</th>
-                                    <th>Date</th>
-                                    <th>Passengers</th>
-                                    <th>Amount</th>
-                                    <th>Booked On</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php while($booking = $recentBookings->fetch_assoc()): ?>
-                                <tr>
-                                    <td><?php echo $booking['booking_reference']; ?></td>
-                                    <td><?php echo $booking['origin_name'] . ' to ' . $booking['destination_name']; ?></td>
-                                    <td><?php echo date('d M Y', strtotime($booking['departure_date'])); ?></td>
-                                    <td><?php echo $booking['total_passengers']; ?></td>
-                                    <td>₹<?php echo number_format($booking['total_amount'], 2); ?></td>
-                                    <td><?php echo date('d M Y', strtotime($booking['booking_date'])); ?></td>
-                                    <td>
-                                        <div class="actions">
-                                            <a href="#" class="view-btn" data-id="<?php echo $booking['id']; ?>"><i class="fas fa-eye"></i></a>
-                                            <a href="#" class="edit-btn" data-id="<?php echo $booking['id']; ?>"><i class="fas fa-edit"></i></a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <?php endwhile; ?>
-                                <?php if($recentBookings->num_rows == 0): ?>
-                                <tr>
-                                    <td colspan="7" class="no-data">No bookings found</td>
-                                </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="recent-users">
-                        <div class="card-header">
-                            <h3>Recent Users</h3>
-                            <a href="#users" class="view-all">View All</a>
-                        </div>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Wallet</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php while($user = $recentUsers->fetch_assoc()): ?>
-                                <tr>
-                                    <td>#<?php echo $user['id']; ?></td>
-                                    <td><?php echo $user['fname'] . ' ' . $user['lname']; ?></td>
-                                    <td><?php echo $user['email']; ?></td>
-                                    <td>₹<?php echo number_format($user['wallet_balance'], 2); ?></td>
-                                    <td>
-                                        <div class="actions">
-                                            <a href="#" class="view-btn" data-id="<?php echo $user['id']; ?>"><i class="fas fa-eye"></i></a>
-                                            <a href="#" class="edit-btn" data-id="<?php echo $user['id']; ?>"><i class="fas fa-edit"></i></a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <?php endwhile; ?>
-                                <?php if($recentUsers->num_rows == 0): ?>
-                                <tr>
-                                    <td colspan="5" class="no-data">No users found</td>
-                                </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Other sections will be loaded via JavaScript -->
-            <div id="content-container">
-                <!-- Content for other sections will be loaded here -->
+            <div class="sidebar-footer">
+                <a href="logout.php" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
             </div>
         </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="toggle-sidebar">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <div class="user-info">
+                    <span class="user-name"><?php echo $admin_name; ?></span>
+                </div>
+            </div>
+            
+            <!-- Dashboard Section -->
+            <div id="dashboard-section" class="admin-section active">
+                <div class="section-header">
+                    <h2>Dashboard</h2>
+                    <p>Welcome back, <?php echo $admin_name; ?>!</p>
+                </div>
+                
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3><?php echo $users_count; ?></h3>
+                            <p>Total Users</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-ticket-alt"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3><?php echo $bookings_count; ?></h3>
+                            <p>Total Bookings</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-rupee-sign"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>₹<?php echo number_format($revenue, 2); ?></h3>
+                            <p>Total Revenue</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-content">
+                    <div class="recent-bookings">
+                        <div class="content-header">
+                            <h3>Recent Bookings</h3>
+                            <a href="#" class="view-all" data-section="bookings">View All</a>
+                        </div>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Booking Ref</th>
+                                        <th>Route</th>
+                                        <th>Date</th>
+                                        <th>Passengers</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    if ($recent_bookings_result && $recent_bookings_result->num_rows > 0) {
+                                        while($row = $recent_bookings_result->fetch_assoc()) {
+                                            echo "<tr>
+                                                    <td>" . $row['booking_reference'] . "</td>
+                                                    <td>" . $row['origin_name'] . " to " . $row['destination_name'] . "</td>
+                                                    <td>" . date('d M Y', strtotime($row['departure_date'])) . "</td>
+                                                    <td>" . $row['total_passengers'] . "</td>
+                                                    <td>₹" . number_format($row['total_amount'], 2) . "</td>
+                                                  </tr>";
+                                        }
+                                    } else {
+                                        echo "<tr><td colspan='5' class='no-data'>No bookings found</td></tr>";
+                                    }
+                                    ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="recent-users">
+                        <div class="content-header">
+                            <h3>Recent Users</h3>
+                            <a href="#" class="view-all" data-section="users">View All</a>
+                        </div>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Wallet Balance</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    if ($recent_users_result && $recent_users_result->num_rows > 0) {
+                                        while($row = $recent_users_result->fetch_assoc()) {
+                                            echo "<tr>
+                                                    <td>" . $row['id'] . "</td>
+                                                    <td>" . $row['fname'] . " " . $row['lname'] . "</td>
+                                                    <td>" . $row['email'] . "</td>
+                                                    <td>₹" . number_format($row['wallet_balance'], 2) . "</td>
+                                                  </tr>";
+                                        }
+                                    } else {
+                                        echo "<tr><td colspan='4' class='no-data'>No users found</td></tr>";
+                                    }
+                                    ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Other Sections (loaded via AJAX) -->
+            <div id="users-section" class="admin-section"></div>
+            <div id="bookings-section" class="admin-section"></div>
+            <div id="passengers-section" class="admin-section"></div>
+            <div id="reports-section" class="admin-section"></div>
+            <div id="settings-section" class="admin-section"></div>
+        </div>
     </div>
-
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="js/admin.js"></script>
 </body>
 </html>

@@ -1,49 +1,38 @@
 <?php
-// admin_ajax/get_user.php
-header('Content-Type: application/json');
-
-// Check if user is logged in and is an admin
+// Check for admin session
 session_start();
-if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true || !isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
-    echo json_encode(['success' => false, 'message' => 'Unauthorized access']);
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['is_admin']) || $_SESSION['is_admin'] != 1) {
+    echo json_encode(['status' => 'error', 'message' => 'Unauthorized access']);
     exit();
 }
 
 // Database connection
 $conn = new mysqli("localhost", "root", "", "minor-project");
-
-// Check connection
 if ($conn->connect_error) {
-    echo json_encode(['success' => false, 'message' => 'Database connection failed']);
+    echo json_encode(['status' => 'error', 'message' => 'Database connection failed']);
     exit();
 }
 
-// Get user ID from request
-$userId = isset($_GET['id']) ? intval($_GET['id']) : 0;
+// Get user ID
+$user_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
-if ($userId <= 0) {
-    echo json_encode(['success' => false, 'message' => 'Invalid user ID']);
+if ($user_id <= 0) {
+    echo json_encode(['status' => 'error', 'message' => 'Invalid user ID']);
     exit();
 }
 
-// Prepare and execute query
-$stmt = $conn->prepare("SELECT id, fname, lname, email, wallet_balance, is_admin FROM users WHERE id = ?");
-$stmt->bind_param("i", $userId);
-$stmt->execute();
-$result = $stmt->get_result();
+// Get user details
+$query = "SELECT * FROM users WHERE id = $user_id";
+$result = $conn->query($query);
 
-if ($result->num_rows === 0) {
-    echo json_encode(['success' => false, 'message' => 'User not found']);
-    exit();
+if ($result && $result->num_rows > 0) {
+    $user = $result->fetch_assoc();
+    // Don't send password to client
+    unset($user['password']);
+    echo json_encode(['status' => 'success', 'data' => $user]);
+} else {
+    echo json_encode(['status' => 'error', 'message' => 'User not found']);
 }
 
-// Get user data
-$user = $result->fetch_assoc();
-
-// Return user data
-echo json_encode($user);
-
-// Close connection
-$stmt->close();
 $conn->close();
 ?>
