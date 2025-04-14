@@ -77,31 +77,48 @@
             const signUpForm = document.querySelector('#signup form');
         
             function isValidEmail(email) {
-                // Simple regex for email validation
                 const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 return regex.test(email);
+            }
+        
+            function isValidPassword(password) {
+                const regex = /^(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/;
+                return regex.test(password);
             }
         
             function showAlert(message) {
                 alert(message);
             }
         
+            function validateForm(form) {
+                const email = form.querySelector('input[name="email"]').value;
+                const password = form.querySelector('input[name="password"]').value;
+        
+                if (!isValidEmail(email)) {
+                    showAlert("Please enter a valid email address.");
+                    return false;
+                }
+        
+                if (!isValidPassword(password)) {
+                    showAlert("Password must be at least 8 characters long, include one uppercase letter and one special character.");
+                    return false;
+                }
+        
+                return true;
+            }
+        
             if (signInForm) {
                 signInForm.addEventListener('submit', function (e) {
-                    const email = signInForm.querySelector('input[name="email"]').value;
-                    if (!isValidEmail(email)) {
+                    if (!validateForm(signInForm)) {
                         e.preventDefault();
-                        showAlert("Please enter a valid email address.");
                     }
                 });
             }
         
             if (signUpForm) {
                 signUpForm.addEventListener('submit', function (e) {
-                    const email = signUpForm.querySelector('input[name="email"]').value;
-                    if (!isValidEmail(email)) {
+                    if (!validateForm(signUpForm)) {
                         e.preventDefault();
-                        showAlert("Please enter a valid email address.");
                     }
                 });
             }
