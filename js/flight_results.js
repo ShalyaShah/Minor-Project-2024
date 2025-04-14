@@ -388,52 +388,105 @@ function showPassengerForm(numPassengers) {
     
     mainContent.innerHTML = passengerFormHTML;
 }
+function isValidName(name) {
+    return /^[A-Za-z]{2,30}$/.test(name);
+}
+
+function isValidPassport(passport) {
+    return /^[A-Za-z0-9]{6,9}$/.test(passport);
+}
+
+function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function isValidPhone(phone) {
+    return /^[0-9]{7,15}$/.test(phone);
+}
 
 // Function to submit passenger information
 function submitPassengerInfo() {
     const form = document.getElementById('passengerForm');
     const inputs = form.querySelectorAll('input[required], select[required]');
     let isValid = true;
-    
+    let errorMessage = '';
+
     inputs.forEach(input => {
+        input.classList.remove('error');
         if (!input.value.trim()) {
             input.classList.add('error');
             isValid = false;
-        } else {
-            input.classList.remove('error');
         }
     });
-    
-    if (!isValid) {
-        alert('Please fill in all required fields correctly.');
-        return;
-    }
-    
+
     const searchParams = JSON.parse(sessionStorage.getItem('flightSearchParams'));
     const numPassengers = searchParams.adults;
+
+    for (let i = 0; i < numPassengers; i++) {
+        const firstName = document.getElementById(`firstName${i}`).value.trim();
+        const lastName = document.getElementById(`lastName${i}`).value.trim();
+        const passport = document.getElementById(`passport${i}`).value.trim();
+
+        if (!isValidName(firstName)) {
+            isValid = false;
+            errorMessage = `Invalid first name for passenger ${i + 1}. Only letters (2-30 characters) allowed.`;
+            break;
+        }
+
+        if (!isValidName(lastName)) {
+            isValid = false;
+            errorMessage = `Invalid last name for passenger ${i + 1}. Only letters (2-30 characters) allowed.`;
+            break;
+        }
+
+        if (!isValidPassport(passport)) {
+            isValid = false;
+            errorMessage = `Invalid passport number for passenger ${i + 1}. Must be 6–9 alphanumeric characters.`;
+            break;
+        }
+    }
+
+    const email = document.getElementById('email').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+
+    if (!isValidEmail(email)) {
+        isValid = false;
+        errorMessage = 'Invalid email format.';
+    }
+
+    if (!isValidPhone(phone)) {
+        isValid = false;
+        errorMessage = 'Phone number must be 7–15 digits.';
+    }
+
+    if (!isValid) {
+        alert(errorMessage || 'Please fill in all required fields correctly.');
+        return;
+    }
+
     const passengers = [];
-    
+
     for (let i = 0; i < numPassengers; i++) {
         passengers.push({
             title: document.getElementById(`title${i}`).value,
-            firstName: document.getElementById(`firstName${i}`).value,
-            lastName: document.getElementById(`lastName${i}`).value,
+            firstName: document.getElementById(`firstName${i}`).value.trim(),
+            lastName: document.getElementById(`lastName${i}`).value.trim(),
             dob: document.getElementById(`dob${i}`).value,
-            passport: document.getElementById(`passport${i}`).value,
+            passport: document.getElementById(`passport${i}`).value.trim(),
             nationality: document.getElementById(`nationality${i}`).value
         });
     }
-    
+
     const contactInfo = {
-        email: document.getElementById('email').value,
-        phone: document.getElementById('phone').value
+        email: email,
+        phone: phone
     };
-    
+
     sessionStorage.setItem('passengerInfo', JSON.stringify({
         passengers: passengers,
         contactInfo: contactInfo
     }));
-    
+
     showPaymentForm();
 }
 
