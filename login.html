@@ -71,5 +71,41 @@
         </div>
     </div>
     <script src="./js/log_in.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const signInForm = document.querySelector('#signIn form');
+            const signUpForm = document.querySelector('#signup form');
+        
+            function isValidEmail(email) {
+                // Simple regex for email validation
+                const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return regex.test(email);
+            }
+        
+            function showAlert(message) {
+                alert(message);
+            }
+        
+            if (signInForm) {
+                signInForm.addEventListener('submit', function (e) {
+                    const email = signInForm.querySelector('input[name="email"]').value;
+                    if (!isValidEmail(email)) {
+                        e.preventDefault();
+                        showAlert("Please enter a valid email address.");
+                    }
+                });
+            }
+        
+            if (signUpForm) {
+                signUpForm.addEventListener('submit', function (e) {
+                    const email = signUpForm.querySelector('input[name="email"]').value;
+                    if (!isValidEmail(email)) {
+                        e.preventDefault();
+                        showAlert("Please enter a valid email address.");
+                    }
+                });
+            }
+        });
+        </script>
 </body>
 </html>
