@@ -62,8 +62,11 @@
           </select>
         </label>
         <div id="paymentDetails"></div>
-        <button type="button" onclick="processPayment()">Complete Booking</button>
+        <button type="button" id="paymentButton" onclick="processPayment()">Complete Booking</button>
       </form>
+    </div>
+    <div id="booking-confirmation" style="display: none;">
+      <!-- This will be populated dynamically by JavaScript -->
     </div>
   </main>
 

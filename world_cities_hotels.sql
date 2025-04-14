@@ -1,4 +1,4 @@
-x-- Create Countries Table
+-- Create Countries Table
 CREATE TABLE countries (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL,
