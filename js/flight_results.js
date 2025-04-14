@@ -401,7 +401,7 @@ function isValidEmail(email) {
 }
 
 function isValidPhone(phone) {
-    return /^[0-9]{7,15}$/.test(phone);
+    return /^[0-9]{10}$/.test(phone);
 }
 
 // Function to submit passenger information
