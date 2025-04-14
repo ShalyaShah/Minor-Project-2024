@@ -43,7 +43,6 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="hotel-info">
               <h3>${hotel.name}</h3>
               <p>${hotel.city}, ${hotel.country}</p>
-              <p class="price">₹${parseFloat(hotel.price_per_night).toLocaleString()}/night</p>
               <p>Rating: ⭐ ${parseFloat(hotel.rating).toFixed(2)}</p>
             </div>
           `;

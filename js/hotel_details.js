@@ -1,188 +1,266 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const hotelId = urlParams.get("hotel_id");
-  
-    if (!hotelId) {
-        document.getElementById("hotel-details").innerHTML = "<p>Invalid hotel ID. Please go back and try again.</p>";
-        return;
-    }
-  
-    fetch(`fetch_hotel_details.php?hotel_id=${hotelId}`)
-        .then((response) => response.json())
-        .then((data) => {
-            const hotelDetailsContainer = document.getElementById("hotel-details");
-  
-            const hotel = data.hotel;
-            sessionStorage.setItem("selectedHotel", JSON.stringify(hotel)); // Store selected hotel in sessionStorage
-  
-            hotelDetailsContainer.innerHTML = `
-                <div class="hotel-info">
-                    <img src="${hotel.image_url}" alt="Hotel Image" />
-                    <h2>${hotel.name}</h2>
-                    <p>${hotel.description}</p>
-                    <p>Location: ${hotel.city}, ${hotel.country}</p>
-                    <p>Price per night: ₹${parseFloat(hotel.price_per_night).toLocaleString()}</p>
-                    <p>Rating: ⭐ ${parseFloat(hotel.rating).toFixed(2)}</p>
-                </div>
-                <h3>Available Rooms</h3>
-                <div class="rooms-container">
-                    ${data.rooms
-                        .map(
-                            (room) => `
-                        <div class="room-card">
-                            <img src="${room.image_url}" alt="Room Image" />
-                            <h4>${room.room_type}</h4>
-                            <p>Price: ₹${parseFloat(room.price).toLocaleString()}</p>
-                            <p>Availability: ${room.availability} rooms</p>
-                            <button onclick="selectRoom(${room.id})" class="select-button">Select Room</button>
-                        </div>
-                    `
-                        )
-                        .join("")}
-                </div>
-            `;
-        })
-        .catch(() => {
-            document.getElementById("hotel-details").innerHTML = "<p>Error fetching hotel details. Please try again later.</p>";
-        });
-  });
-  
-  // Function to select a room
-  function selectRoom(roomId) {
-    sessionStorage.setItem("selectedRoom", roomId);
-  
-    // Show guest information section and hide others
-    document.getElementById("guest-info-section").style.display = "block";
-    document.getElementById("payment-section").style.display = "none";
-    document.getElementById("hotel-details").style.display = "none";
-  
-    // Generate guest information form
-    const guestDetailsDiv = document.getElementById("guestDetails");
-    const searchData = JSON.parse(sessionStorage.getItem("searchData"));
-  
-    guestDetailsDiv.innerHTML = "";
-    for (let i = 0; i < searchData.guests; i++) {
-        guestDetailsDiv.innerHTML += `
-            <div>
-                <h3>Guest ${i + 1}</h3>
-                <label>First Name: <input type="text" id="firstName${i}" required></label>
-                <label>Last Name: <input type="text" id="lastName${i}" required></label>
-                <label>Email: <input type="email" id="email${i}" required></label>
-                <label>Phone: <input type="text" id="phone${i}" required></label>
-                <label>Date of Birth: <input type="date" id="dob${i}" required></label>
-            </div>
-        `;
-    }
+  const urlParams = new URLSearchParams(window.location.search);
+  const hotelId = urlParams.get("hotel_id");
+
+  // Add this line for room price tracking
+  let selectedRoomPrice = 0;
+
+  if (!hotelId) {
+      document.getElementById("hotel-details").innerHTML = "<p>Invalid hotel ID. Please go back and try again.</p>";
+      return;
   }
-  
-  function showPaymentSection() {
-    // Validate guest information
-    const searchData = JSON.parse(sessionStorage.getItem("searchData"));
-    const guests = [];
-    for (let i = 0; i < searchData.guests; i++) {
-        const firstName = document.getElementById(`firstName${i}`).value;
-        const lastName = document.getElementById(`lastName${i}`).value;
-        const email = document.getElementById(`email${i}`).value;
-        const phone = document.getElementById(`phone${i}`).value;
-        const dob = document.getElementById(`dob${i}`).value;
-  
-        if (!firstName || !lastName || !email || !phone || !dob) {
-            alert("Please fill in all guest details.");
-            return;
-        }
-  
-        guests.push({ firstName, lastName, email, phone, dob });
-    }
-  
-    sessionStorage.setItem("guestInfo", JSON.stringify(guests));
-  
-    // Show payment section and hide others
-    document.getElementById("guest-info-section").style.display = "none";
-    document.getElementById("payment-section").style.display = "block";
+
+  fetch(`fetch_hotel_details.php?hotel_id=${hotelId}`)
+      .then((response) => response.json())
+      .then((data) => {
+          const hotelDetailsContainer = document.getElementById("hotel-details");
+
+          const hotel = data.hotel;
+          sessionStorage.setItem("selectedHotel", JSON.stringify(hotel));
+
+          hotelDetailsContainer.innerHTML = `
+              <div class="hotel-info">
+                  <img src="${hotel.image_url}" alt="Hotel Image" />
+                  <h2>${hotel.name}</h2>
+                  <p>${hotel.description}</p>
+                  <p>Location: ${hotel.city}, ${hotel.country}</p>
+                  <p>Price per night: ₹${parseFloat(hotel.price_per_night).toLocaleString()}</p>
+                  <p>Rating: ⭐ ${parseFloat(hotel.rating).toFixed(2)}</p>
+              </div>
+              <h3>Available Rooms</h3>
+              <div class="rooms-container">
+                  ${data.rooms
+                      .map(
+                          (room) => `
+                      <div class="room-card">
+                          <img src="${room.image_url}" alt="Room Image" />
+                          <h4>${room.room_type}</h4>
+                          <p>Price per night: ₹${parseFloat(room.price).toLocaleString()}</p>
+                          <p>Availability: ${room.availability} rooms</p>
+                          <button onclick="selectRoom(${room.id}, ${room.price})" class="select-button">Select Room</button>
+                      </div>
+                  `
+                      )
+                      .join("")}
+              </div>
+          `;
+      })
+      .catch(() => {
+          document.getElementById("hotel-details").innerHTML = "<p>Error fetching hotel details. Please try again later.</p>";
+      });
+});
+
+function selectRoom(roomId, price) {
+  sessionStorage.setItem("selectedRoom", roomId);
+  sessionStorage.setItem("roomPrice", price);
+
+  document.getElementById("guest-info-section").style.display = "block";
+  document.getElementById("payment-section").style.display = "none";
+  document.getElementById("hotel-details").style.display = "none";
+
+  const guestDetailsDiv = document.getElementById("guestDetails");
+  const searchData = JSON.parse(sessionStorage.getItem("searchData"));
+
+  console.log('Raw searchData:', sessionStorage.getItem("searchData"));
+
+  guestDetailsDiv.innerHTML = "";
+  for (let i = 0; i < searchData.guests; i++) {
+      guestDetailsDiv.innerHTML += `
+          <div>
+              <h3>Guest ${i + 1}</h3>
+              <label>First Name: <input type="text" id="firstName${i}" required></label>
+              <label>Last Name: <input type="text" id="lastName${i}" required></label>
+              <label>Email: <input type="email" id="email${i}" required></label>
+              <label>Phone: <input type="text" id="phone${i}" required></label>
+              <label>Date of Birth: <input type="date" id="dob${i}" required></label>
+          </div>
+      `;
   }
-  
-  // Update payment fields dynamically
-  document.addEventListener("DOMContentLoaded", function() {
-    const paymentMethodSelect = document.getElementById("paymentMethod");
-    if (paymentMethodSelect) {
-      paymentMethodSelect.addEventListener("change", updatePaymentDetailsForm);
-      // Initialize payment form
-      updatePaymentDetailsForm();
-    }
-  });
-  
-  function updatePaymentDetailsForm() {
-    const paymentMethod = document.getElementById("paymentMethod").value;
-    const paymentDetailsDiv = document.getElementById("paymentDetails");
-  
-    if (!paymentDetailsDiv) return;
-  
-    let paymentDetailsHTML = "";
-    switch (paymentMethod) {
-        case "credit-card":
-            paymentDetailsHTML = `
-                <div class="form-group">
-                    <label for="cardName">Name on Card</label>
-                    <input type="text" id="cardName" name="cardName" required>
-                </div>
-                <div class="form-group">
-                    <label for="cardNumber">Card Number</label>
-                    <input type="text" id="cardNumber" name="cardNumber" placeholder="XXXX XXXX XXXX XXXX" required>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="expiryDate">Expiry Date</label>
-                        <input type="text" id="expiryDate" name="expiryDate" placeholder="MM/YY" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="cvv">CVV</label>
-                        <input type="text" id="cvv" name="cvv" placeholder="XXX" required>
-                    </div>
-                </div>
-            `;
-            break;
-        case "paypal":
-            paymentDetailsHTML = `
-                <div class="form-group">
-                    <label for="paypalEmail">PayPal Email</label>
-                    <input type="email" id="paypalEmail" name="paypalEmail" required>
-                </div>
-            `;
-            break;
-        case "bank-transfer":
-            paymentDetailsHTML = `
-                <div class="form-group">
-                    <label for="accountNumber">Account Number</label>
-                    <input type="text" id="accountNumber" name="accountNumber" required>
-                </div>
-                <div class="form-group">
-                    <label for="ifscCode">IFSC Code</label>
-                    <input type="text" id="ifscCode" name="ifscCode" required>
-                </div>
-            `;
-            break;
-        case "upi":
-            paymentDetailsHTML = `
-                <div class="form-group">
-                    <label for="upiId">UPI ID</label>
-                    <input type="text" id="upiId" name="upiId" required>
-                </div>
-            `;
-            break;
-        case "wallet":
-            paymentDetailsHTML = `
-                <div class="form-group">
-                    <p id="walletBalance">Fetching wallet balance...</p>
-                </div>
-            `;
-            fetchWalletBalance();
-            break;
-        default:
-            paymentDetailsHTML = "";
-    }
-  
-    paymentDetailsDiv.innerHTML = paymentDetailsHTML;
+
+  // Calculate nights - using the correct property names
+  const checkIn = new Date(searchData.checkInDate); // Changed to checkInDate
+  const checkOut = new Date(searchData.checkOutDate); // Changed to checkOutDate
+  const nights = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
+  const totalAmount = price * nights * searchData.rooms;
+
+  guestDetailsDiv.innerHTML += `
+      <div style="margin-top: 20px; padding: 15px; background: #f5f5f5; border-radius: 5px;">
+          <h3>Booking Summary</h3>
+          <p>Room Price per Night: ₹${price.toLocaleString()}</p>
+          <p>Check-in Date: ${checkIn.toLocaleDateString()}</p>
+          <p>Check-out Date: ${checkOut.toLocaleDateString()}</p>
+          <p>Number of Nights: ${nights}</p>
+          <p>Number of Rooms: ${searchData.rooms}</p>
+          <p>Calculation: ₹${price.toLocaleString()} × ${nights} nights × ${searchData.rooms} rooms</p>
+          <p><strong>Total Amount: ₹${totalAmount.toLocaleString()}</strong></p>
+      </div>
+  `;
+}
+
+function showPaymentSection() {
+  const searchData = JSON.parse(sessionStorage.getItem("searchData"));
+  const guests = [];
+  for (let i = 0; i < searchData.guests; i++) {
+      const firstName = document.getElementById(`firstName${i}`).value;
+      const lastName = document.getElementById(`lastName${i}`).value;
+      const email = document.getElementById(`email${i}`).value;
+      const phone = document.getElementById(`phone${i}`).value;
+      const dob = document.getElementById(`dob${i}`).value;
+
+      if (!firstName || !lastName || !email || !phone || !dob) {
+          alert("Please fill in all guest details.");
+          return;
+      }
+
+      guests.push({ firstName, lastName, email, phone, dob });
   }
+
+  sessionStorage.setItem("guestInfo", JSON.stringify(guests));
+
+  document.getElementById("guest-info-section").style.display = "none";
+  document.getElementById("payment-section").style.display = "block";
+
+  // Calculate total amount with correct property names
+  const roomPrice = parseFloat(sessionStorage.getItem("roomPrice"));
+  const checkIn = new Date(searchData.checkInDate); // Changed to checkInDate
+  const checkOut = new Date(searchData.checkOutDate); // Changed to checkOutDate
+  const nights = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
+  const totalAmount = roomPrice * nights * searchData.rooms;
+
+  const paymentSection = document.getElementById("payment-section");
+  if (!document.getElementById("total-amount-display")) {
+      const totalAmountDiv = document.createElement("div");
+      totalAmountDiv.id = "total-amount-display";
+      totalAmountDiv.style.cssText = "margin: 20px 0; padding: 15px; background: #f5f5f5; border-radius: 5px; text-align: center;";
+      totalAmountDiv.innerHTML = `
+          <h3>Payment Summary</h3>
+          <p>Room Price per Night: ₹${roomPrice.toLocaleString()}</p>
+          <p>Check-in Date: ${checkIn.toLocaleDateString()}</p>
+          <p>Check-out Date: ${checkOut.toLocaleDateString()}</p>
+          <p>Number of Nights: ${nights}</p>
+          <p>Number of Rooms: ${searchData.rooms}</p>
+          <p>Calculation: ₹${roomPrice.toLocaleString()} × ${nights} nights × ${searchData.rooms} rooms</p>
+          <p><strong>Total Amount to Pay: ₹${totalAmount.toLocaleString()}</strong></p>
+      `;
+      paymentSection.insertBefore(totalAmountDiv, paymentSection.firstChild);
+  }
+}
+
+// Helper function to calculate nights
+function calculateNights(checkInDate, checkOutDate) {
+  const checkIn = new Date(checkInDate);
+  const checkOut = new Date(checkOutDate);
+  return Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
+}
+  
+function updatePaymentDetailsForm() {
+  const paymentMethod = document.getElementById("paymentMethod").value;
+  const paymentDetailsDiv = document.getElementById("paymentDetails");
+
+  let paymentDetailsHTML = "";
+  
+  switch (paymentMethod) {
+      case "credit-card":
+          paymentDetailsHTML = `
+              <div class="form-group">
+                  <label for="cardName">Name on Card</label>
+                  <input type="text" id="cardName" required>
+              </div>
+              <div class="form-group">
+                  <label for="cardNumber">Card Number</label>
+                  <input type="text" id="cardNumber" maxlength="16" placeholder="1234 5678 9012 3456" required>
+              </div>
+              <div class="form-row">
+                  <div class="form-group">
+                      <label for="expiryDate">Expiry Date</label>
+                      <input type="text" id="expiryDate" placeholder="MM/YY" maxlength="5" required>
+                  </div>
+                  <div class="form-group">
+                      <label for="cvv">CVV</label>
+                      <input type="password" id="cvv" maxlength="3" placeholder="123" required>
+                  </div>
+              </div>
+          `;
+          break;
+          
+      case "paypal":
+          paymentDetailsHTML = `
+              <div class="form-group">
+                  <label for="paypalEmail">PayPal Email</label>
+                  <input type="email" id="paypalEmail" required>
+              </div>
+          `;
+          break;
+          
+      case "bank-transfer":
+          paymentDetailsHTML = `
+              <div class="form-group">
+                  <label for="accountNumber">Account Number</label>
+                  <input type="text" id="accountNumber" required>
+              </div>
+              <div class="form-group">
+                  <label for="ifscCode">IFSC Code</label>
+                  <input type="text" id="ifscCode" required>
+              </div>
+              <div class="form-group">
+                  <label for="accountName">Account Holder Name</label>
+                  <input type="text" id="accountName" required>
+              </div>
+          `;
+          break;
+          
+      case "upi":
+          paymentDetailsHTML = `
+              <div class="form-group">
+                  <label for="upiId">UPI ID</label>
+                  <input type="text" id="upiId" placeholder="username@upi" required>
+              </div>
+          `;
+          break;
+          
+      case "wallet":
+          paymentDetailsHTML = `
+              <div class="form-group">
+                  <div id="walletBalance" style="text-align: center; padding: 10px; background: #f5f5f5; border-radius: 5px;">
+                      <p>Fetching wallet balance...</p>
+                  </div>
+              </div>
+          `;
+          // Call function to fetch wallet balance
+          fetchWalletBalance();
+          break;
+          
+      default:
+          paymentDetailsHTML = `
+              <div class="form-group">
+                  <p>Please select a payment method</p>
+              </div>
+          `;
+  }
+
+  paymentDetailsDiv.innerHTML = paymentDetailsHTML;
+
+  // Add event listeners for input formatting if credit card is selected
+  if (paymentMethod === "credit-card") {
+      document.getElementById("cardNumber").addEventListener("input", function(e) {
+          let value = e.target.value.replace(/\D/g, "");
+          e.target.value = value;
+      });
+
+      document.getElementById("expiryDate").addEventListener("input", function(e) {
+          let value = e.target.value.replace(/\D/g, "");
+          if (value.length > 2) {
+              value = value.slice(0, 2) + "/" + value.slice(2);
+          }
+          e.target.value = value;
+      });
+
+      document.getElementById("cvv").addEventListener("input", function(e) {
+          let value = e.target.value.replace(/\D/g, "");
+          e.target.value = value;
+      });
+  }
+}
   
   async function fetchWalletBalance() {
     try {
@@ -209,129 +287,104 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   
   function processPayment() {
-    // Get the payment button if it exists
     const paymentButton = document.getElementById("paymentButton");
-    
-    // Only modify the button if it exists
     if (paymentButton) {
         paymentButton.disabled = true;
         paymentButton.textContent = "Processing...";
-    }    
+    }
+
     const selectedHotel = JSON.parse(sessionStorage.getItem("selectedHotel"));
     const selectedRoom = sessionStorage.getItem("selectedRoom");
+    const roomPrice = parseFloat(sessionStorage.getItem("roomPrice")); // Get the actual room price
     const guestInfo = JSON.parse(sessionStorage.getItem("guestInfo"));
+    const searchData = JSON.parse(sessionStorage.getItem("searchData"));
     const paymentMethod = document.getElementById("paymentMethod").value;
-    
-    // Get search data with check-in and check-out dates
-    let searchData;
-    try {
-      searchData = JSON.parse(sessionStorage.getItem("searchData"));
-      if (!searchData || !searchData.checkIn || !searchData.checkOut) {
-        // If searchData doesn't have check-in/check-out, try to get them from URL params
-        const urlParams = new URLSearchParams(window.location.search);
-        if (!searchData) searchData = {};
-        if (!searchData.checkIn) searchData.checkIn = urlParams.get("checkIn") || new Date().toISOString().split('T')[0];
-        if (!searchData.checkOut) searchData.checkOut = urlParams.get("checkOut") || new Date(Date.now() + 86400000).toISOString().split('T')[0];
-      }
-    } catch (error) {
-      console.error("Error parsing search data:", error);
-      alert("Missing booking dates. Please try again.");
-      if (paymentButton) {
-        paymentButton.disabled = false;
-        paymentButton.textContent = "Complete Payment";
-      }
-      return;
-    }
-  
-    if (!selectedHotel || !selectedRoom || !guestInfo || !paymentMethod) {
-      alert("Missing required booking information. Please try again.");
-      if (paymentButton) {
-        paymentButton.disabled = false;
-        paymentButton.textContent = "Complete Payment";
-      }
-      return;
-    }
-  
-    // Validate payment details based on payment method
+
+    // Calculate correct total amount
+    const checkIn = new Date(searchData.checkInDate);
+    const checkOut = new Date(searchData.checkOutDate);
+    const nights = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
+    const totalAmount = roomPrice * nights * parseInt(searchData.rooms);
+
+    // Validate payment details
     const paymentDetails = validatePaymentDetails(paymentMethod);
     if (!paymentDetails) {
-      if (paymentButton) {
-        paymentButton.disabled = false;
-        paymentButton.textContent = "Complete Payment";
-      }
-      return; // Validation failed
+        if (paymentButton) {
+            paymentButton.disabled = false;
+            paymentButton.textContent = "Complete Payment";
+        }
+        return;
     }
-  
-    // Calculate nights and total amount
-    const nights = calculateNights(searchData.checkIn, searchData.checkOut);
-    const totalAmount = calculateTotalAmount(selectedHotel, nights);
-  
+
     const bookingData = {
-      hotel: selectedHotel,
-      roomId: selectedRoom,
-      guests: guestInfo,
-      paymentMethod: paymentMethod,
-      paymentDetails: paymentDetails,
-      searchData: searchData
+        hotel: selectedHotel,
+        roomId: selectedRoom,
+        roomPrice: roomPrice, // Add room price to booking data
+        guests: guestInfo,
+        paymentMethod: paymentMethod,
+        paymentDetails: paymentDetails,
+        searchData: searchData,
+        totalAmount: totalAmount, // Add calculated total amount
+        nights: nights // Add calculated nights
     };
-  
+
     console.log("Sending booking data:", bookingData);
-  
+
     // Send booking data to server
     fetch("save_hotel_booking.php", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(bookingData),
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bookingData),
     })
     .then(response => {
-      if (!response.ok) {
-        throw new Error(`Server responded with status: ${response.status}`);
-      }
-      return response.json();
+        if (!response.ok) {
+            throw new Error(`Server responded with status: ${response.status}`);
+        }
+        return response.json();
     })
     .then(data => {
-      console.log("Server response:", data);
-      
-      if (data.success) {
-        // Generate booking confirmation object
-        const bookingConfirmation = {
-          bookingReference: data.bookingReference,
-          bookingDate: new Date().toISOString(),
-          hotel: selectedHotel,
-          roomType: getRoomTypeById(selectedRoom),
-          checkIn: searchData.checkIn,
-          checkOut: searchData.checkOut,
-          guests: guestInfo,
-          nights: nights,
-          totalAmount: totalAmount,
-          paymentMethod: paymentMethod
-        };
+        console.log("Server response:", data);
         
-        // Store booking confirmation in sessionStorage
-        sessionStorage.setItem("bookingConfirmation", JSON.stringify(bookingConfirmation));
-        
-        // Show booking confirmation
-        showBookingConfirmation(bookingConfirmation);
-      } else {
-        // Show error message
-        alert(`Booking failed: ${data.message}`);
-        if (paymentButton) {
-          paymentButton.disabled = false;
-          paymentButton.textContent = "Complete Payment";
+        if (data.success) {
+            // Generate booking confirmation with correct amounts
+            const bookingConfirmation = {
+                bookingReference: data.bookingReference,
+                bookingDate: new Date().toISOString(),
+                hotel: selectedHotel,
+                roomType: getRoomTypeById(selectedRoom),
+                checkIn: searchData.checkInDate,
+                checkOut: searchData.checkOutDate,
+                guests: guestInfo,
+                nights: nights,
+                roomPrice: roomPrice,
+                totalAmount: totalAmount,
+                paymentMethod: paymentMethod
+            };
+            
+            // Store booking confirmation in sessionStorage
+            sessionStorage.setItem("bookingConfirmation", JSON.stringify(bookingConfirmation));
+            
+            // Show booking confirmation
+            showBookingConfirmation(bookingConfirmation);
+        } else {
+            alert(`Booking failed: ${data.message}`);
+            if (paymentButton) {
+                paymentButton.disabled = false;
+                paymentButton.textContent = "Complete Payment";
+            }
         }
-      }
     })
     .catch(error => {
-      console.error("Error:", error);
-      alert(`An error occurred: ${error.message}`);
-      if (paymentButton) {
-        paymentButton.disabled = false;
-        paymentButton.textContent = "Complete Payment";
-      }
+        console.error("Error:", error);
+        alert(`An error occurred: ${error.message}`);
+        if (paymentButton) {
+            paymentButton.disabled = false;
+            paymentButton.textContent = "Complete Payment";
+        }
     });
-  }
+}
   
   function validatePaymentDetails(paymentMethod) {
     let isValid = true;
@@ -472,113 +525,88 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   
   function showBookingConfirmation(bookingData) {
-    // Hide payment section
     const paymentSection = document.getElementById("payment-section");
     if (paymentSection) {
-      paymentSection.style.display = "none";
+        paymentSection.style.display = "none";
     }
-    
-    // Create booking confirmation section if it doesn't exist
-    if (!document.getElementById("booking-confirmation")) {
-      const bookingConfirmationSection = document.createElement("div");
-      bookingConfirmationSection.id = "booking-confirmation";
-      document.querySelector("main").appendChild(bookingConfirmationSection);
-    }
-    
-    // Get booking confirmation section
-    const bookingConfirmationSection = document.getElementById("booking-confirmation");
+
+    const bookingConfirmationSection = document.getElementById("booking-confirmation") || 
+        document.createElement("div");
+    bookingConfirmationSection.id = "booking-confirmation";
     
     // Format dates
-    let formattedCheckIn = "N/A";
-    let formattedCheckOut = "N/A";
+    const checkIn = new Date(bookingData.checkIn);
+    const checkOut = new Date(bookingData.checkOut);
     
-    try {
-      if (bookingData.checkIn) {
-        const checkInDate = new Date(bookingData.checkIn);
-        formattedCheckIn = checkInDate.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
-      }
-      
-      if (bookingData.checkOut) {
-        const checkOutDate = new Date(bookingData.checkOut);
-        formattedCheckOut = checkOutDate.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
-      }
-    } catch (error) {
-      console.error("Error formatting dates:", error);
-    }
-    
-    // Populate booking confirmation section
     bookingConfirmationSection.innerHTML = `
-      <div class="confirmation-icon">✓</div>
-      <h2>Booking Confirmed!</h2>
-      <p>Thank you for booking with GoTrip. Your booking has been confirmed.</p>
-      
-      <div class="booking-details">
-        <h3>Booking Information</h3>
-        <div class="detail-row">
-          <span class="detail-label">Booking Reference:</span>
-          <span class="detail-value">${bookingData.bookingReference}</span>
+        <div class="confirmation-icon">✓</div>
+        <h2>Booking Confirmed!</h2>
+        <p>Thank you for booking with GoTrip. Your booking has been confirmed.</p>
+        
+        <div class="booking-details">
+            <h3>Booking Information</h3>
+            <div class="detail-row">
+                <span class="detail-label">Booking Reference:</span>
+                <span class="detail-value">${bookingData.bookingReference}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Booking Date:</span>
+                <span class="detail-value">${new Date(bookingData.bookingDate).toLocaleDateString()}</span>
+            </div>
         </div>
-        <div class="detail-row">
-          <span class="detail-label">Booking Date:</span>
-          <span class="detail-value">${new Date(bookingData.bookingDate).toLocaleDateString()}</span>
+        
+        <div class="booking-details">
+            <h3>Hotel Details</h3>
+            <div class="detail-row">
+                <span class="detail-label">Hotel:</span>
+                <span class="detail-value">${bookingData.hotel.name}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Room Type:</span>
+                <span class="detail-value">${bookingData.roomType}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Room Price per Night:</span>
+                <span class="detail-value">₹${bookingData.roomPrice.toLocaleString()}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Check-in:</span>
+                <span class="detail-value">${checkIn.toLocaleDateString()}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Check-out:</span>
+                <span class="detail-value">${checkOut.toLocaleDateString()}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Number of Nights:</span>
+                <span class="detail-value">${bookingData.nights}</span>
+            </div>
         </div>
-      </div>
-      
-      <div class="booking-details">
-        <h3>Hotel Details</h3>
-        <div class="detail-row">
-          <span class="detail-label">Hotel:</span>
-          <span class="detail-value">${bookingData.hotel.name}</span>
+        
+        <div class="booking-details">
+            <h3>Payment Details</h3>
+            <div class="detail-row">
+                <span class="detail-label">Payment Method:</span>
+                <span class="detail-value">${formatPaymentMethod(bookingData.paymentMethod)}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Calculation:</span>
+                <span class="detail-value">₹${bookingData.roomPrice.toLocaleString()} × ${bookingData.nights} nights</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Total Amount Paid:</span>
+                <span class="detail-value">₹${bookingData.totalAmount.toLocaleString()}</span>
+            </div>
         </div>
-        <div class="detail-row">
-          <span class="detail-label">Room Type:</span>
-          <span class="detail-value">${bookingData.roomType}</span>
+        
+        <div class="booking-actions">
+            <button class="print-button" onclick="window.print()">Print Booking Details</button>
+            <button class="home-button" onclick="window.location.href='hotel.html'">Return to Home</button>
         </div>
-        <div class="detail-row">
-          <span class="detail-label">Check-in:</span>
-          <span class="detail-value">${formattedCheckIn}</span>
-        </div>
-        <div class="detail-row">
-          <span class="detail-label">Check-out:</span>
-          <span class="detail-value">${formattedCheckOut}</span>
-        </div>
-        <div class="detail-row">
-          <span class="detail-label">Nights:</span>
-          <span class="detail-value">${bookingData.nights}</span>
-        </div>
-      </div>
-      
-      <div class="booking-details">
-        <h3>Guest Information</h3>
-        ${bookingData.guests.map((guest, index) => `
-          <div class="detail-row">
-            <span class="detail-label">Guest ${index + 1}:</span>
-            <span class="detail-value">${guest.firstName} ${guest.lastName}</span>
-          </div>
-        `).join('')}
-      </div>
-      
-      <div class="booking-details">
-        <h3>Payment Details</h3>
-        <div class="detail-row">
-          <span class="detail-label">Payment Method:</span>
-          <span class="detail-value">${formatPaymentMethod(bookingData.paymentMethod)}</span>
-        </div>
-        <div class="detail-row">
-          <span class="detail-label">Total Amount:</span>
-          <span class="detail-value">₹${bookingData.totalAmount.toLocaleString()}</span>
-        </div>
-      </div>
-      
-      <div class="booking-actions">
-        <button class="print-button" onclick="window.print()">Print Booking Details</button>
-        <button class="home-button" onclick="window.location.href='hotel.html'">Return to Home</button>
-      </div>
     `;
-    
+
     // Show booking confirmation section
     bookingConfirmationSection.style.display = "block";
-    
-    // Scroll to booking confirmation
+    document.querySelector("main").appendChild(bookingConfirmationSection);
     bookingConfirmationSection.scrollIntoView({ behavior: 'smooth' });
-  }
+}

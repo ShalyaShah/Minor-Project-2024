@@ -52,7 +52,7 @@
       <h2>Payment</h2>
       <form id="paymentForm">
         <label>Payment Method:
-          <select id="paymentMethod" required>
+<select id="paymentMethod" onchange="updatePaymentDetailsForm()" required>
             <option value="">Select a payment method</option>
             <option value="credit-card">Credit Card</option>
             <option value="paypal">PayPal</option>

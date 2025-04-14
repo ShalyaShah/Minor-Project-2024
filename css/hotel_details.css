@@ -60,7 +60,7 @@ img {
 }
 
 main {
-  padding: 120px 20px 50px; /* Adjusted padding to account for the fixed navbar */
+  padding: 120px 20px 50px;
   max-width: var(--max-width);
   margin: auto;
 }
@@ -71,6 +71,155 @@ h1 {
   text-align: center;
   margin-bottom: 2rem;
   color: var(--primary-color);
+}
+
+/* Booking Summary Styles */
+.booking-summary {
+  background: var(--white);
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px var(--shadow-light);
+  margin: 2rem 0;
+}
+
+.booking-summary h3 {
+  color: var(--primary-color-dark);
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--accent-color);
+}
+
+.summary-details {
+  display: grid;
+  gap: 1rem;
+}
+
+.summary-details p {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.8rem;
+  background: var(--extra-light);
+  border-radius: 5px;
+}
+
+.summary-details p strong {
+  color: var(--primary-color-dark);
+}
+
+/* Total Amount Display */
+.total-amount {
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-color-dark));
+  color: var(--white);
+  padding: 1.5rem;
+  border-radius: 10px;
+  text-align: center;
+  margin: 2rem 0;
+  box-shadow: 0 4px 15px var(--shadow-light);
+}
+
+.total-amount h3 {
+  font-size: 1.8rem;
+  margin: 0;
+}
+
+/* Enhanced Room Card Styles */
+.room-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.room-card .price {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: var(--accent-color);
+  color: var(--white);
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  font-weight: 600;
+}
+
+/* Payment Method Styles */
+.payment-methods {
+  display: grid;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.payment-method-option {
+  background: var(--white);
+  padding: 1.5rem;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.payment-method-option:hover {
+  border-color: var(--accent-color);
+  transform: translateY(-3px);
+}
+
+.payment-method-option.selected {
+  border-color: var(--accent-color);
+  background: var(--extra-light);
+}
+
+/* Responsive Design for Payment Section */
+@media (max-width: 768px) {
+  .payment-methods {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-details p {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+  }
+
+  .total-amount h3 {
+    font-size: 1.5rem;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .navbar,
+  .booking-actions button {
+    display: none;
+  }
+
+  .booking-summary,
+  .total-amount {
+    box-shadow: none;
+    border: 1px solid #ddd;
+  }
+
+  body {
+    background: white;
+  }
+
+  main {
+    padding: 20px;
+  }
+}
+
+/* Animation for Price Updates */
+@keyframes priceUpdate {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.price-updated {
+  animation: priceUpdate 0.3s ease-in-out;
 }
 
 .amenities-list {
