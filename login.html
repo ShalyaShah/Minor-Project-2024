@@ -69,7 +69,63 @@
                 <button id="signInButton">Sign In</button>
             </div>
         </div>
+    <!-- Recover Password Form -->
+    <div class="form-box" id="recoverPassword" style="display: none;">
+        <div class="logo">
+            <img src="./images/Logo GoTrip.jpeg" alt="GoTrip Logo">
+        </div>
+        <h1 class="form-title">Recover Password</h1>
+        <p class="form-subtitle">Enter your email to receive a recovery code</p>
+        <form id="recoverForm" action="recover_password.php" method="POST">
+            <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" name="email" id="recoverEmail" placeholder="Email" autocomplete="email" required>
+            </div>
+            <button type="submit" class="btn">Send Code</button>
+        </form>
+        <div class="links">
+            <p>Remembered your password?</p>
+            <button id="backToLogin">Back to Login</button>
+        </div>
     </div>
+
+    <!-- Verify Code Form -->
+    <div class="form-box" id="verifyCode" style="display: none;">
+        <div class="logo">
+            <img src="./images/Logo GoTrip.jpeg" alt="GoTrip Logo">
+        </div>
+        <h1 class="form-title">Verify Code</h1>
+        <p class="form-subtitle">Enter the 4-digit code sent to your email</p>
+        <form id="verifyForm" action="verify_code.php" method="POST">
+            <div class="input-group">
+                <i class="fas fa-key"></i>
+                <input type="text" name="code" id="recoveryCode" maxlength="4" placeholder="4-digit Code" autocomplete="one-time-code" required>
+            </div>
+            <button type="submit" class="btn">Verify Code</button>
+        </form>
+    </div>
+
+    <!-- Reset Password Form -->
+    <div class="form-box" id="resetPassword" style="display: none;">
+        <div class="logo">
+            <img src="./images/Logo GoTrip.jpeg" alt="GoTrip Logo">
+        </div>
+        <h1 class="form-title">Reset Password</h1>
+        <p class="form-subtitle">Enter your new password</p>
+        <form id="resetForm" action="reset_password.php" method="POST">
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" name="new_password" id="newPassword" placeholder="New Password" autocomplete="new-password" required>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" name="confirm_password" id="confirmPassword" placeholder="Confirm Password" autocomplete="new-password" required>
+            </div>
+            <button type="submit" class="btn">Reset Password</button>
+        </form>
+    </div>
+</div>
+
     <script src="./js/log_in.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -116,6 +172,62 @@
                     }
                 });
             }
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+    const recoverLink = document.querySelector('.recover a');
+    const backToLogin = document.querySelector('#backToLogin');
+    const recoverPassword = document.querySelector('#recoverPassword');
+    const signIn = document.querySelector('#signIn');
+    const verifyCode = document.querySelector('#verifyCode');
+    const resetPassword = document.querySelector('#resetPassword');
+    const recoverForm = document.querySelector('#recoverForm');
+    const verifyForm = document.querySelector('#verifyForm');
+
+    // Show recover password form
+    recoverLink.addEventListener('click', function (e) {
+        e.preventDefault();
+        signIn.style.display = 'none';
+        recoverPassword.style.display = 'block';
+    });
+
+    // Back to login button
+    backToLogin.addEventListener('click', function () {
+        recoverPassword.style.display = 'none';
+        signIn.style.display = 'block';
+    });
+
+    // Simulate transition to "Verify Code" form after submitting the recovery form
+    recoverForm.addEventListener('submit', function (e) {
+        e.preventDefault(); // Prevent actual form submission for demo purposes
+        recoverPassword.style.display = 'none';
+        verifyCode.style.display = 'block';
+        alert('A recovery code has been sent to your email.'); // Simulate sending the code
+    });
+
+    // Simulate transition to "Reset Password" form after submitting the verify form
+    verifyForm.addEventListener('submit', function (e) {
+        e.preventDefault(); // Prevent actual form submission for demo purposes
+        verifyCode.style.display = 'none';
+        resetPassword.style.display = 'block';
+        alert('Code verified successfully. You can now reset your password.'); // Simulate code verification
+    });
+
+    // Password reset form validation
+    document.querySelector('#resetForm').addEventListener('submit', function (e) {
+        const password = document.querySelector('#newPassword').value;
+        const confirmPassword = document.querySelector('#confirmPassword').value;
+
+        if (password !== confirmPassword) {
+            e.preventDefault();
+            alert("Passwords do not match!");
+        }
+    });
+
+    // Verify code input validation
+    document.querySelector('#recoveryCode').addEventListener('input', function (e) {
+        this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4);
+    });
+});
         </script>
 </body>
 </html>

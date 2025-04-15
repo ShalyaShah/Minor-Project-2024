@@ -185,3 +185,52 @@ body {
         padding: 10px 15px;
     }
 }
+/* Center all form-box elements */
+.form-box {
+    max-width: 400px;
+    margin: 0 auto; /* Center horizontally */
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Ensure all input fields are aligned properly */
+.input-group {
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px 40px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+/* Adjust icons inside input fields */
+.input-group i {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    color: #888;
+}
+
+/* Buttons */
+.btn {
+    width: 100%;
+    padding: 10px;
+    background: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background: #0056b3;
+}
