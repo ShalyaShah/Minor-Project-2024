@@ -89,40 +89,33 @@
             function showAlert(message) {
                 alert(message);
             }
-        
-            function validateForm(form) {
-                const email = form.querySelector('input[name="email"]').value;
-                const password = form.querySelector('input[name="password"]').value;
-        
-                if (!isValidEmail(email)) {
-                    showAlert("Please enter a valid email address.");
-                    return false;
-                }
-        
-                if (!isValidPassword(password)) {
-                    showAlert("Password must be at least 8 characters long, include one uppercase letter and one special character.");
-                    return false;
-                }
-        
-                return true;
-            }
-        
             if (signInForm) {
                 signInForm.addEventListener('submit', function (e) {
-                    if (!validateForm(signInForm)) {
+                    const email = signInForm.querySelector('input[name="email"]').value;
+                    if (!isValidEmail(email)) {
                         e.preventDefault();
+                        showAlert("Please enter a valid email address.");
                     }
                 });
             }
-        
+
             if (signUpForm) {
                 signUpForm.addEventListener('submit', function (e) {
-                    if (!validateForm(signUpForm)) {
+                    const email = signUpForm.querySelector('input[name="email"]').value;
+                    const password = signUpForm.querySelector('input[name="password"]').value;
+
+                    if (!isValidEmail(email)) {
                         e.preventDefault();
+                        showAlert("Please enter a valid email address.");
+                        return;
+                    }
+
+                    if (!isValidPassword(password)) {
+                    e.preventDefault();
+                    showAlert("Password must be at least 8 characters long, include one uppercase letter and one special character.");
                     }
                 });
             }
-        });
         </script>
 </body>
 </html>
